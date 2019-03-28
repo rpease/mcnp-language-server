@@ -3,18 +3,31 @@
     "name": "MCNP",
     "scopeName": "source.mcnp",
     "patterns": [{
-        "include": "#statements"
+        "include": "#line"
     }],
     "repository": {
-        "statements": {
+
+        "line": {
             "patterns": [
                 {
-                    "include": "#comment"
-                }                
+					"include": "#statement"					
+				},
+				{
+					"include": "#comment"					
+				}
             ]
 		},
-		"comment": {
 
+		"statement": {
+			"name": "support.class.mcnp",
+			"begin": "^",
+			"beginCaptures": {
+			},
+			"contentName": "entity.name.function.mcnp",
+			"end": "(\\n|\\$)"
+		},
+
+		"comment": {
 			"patterns": 
 			[
                 {					
