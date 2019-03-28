@@ -27,11 +27,7 @@
 			"captures": {
 				"1": {"name":"entity.other.section.mcnp"} 
 			}
-		},
-
-		"statement": {
-			
-		},
+		},	
 
 		"comment": {
 			"patterns": 
@@ -53,9 +49,20 @@
 				},
 				{					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "\\$(.*)\\n"								
+					"match": "\\$(.*)$"								
 				}            
             ]
+		},
+
+		"statement": {
+			"match":"(^.*?)[\\n\\$]",
+			"captures": {
+				"1": {"name":"support.function.mcnp"} 
+			},	
+			"patterns":
+			{
+
+			}			
 		}
 	}        
 }
