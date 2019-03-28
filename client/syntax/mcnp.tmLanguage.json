@@ -9,22 +9,28 @@
 
         "line": {
             "patterns": [
-                {
-					"include": "#statement"					
+				{
+					"include": "#title"
 				},
 				{
 					"include": "#comment"					
-				}
+				},
+                {
+					"include": "#statement"					
+				}				
             ]
 		},
 
+		"title": {
+			"name": "entity.title.mcnp",
+			"match": "^\\A(.*)$",
+			"captures": {
+				"1": {"name":"entity.other.section.mcnp"} 
+			}
+		},
+
 		"statement": {
-			"name": "support.class.mcnp",
-			"begin": "^",
-			"beginCaptures": {
-			},
-			"contentName": "entity.name.function.mcnp",
-			"end": "(\\n|\\$)"
+			
 		},
 
 		"comment": {
@@ -47,21 +53,9 @@
 				},
 				{					
 					"name": "comment.line.double-slash.mcnp",
-					"begin": "(\\$)",
-					"beginCaptures": {
-						"1": {
-							"name": "punctuation.whitespace.comment.leading.mcnp"
-						},
-						"2": {
-							"name": "comment.line.c.mcnp"
-						}
-					},
-					"contentName": "comment.line.comment.mcnp",
-					"end": "\\n"					
+					"match": "\\$(.*)\\n"								
 				}            
             ]
-
-            
 		}
 	}        
 }
