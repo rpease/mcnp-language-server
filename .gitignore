@@ -2,3 +2,5 @@ out
 node_modules
 client/server
 .vscode-test
+/.vs/slnx.sqlite
+/.vs/slnx.sqlite-journal
