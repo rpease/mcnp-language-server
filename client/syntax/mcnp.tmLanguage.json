@@ -10,24 +10,13 @@
         "line": {
             "patterns": [
 				{
-					"include": "#title"
-				},
-				{
 					"include": "#comment"					
 				},
                 {
-					"include": "#statement"					
+					"include": "#surface"					
 				}				
             ]
-		},
-
-		"title": {
-			"name": "entity.title.mcnp",
-			"match": "^\\A(.*)$",
-			"captures": {
-				"1": {"name":"entity.other.section.mcnp"} 
-			}
-		},	
+		},		
 
 		"comment": {
 			"patterns": 
@@ -53,16 +42,61 @@
 				}            
             ]
 		},
-
-		"statement": {
-			"match":"(^.*?)[\\n\\$]",
-			"captures": {
-				"1": {"name":"support.function.mcnp"} 
-			},	
-			"patterns":
-			{
-
-			}			
-		}
+		"surface": {
+			"patterns": 
+			[
+                {					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(p|pz|py|px) ",				
+					"contentName": "entity.name.surface.plane.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(so|s|sx|sy|sz) ",				
+					"contentName": "entity.name.surface.sphere.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(c\/x|c\/y|c\/z|cx|cy|cz) ",				
+					"contentName": "entity.name.surface.cylinder.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(k\/x|k\/y|k\/z|kx|ky|kz) ",				
+					"contentName": "entity.name.surface.cone.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(sq) ",				
+					"contentName": "entity.name.surface.parallel_ellipsoid.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(gq) ",				
+					"contentName": "entity.name.surface.not_parallel_ellipsoid.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(tx|ty|tz) ",				
+					"contentName": "entity.name.surface.torus.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(xyzp) ",				
+					"contentName": "entity.name.surface.points.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(box|rpp|sph|rcc|rhp|hex|rec|trc|ell|wed|arb) ",				
+					"contentName": "entity.name.surface.macrobodies.mcnp"					
+				}									       
+            ]
+		},
+		"data_cards": {
+			"patterns": 
+			[
+                				       
+            ]
+		}		
 	}        
 }
