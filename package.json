@@ -1,17 +1,20 @@
 {
-	"name": "lsp-sample",
-	"description": "A language server example",
-	"author": "Microsoft Corporation",
+	"name": "mcnp-language-server",
+	"displayName": "MCNP Support",
+	"description": "Language Server to aid with MCNP input file developement",
+	"author": "Ryan Pease",
 	"license": "MIT",
 	"version": "1.0.0",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/rpease/mcnp-language-server"
 	},
 	"publisher": "vscode-samples",
-	"categories": [],
+	"categories": ["Programming Languages"],
 	"keywords": [
-		"multi-root ready"
+		"MCNP",
+		"Monte Carlo",
+		"Monte Carlo N-Partle"
 	],
 	"engines": {
 		"vscode": "^1.23.0"
@@ -28,7 +31,7 @@
 				"languageServerExample.maxNumberOfProblems": {
 					"scope": "resource",
 					"type": "number",
-					"default": 100,
+					"default": 500,
 					"description": "Controls the maximum number of problems produced by the server."
 				},
 				"languageServerExample.trace.server": {
@@ -48,23 +51,26 @@
 			{
 				"id": "mcnp",
 				"aliases": [
-					"MCNP"
+					"MCNP",
+					"Monte Carlo N-Particle"
 				],
 				"extensions": [
-					".MCNP"
+					".MCNP",
+					".i"
 				]
 			}
 		],
-        "grammars": [
-            {
-                "language": "mcnp",
-                "scopeName": "source.mcnp",
-                "path": "./client/syntax/mcnp.tmLanguage.json"
-            }
-        ]
+		"grammars": [
+			{
+				"language": "mcnp",
+				"scopeName": "source.mcnp",
+				"path": "./client/syntax/mcnp.tmLanguage.json"
+			}
+		]
 	},
 	"scripts": {
 		"vscode:prepublish": "cd client && npm run update-vscode && cd .. && npm run compile",
+		"prod:vscode": "webpack --config ./clients/vscode/webpack.config.js --mode production",
 		"compile": "tsc -b",
 		"watch": "tsc -b -w",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
@@ -75,5 +81,8 @@
 		"@types/node": "^8.0.0",
 		"tslint": "^5.11.0",
 		"typescript": "^3.1.3"
+	},
+	"dependencies": {
+		"webpack": "^4.30.0"
 	}
 }
