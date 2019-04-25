@@ -53,7 +53,7 @@
 			[
                 {					
 					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(\\*|\\+)?[0-9]{1,5} ",				
+					"match": "^( ){0,4}(\\*|\\+)?[0-9]{1,5}",				
 					"contentName": "entity.name.cells.cell.mcnp"					
 				},
 				{
