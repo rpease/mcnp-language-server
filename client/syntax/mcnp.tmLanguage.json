@@ -58,12 +58,12 @@
 				},
 				{
 					"name": "entity.name.type.mcnp",
-					"match": " (?i)imp:(n|p|e)=",				
-					"contentName": "entity.name.cells.data.importance.mcnp"					
+					"match": " (?i)(imp|ext):(n|p|e)=",				
+					"contentName": "entity.name.cells.data.particle_specific.mcnp"					
 				},
 				{
 					"name": "entity.name.type.mcnp",
-					"match": " (?i)(vol|pwt|ext|wwn|dxc|nonu|pd|tmp)=",				
+					"match": " (?i)(vol|pwt|wwn|dxc|nonu|pd|tmp)=",				
 					"contentName": "entity.name.cells.data.general.mcnp"					
 				},
 				{
