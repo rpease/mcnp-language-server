@@ -55,7 +55,27 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(\\*|\\+)?[0-9]{1,5} ",				
 					"contentName": "entity.name.cells.cell.mcnp"					
-				}				       
+				},
+				{
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)imp:(n|p|e)=",				
+					"contentName": "entity.name.cells.data.importance.mcnp"					
+				},
+				{
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(vol|pwt|ext|wwn|dxc|nonu|pd|tmp)=",				
+					"contentName": "entity.name.cells.data.general.mcnp"					
+				},
+				{
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)tmp[0-9]?=",				
+					"contentName": "entity.name.cells.data.temperature.mcnp"					
+				},
+				{
+					"name": "entity.name.type.mcnp",
+					"match": "(?i)like [0-9]{1,} but ",				
+					"contentName": "entity.name.cells.likebut.mcnp"					
+				}					       
             ]
 		},
 		"surface": {
