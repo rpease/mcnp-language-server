@@ -68,7 +68,7 @@
 				},
 				{
 					"name": "entity.name.type.mcnp",
-					"match": " (?i)(u|trcl|lat|fill)=",				
+					"match": " (?i)(u|trcl|\\*trcl|lat|fill)=",				
 					"contentName": "entity.name.cells.repeated_structures.mcnp"					
 				},
 				{
@@ -140,7 +140,42 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)m[0-9]{1,} ",				
 					"contentName": "entity.name.data.material.mcnp"					
-				}				       
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)mode ",				
+					"contentName": "entity.name.data.problem.mode.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(vol|area|uran) ",				
+					"contentName": "entity.name.data.geometry.general.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)\\*?tr[0-9]{1,3} ",				
+					"contentName": "entity.name.data.geometry.coordinate_transformation.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(var|pwt|wwg|bbrem) ",				
+					"contentName": "entity.name.data.var_reduction.general.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(imp|ext|fcl|esplt|tsplt|wwe|wwp|wwge):(n|e|p) ",				
+					"contentName": "entity.name.data.var_reduction.particle_specific.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(wwn)[0-9]{1,}:(n|e|p) ",				
+					"contentName": "entity.name.data.var_reduction.weight_window_bound.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(pd)[0-9]{1,} ",				
+					"contentName": "entity.name.data.var_reduction.detector_contribution.mcnp"					
+				}						       
             ]
 		}		
 	}        
