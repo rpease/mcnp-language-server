@@ -29,7 +29,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"begin": "(^[ ]{0,5})(c|C) ",
+					"begin": "(^[ ]{0,5})(c|C)( |\\n)",
 					"beginCaptures": {
 						"1": {
 							"name": "punctuation.whitespace.comment.leading.mcnp"
