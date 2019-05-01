@@ -285,7 +285,62 @@
 					"name": "entity.name.type.mcnp",
 					"match": "(?i)(i|j|k|e)(mesh|ints)(=| )",				
 					"contentName": "entity.name.data.tally.fmesh.bins.mcnp"					
-				}			       
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(phys):(n|p|e) ",				
+					"contentName": "entity.name.data.energy_thermal.physics.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(tmp|mt)[0-9]{0,} ",				
+					"contentName": "entity.name.data.energy_thermal.adjustment.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(thtme) ",				
+					"contentName": "entity.name.data.energy_thermal.adjustment.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(cut|elpt):(n|p|e) ",				
+					"contentName": "entity.name.data.run_spec.particle.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(nps) ",				
+					"contentName": "entity.name.data.run_spec.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(ctme)[0-9]{0,} ",				
+					"contentName": "entity.name.data.run_spec.adjustment.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(idum|rdum) ",				
+					"contentName": "entity.name.data.user_data_arrays.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(prdmp|lost|rand|dbcn|files|print|talnp|mplot|ptrac) ",				
+					"contentName": "entity.name.data.peripheral.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "(?i)(buffer|file|max|meph|write|event|filter|type|nps|cell|surface|tally|value)(=| )",				
+					"contentName": "entity.name.data.peripheral.ptrac.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(pert)[0-9]{1,}:(n|p|n,p|p,n) ",				
+					"contentName": "entity.name.data.peripheral.pert.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "(?i)(cell|mat|rho|method|erg|rxn)(=| )",				
+					"contentName": "entity.name.data.peripheral.pert.mcnp"					
+				}					       
             ]
 		}		
 	}        

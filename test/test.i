@@ -148,6 +148,7 @@ c Air Slabs
 c
 c ----------------- Data Cards -----------------
 c
+nps 50
 mode n
 c
 SDEF PAR=1 ERG=2.5 VEC=0 1 0 DIR=D2 POS=0 -160 150 RAD=D1 TME=D3
