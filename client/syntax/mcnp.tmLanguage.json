@@ -178,9 +178,89 @@
 				},
 				{					
 					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(si|sp|sb)[0-9]{1,} ",				
+					"match": "^( ){0,4}(?i)(si|sp|sb|ds|sc)[0-9]{1,} ",				
 					"contentName": "entity.name.data.source_definition.distributions.mcnp"					
-				}							       
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(old|cel|new|pty|col|wgt|tr|psc|axs|ext|poa|bcw)(=| )",				
+					"contentName": "entity.name.data.source_definition.ssr.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(kcode) ",				
+					"contentName": "entity.name.data.kcode.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": " (?i)(nsrck|rkk|ikz|kct|msrk|knrm|mrkp|kc8)(=| )",				
+					"contentName": "entity.name.data.kcode.variables.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(ksrc|hsrc) ",				
+					"contentName": "entity.name.data.kcode.cards.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}(1|2|4):(n|p|e) ",				
+					"contentName": "entity.name.data.tally.fna.f_npe.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}5a:(n|p) ",				
+					"contentName": "entity.name.data.tally.fna.f5a.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(f|fip|fir|fic)[0-9]{0,2}5:(n|p) ",				
+					"contentName": "entity.name.data.tally.fna.f5.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}6:(n|p|n,p|p,n) ",				
+					"contentName": "entity.name.data.tally.fna.f6.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}7:n ",				
+					"contentName": "entity.name.data.tally.fna.f7.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}8:(p|e|p,e|e,p) ",				
+					"contentName": "entity.name.data.tally.fna.f8.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(\\+f)[0-9]{0,2}8:(e) ",				
+					"contentName": "entity.name.data.tally.fna.f8eplus.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(fc)[0-9]{0,3} ",				
+					"contentName": "entity.name.data.tally.fna.comment.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(e|t|c|fq|fm|de|df|em|tm|fu|tf|dd|ft)[0-9]{0,3} ",				
+					"contentName": "entity.name.data.tally.bins.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(cm)[0-9]{0,2}1 ",				
+					"contentName": "entity.name.data.tally.bins.cm.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(cf|sf|fs|sd)[0-9]{0,2}(1|2|4|6|7) ",				
+					"contentName": "entity.name.data.tally.bins.12467.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(dxt):(n,p) ",				
+					"contentName": "entity.name.data.tally.dxtran.mcnp"					
+				}		       
             ]
 		}		
 	}        
