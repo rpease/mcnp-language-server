@@ -133,6 +133,16 @@
 				},
 				{					
 					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(mpn|xs)[0-9]{1,} ",				
+					"contentName": "entity.name.data.material.adjustment.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt) ",				
+					"contentName": "entity.name.data.material.reactions.mcnp"					
+				},
+				{					
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)mode ",				
 					"contentName": "entity.name.data.problem.mode.mcnp"					
 				},
@@ -148,7 +158,7 @@
 				},
 				{					
 					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(var|pwt|wwg|bbrem) ",				
+					"match": "^( ){0,4}(?i)(var|pwt|wwg|bbrem|spdtl) ",				
 					"contentName": "entity.name.data.var_reduction.general.mcnp"					
 				},
 				{					
