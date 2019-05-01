@@ -2,4 +2,7 @@
 VS Code Language Server for MCNP files
 
 To create .vsix
-	* vsce package
+	* Install vsce
+		npm install vsce -g
+	* Run packager
+		vsce package
