@@ -1,6 +1,9 @@
-enum FileBlock
+namespace mcnp
 {
-	Cells,
-	Surfaces,
-	Data
+	enum FileBlock
+	{
+		Cells,
+		Surfaces,
+		Data
+	}
 }

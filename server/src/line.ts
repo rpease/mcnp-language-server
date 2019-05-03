@@ -1,16 +1,19 @@
-class Line
+namespace mcnp
 {
-	LineNum: number;
-	Block: FileBlock;
-	Contents: Array<String>;
-
-	public static Create(text: string, lineNum: number, block: FileBlock): Line
+	export class Line
 	{
-		let newLine = new Line();
-		newLine.LineNum = lineNum;
-		newLine.Block = block;
-		newLine.Contents = text.split(' ');
+		LineNum: number;
+		Block: FileBlock;
+		Contents: Array<String>;
 
-		return newLine;
+		public static Create(text: string, lineNum: number, block: FileBlock): Line
+		{
+			let newLine = new Line();
+			newLine.LineNum = lineNum;
+			newLine.Block = block;
+			newLine.Contents = text.split(' ');
+
+			return newLine;
+		}
 	}
 }
