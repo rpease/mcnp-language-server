@@ -1,6 +1,4 @@
-namespace mcnp
-{
-	namespace Utilities
+	export namespace utilities
 	{
 		export function SplitStringNumberCombo(text: String): [string,number]
 		{
@@ -8,4 +6,4 @@ namespace mcnp
 			return [matches[0],parseFloat(matches[1])]
 		}
 	}
-}
+

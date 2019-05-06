@@ -1,6 +1,6 @@
 namespace mcnp
 {
-	enum FileBlock
+	export enum FileBlock
 	{
 		Cells,
 		Surfaces,

@@ -1,3 +1,8 @@
+/// <reference path="..\\utilities.ts" />
+/// <reference path="..\\enumerations.ts" />
+
+import { utilities } from '../utilities';
+
 namespace mcnp
 {
 	namespace DataCards
@@ -24,13 +29,18 @@ namespace mcnp
 				ID: number;
 				Lines: Array<Line>;
 				Entries: Array<IsotopeEntry>;
+				
+				
 			
 				constructor(lines: Array<Line>)
-				{
-					var tag = Utilities.SplitStringNumberCombo()
+				{					
+					var tag = utilities.SplitStringNumberCombo();
 				}
 			
-				private static ConvertZAID
+				private static ConvertZAID()
+				{
+
+				}
 			}			
 		}
 
