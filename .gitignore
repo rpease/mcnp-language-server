@@ -1,5 +1,6 @@
 out
 node_modules
+client\node_modules\**
 client/server
 .vscode-test
 /.vs/slnx.sqlite
