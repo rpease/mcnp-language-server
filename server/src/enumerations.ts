@@ -1,9 +1,6 @@
-namespace mcnp
+export enum FileBlock
 {
-	export enum FileBlock
-	{
-		Cells,
-		Surfaces,
-		Data
-	}
+	Cells,
+	Surfaces,
+	Data
 }

@@ -1,8 +1,6 @@
-/// <reference path="enumerations.ts" />
+import { FileBlock } from './enumerations';
 
-namespace mcnp
-{
-	export class Line
+export class Line
 	{
 		LineNum: number;
 		Block: FileBlock;
@@ -20,4 +18,3 @@ namespace mcnp
 			return newLine;
 		}
 	}
-}

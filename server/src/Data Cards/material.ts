@@ -1,49 +1,39 @@
-/// <reference path="..\\utilities.ts" />
-/// <reference path="..\\enumerations.ts" />
 
-import { utilities } from '../utilities';
+import { Line } from '../line';
 
-namespace mcnp
+// example of importing whole module as sort of an object
+import * as utilities from '../utilities';
+
+enum FractionType
 {
-	namespace DataCards
-	{
-		namespace Material
-		{
-			enum FractionType
-			{
-				Atomic,
-				Mass
-			}
-			
-			class IsotopeEntry
-			{
-				Z: number;
-				A: number;
-				Library; String;
-				Fraction: number;
-				Type: FractionType;
-			}
-
-			export class Material
-			{
-				ID: number;
-				Lines: Array<Line>;
-				Entries: Array<IsotopeEntry>;
-				
-				
-			
-				constructor(lines: Array<Line>)
-				{					
-					var tag = utilities.SplitStringNumberCombo();
-				}
-			
-				private static ConvertZAID()
-				{
-
-				}
-			}			
-		}
-
-		
-	}
+	Atomic,
+	Mass
 }
+
+class IsotopeEntry
+{
+	Z: number;
+	A: number;
+	Library: string;
+	Fraction: number;
+	Type: FractionType;
+}
+
+export class Material
+{
+	ID: number;
+	Lines: Array<Line>;
+	Entries: Array<IsotopeEntry>;
+	
+	
+
+	constructor(lines: Array<Line>)
+	{					
+		var tag = utilities.SplitStringNumberCombo("");
+	}
+
+	private static ConvertZAID()
+	{
+
+	}
+}		
