@@ -4,3 +4,11 @@ export enum FileBlock
 	Surfaces,
 	Data
 }
+
+export enum Particle
+{
+	neutron,
+	photon,
+	electron,
+	NONE
+}
