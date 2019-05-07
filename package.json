@@ -11,7 +11,9 @@
 	},
 	"publisher": "RyanPease",
 	"icon": "client/images/physics-nuclear-pngrepo-com.png",
-	"categories": ["Programming Languages"],
+	"categories": [
+		"Programming Languages"
+	],
 	"keywords": [
 		"MCNP",
 		"Monte Carlo",
