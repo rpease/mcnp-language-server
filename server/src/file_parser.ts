@@ -19,7 +19,7 @@ export function ParseFile(file: TextDocument): MCNPFile
 	return mcnp_data;
 }
 
-enum LineType
+export enum LineType
 {
 	StatementStart,
 	StatementExtension,
@@ -27,14 +27,22 @@ enum LineType
 	BlockBreak
 }
 
-function GetLineType(line: string): LineType
+export function GetLineType(line: string): LineType
 {
-	if(line.match(regex.FULL_LINE_COMMENT_MATCH).length > 0)
+	if(line.match(regex.FULL_LINE_COMMENT_MATCH) != null)
 	{
 		return LineType.Comment;
 	}
-	else if(line.match(regex.FULL_LINE_COMMENT_MATCH).length > 0)
+	else if(line.match(regex.STATEMENT_EXTENSION_MATCH) != null)
 	{
-		return LineType.Comment;
-	}	
+		return LineType.StatementExtension;
+	}
+	else if(line.match(regex.BLOCK_BREAK_MATCH) != null)
+	{
+		return LineType.BlockBreak;
+	}
+	else
+	{
+		return LineType.StatementStart;
+	}
 }
