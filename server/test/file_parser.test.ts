@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import * as fp from '../src/file_parser';
 import { Particle } from '../src/enumerations';
+import { TextDocument, Range, Position } from 'vscode-languageserver-types';
+import { readSync, readFileSync } from 'fs';
 
 function GetCommentSamples(): Array<string>
 {
@@ -46,6 +48,36 @@ function GetStatementExtensionSamples(): Array<string>
 
 	return extensions;
 }
+
+// you can write array more like python
+const exampleArray: string[] = ['other way', 'to write', 'an array'];
+
+// these are called template literals https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
+// they can be multiline with \n character between also you can interpolate values in them
+const source = `
+some multi line
+source file
+some number ${Math.sqrt(100)}
+`;
+
+
+// This is an alternate way to declare a function
+const getTextDocumentExample = (): TextDocument => {
+	// this is similar to open in python
+	const otherSource = readFileSync('../../test.mcnp');
+
+	// This will genrate a text document
+	return TextDocument.create(
+		// uri, can probably be empty string
+		'file://example.mcnp',
+		// language id
+		'mncp', 
+		// version number, not sure what it should be
+		1,
+		// the file source
+		source
+	);
+};
 
 function GetBlockSamples(): Array<string>
 {
