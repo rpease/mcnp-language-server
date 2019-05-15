@@ -1,8 +1,6 @@
 
-import { Line } from '../line';
-
-// example of importing whole module as sort of an object
 import * as utilities from '../utilities';
+import { Statement } from '../File/statement';
 
 enum FractionType
 {
@@ -22,12 +20,12 @@ class IsotopeEntry
 export class Material
 {
 	ID: number;
-	Lines: Array<Line>;
+	Statement: Statement;
 	Entries: Array<IsotopeEntry>;
 	
 	
 
-	constructor(lines: Array<Line>)
+	constructor(statement: Statement)
 	{					
 		var tag = utilities.SplitStringNumberCombo("");
 	}
