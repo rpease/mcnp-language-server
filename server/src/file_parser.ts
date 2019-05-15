@@ -2,41 +2,81 @@ import { MCNPFile } from './File/file';
 import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { FileBlock } from './enumerations';
 import * as regex from './regexpressions';
-import { MCNPLine } from './File/statement';
+import { MCNPLine, Statement } from './File/statement';
+import { Block } from './File/block';
 
 export function ParseFile(file: TextDocument): MCNPFile
 {
-	let mcnp_data: MCNPFile;
+	let mcnp_data = new MCNPFile();
 
 	// Split up entire file into sepearte lines
 	let lines = file.getText().split('\n');
 
-	let block = FileBlock.Cells;
+	let block = new Block();
+	block.Type = FileBlock.Cells;
+
 	let file_position = 0;
 	let last_comment: MCNPLine;
 	let current_statement = Array<MCNPLine>();
 	for (let l = 0; l < lines.length; l++) 
 	{
 		let newLine = new MCNPLine();
-		newLine.Contents = lines[l];
+		newLine.Contents = lines[l].replace('\r','');
 		newLine.LineNumber = l+1;
 		
 		var lineType = GetLineType(newLine.Contents);
 
-		if(lineType == LineType.BlockBreak)		
-			block += 1;
+		if(lineType == LineType.BlockBreak)
+		{
+			switch(block.Type)
+			{
+				case FileBlock.Cells:
+				{
+					mcnp_data.CellBlock = block;
+					block = new Block();
+					block.Type = FileBlock.Surfaces;
+					break;
+				}
+				case FileBlock.Surfaces:
+				{
+					mcnp_data.SurfaceBlock = block;
+					block = new Block();
+					block.Type = FileBlock.Data;
+					break;
+				}
+				case FileBlock.Data:
+				{
+					mcnp_data.DataBlock = block;
+
+					// todo throw error across all following lines
+
+					return mcnp_data;
+				}
+			}
+		}				
 		else if(lineType == LineType.StatementStart)
 		{
-			if(current_statement.length > 0)
+			if(l == 0)
 			{
-				// Create statement
-
-				//
-				last_comment = null;
+				mcnp_data.Title = newLine.Contents;
 			}
-
-			current_statement = Array<MCNPLine>();
-			current_statement.push(newLine)
+			else
+			{
+				if(current_statement.length > 0)
+				{
+					// Create statement
+					var newStatement: Statement;
+	
+					// Add to current block
+					block.Statements.push(new Statement(current_statement));
+	
+					// Erarse previous comment header
+					last_comment = null;
+				}
+	
+				current_statement = Array<MCNPLine>();
+				current_statement.push(newLine)
+			}			
 		}
 		else if(lineType == LineType.StatementExtension)
 		{
@@ -45,8 +85,7 @@ export function ParseFile(file: TextDocument): MCNPFile
 		else if(lineType == LineType.Comment)
 		{
 			last_comment = newLine;
-		}	
-
+		}
 
 		file_position += newLine.Contents.length+1;
 	}

@@ -3,6 +3,6 @@ import { Statement } from './statement';
 
 export class Block
 {
-	Statements: Array<Statement>;
+	Statements = Array<Statement>();
 	Type: FileBlock;
 }
