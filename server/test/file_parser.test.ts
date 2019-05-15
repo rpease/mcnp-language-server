@@ -49,33 +49,19 @@ function GetStatementExtensionSamples(): Array<string>
 	return extensions;
 }
 
-// you can write array more like python
-const exampleArray: string[] = ['other way', 'to write', 'an array'];
-
-// these are called template literals https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
-// they can be multiline with \n character between also you can interpolate values in them
-const source = `
-some multi line
-source file
-some number ${Math.sqrt(100)}
-`;
-
-
 // This is an alternate way to declare a function
-const getTextDocumentExample = (): TextDocument => {
-	// this is similar to open in python
-	const otherSource = readFileSync('../../test.mcnp');
+const getTextDocument = (file_path: string): TextDocument => {
 
 	// This will genrate a text document
 	return TextDocument.create(
 		// uri, can probably be empty string
-		'file://example.mcnp',
+		'file://mcnp',
 		// language id
 		'mncp', 
 		// version number, not sure what it should be
 		1,
 		// the file source
-		source
+		readFileSync(file_path,'utf8')
 	);
 };
 
