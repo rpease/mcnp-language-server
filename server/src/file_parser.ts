@@ -2,18 +2,31 @@ import { MCNPFile } from './File/file';
 import { TextDocument } from 'vscode-languageserver-types';
 import { FileBlock } from './enumerations';
 import * as regex from './regexpressions';
+import { Line } from './line';
 
 export function ParseFile(file: TextDocument): MCNPFile
 {
 	let mcnp_data: MCNPFile;
 
-	let lines = file.getText().split('\n');
+	// Replace tabs with 4 spaces
+	// Split up entire file into sepearte lines
+	let lines = file.getText().replace("\\t","    ").split('\n');
+
+	GetLines(file.getText());
 
 	let block = FileBlock.Cells;	
 
 	for (let l = 0; l < lines.length; l++) 
 	{
-		const line = lines[l];		
+		const line = lines[l];	
+		
+		var lineType = GetLineType(line);
+
+		if(lineType == LineType.BlockBreak)		
+			block += 1;
+
+		
+		
 	}
 
 	return mcnp_data;
@@ -25,6 +38,13 @@ export enum LineType
 	StatementExtension,
 	Comment,
 	BlockBreak
+}
+
+class MCNPLine
+{
+	LineNumber: number;
+	Contents: string;
+
 }
 
 export function GetLineType(line: string): LineType
@@ -45,4 +65,28 @@ export function GetLineType(line: string): LineType
 	{
 		return LineType.StatementStart;
 	}
+}
+
+export function ParseStatement(lines: Array<string>): Argument
+{
+	Array
+	lines.forEach(element => {
+		
+	});
+
+	return new Argument();
+}
+
+export function GetLines(file: string):Array<MCNPLine>
+{
+	let lines = Array<MCNPLine>();
+	let pattern = /^(.*)\\n/g;
+	let m: RegExpExecArray | null;
+
+	while (m = pattern.exec(file))
+	{
+		var newLine = new MCNPLine();
+	}	
+
+	return lines;
 }
