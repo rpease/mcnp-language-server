@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import * as fp from '../src/file_parser';
-import { Particle } from '../src/enumerations';
 import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { readSync, readFileSync } from 'fs';
 
@@ -15,6 +14,13 @@ function GetCommentSamples(): Array<string>
 	comments.push("    C still a comment");
 	comments.push("     c still a comment");
 	comments.push("     c M83 1001.00c 1.0 ");
+	comments.push("     c");
+	comments.push("    C");
+	comments.push("   c");
+	comments.push("  C");
+	comments.push(" c");
+	comments.push("c");
+	comments.push("c ");
 
 	return comments;
 }
@@ -110,5 +116,10 @@ describe('FileParser', () =>
 		GetBlockSamples().forEach(element => {
 			expect(fp.GetLineType(element)).to.equal(fp.LineType.BlockBreak)
 		});		
+	});	
+
+	it('ParseFile', () => 
+	{	
+		fp.ParseFile(getTextDocument("test\\test.i"));
 	});	
 });

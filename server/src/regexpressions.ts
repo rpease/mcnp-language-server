@@ -1,6 +1,6 @@
 
 
-export const FULL_LINE_COMMENT_MATCH = "^[ ]{0,5}(c|C)( .*)";
+export const FULL_LINE_COMMENT_MATCH = "^[ ]{0,5}(c|C)( .*|$)";
 
 export const END_LINE_COMMENT_MATCH = "\\$(.*)$";
 
