@@ -20,6 +20,7 @@ function GetCommentSamples(): Array<string>
 	comments.push("  C");
 	comments.push(" c");
 	comments.push("c");
+	comments.push("c\r");
 	comments.push("c ");
 
 	return comments;
@@ -93,6 +94,7 @@ describe('FileParser', () =>
 	it('GetLineType_FullLineComment', () => 
 	{
 		GetCommentSamples().forEach(element => {
+			console.log(element);
 			expect(fp.GetLineType(element)).to.equal(fp.LineType.Comment)
 		});		
 	});	
@@ -100,6 +102,7 @@ describe('FileParser', () =>
 	it('GetLineType_Statement', () => 
 	{	
 		GetStatementSamples().forEach(element => {
+			console.log(element);
 			expect(fp.GetLineType(element)).to.equal(fp.LineType.StatementStart)
 		});		
 	});	
@@ -107,6 +110,7 @@ describe('FileParser', () =>
 	it('GetLineType_StatementExtension', () => 
 	{	
 		GetStatementExtensionSamples().forEach(element => {
+			console.log(element);
 			expect(fp.GetLineType(element)).to.equal(fp.LineType.StatementExtension)
 		});		
 	});	
@@ -114,6 +118,7 @@ describe('FileParser', () =>
 	it('GetLineType_Block', () => 
 	{	
 		GetBlockSamples().forEach(element => {
+			console.log(element);
 			expect(fp.GetLineType(element)).to.equal(fp.LineType.BlockBreak)
 		});		
 	});	
