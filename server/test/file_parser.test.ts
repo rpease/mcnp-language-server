@@ -1,6 +1,8 @@
 import { expect } from 'chai';
 import * as fp from '../src/file_parser';
 import { Particle } from '../src/enumerations';
+import { TextDocument, Range, Position } from 'vscode-languageserver-types';
+import { readSync, readFileSync } from 'fs';
 
 function GetCommentSamples(): Array<string>
 {
@@ -46,6 +48,22 @@ function GetStatementExtensionSamples(): Array<string>
 
 	return extensions;
 }
+
+// This is an alternate way to declare a function
+const getTextDocument = (file_path: string): TextDocument => {
+
+	// This will genrate a text document
+	return TextDocument.create(
+		// uri, can probably be empty string
+		'file://mcnp',
+		// language id
+		'mncp', 
+		// version number, not sure what it should be
+		1,
+		// the file source
+		readFileSync(file_path,'utf8')
+	);
+};
 
 function GetBlockSamples(): Array<string>
 {
