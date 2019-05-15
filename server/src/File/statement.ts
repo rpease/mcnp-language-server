@@ -1,4 +1,11 @@
 import { Comment } from './comment';
+import { Argument } from './argument';
+
+export class MCNPLine
+{
+	LineNumber: number;
+	Contents: string;
+}
 
 export class Statement
 {
@@ -7,11 +14,11 @@ export class Statement
 	InlineComments: Array<Comment>;
 	HeaderComment: Comment;
 
-	constructor(text: Array<string>)
+	constructor(text: Array<MCNPLine>)
 	{
 		text.forEach(line => 
 		{
-			var comment_split = line.split("$");
+			var comment_split = line.Contents.split("$");
 
 			if(comment_split.length > 1)
 			{

@@ -1,36 +1,59 @@
 import { MCNPFile } from './File/file';
-import { TextDocument } from 'vscode-languageserver-types';
+import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { FileBlock } from './enumerations';
 import * as regex from './regexpressions';
-import { Line } from './line';
+import { MCNPLine } from './File/statement';
 
 export function ParseFile(file: TextDocument): MCNPFile
 {
 	let mcnp_data: MCNPFile;
 
-	// Replace tabs with 4 spaces
 	// Split up entire file into sepearte lines
-	let lines = file.getText().replace("\\t","    ").split('\n');
+	let lines = file.getText().split('\n');
 
-	GetLines(file.getText());
-
-	let block = FileBlock.Cells;	
-
+	let block = FileBlock.Cells;
+	let file_position = 0;
+	let last_comment: MCNPLine;
+	let current_statement = Array<MCNPLine>();
 	for (let l = 0; l < lines.length; l++) 
 	{
-		const line = lines[l];	
+		let newLine = new MCNPLine();
+		newLine.Contents = lines[l];
+		newLine.LineNumber = l+1;
 		
-		var lineType = GetLineType(line);
+		var lineType = GetLineType(newLine.Contents);
 
 		if(lineType == LineType.BlockBreak)		
 			block += 1;
+		else if(lineType == LineType.StatementStart)
+		{
+			if(current_statement.length > 0)
+			{
+				// Create statement
 
-		
-		
+				//
+				last_comment = null;
+			}
+
+			current_statement = Array<MCNPLine>();
+			current_statement.push(newLine)
+		}
+		else if(lineType == LineType.StatementExtension)
+		{
+			current_statement.push(newLine)
+		}
+		else if(lineType == LineType.Comment)
+		{
+			last_comment = newLine;
+		}	
+
+
+		file_position += newLine.Contents.length+1;
 	}
 
 	return mcnp_data;
 }
+
 
 export enum LineType
 {
@@ -38,13 +61,6 @@ export enum LineType
 	StatementExtension,
 	Comment,
 	BlockBreak
-}
-
-class MCNPLine
-{
-	LineNumber: number;
-	Contents: string;
-
 }
 
 export function GetLineType(line: string): LineType
@@ -67,7 +83,7 @@ export function GetLineType(line: string): LineType
 	}
 }
 
-export function ParseStatement(lines: Array<string>): Argument
+/*export function ParseStatement(lines: Array<string>): Argument
 {
 	Array
 	lines.forEach(element => {
@@ -76,6 +92,7 @@ export function ParseStatement(lines: Array<string>): Argument
 
 	return new Argument();
 }
+*/
 
 export function GetLines(file: string):Array<MCNPLine>
 {
