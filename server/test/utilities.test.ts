@@ -48,6 +48,6 @@ describe('Utilities', () =>
 		let test1 = "M4";
 		let test2 = "SI1";
 		let test3 = "FM314";
-		expect(1).to.equal(1);
+		expect(1).to.equal(0);
 	});    
 });
