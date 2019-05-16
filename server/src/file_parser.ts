@@ -23,69 +23,64 @@ export function ParseFile(file: TextDocument): MCNPFile
 		let newLine = new MCNPLine();
 		newLine.Contents = lines[l].replace('\r','');
 		newLine.LineNumber = l+1;
+		newLine.FilePosition = file_position;
 		
 		var lineType = GetLineType(newLine.Contents);
 
-		if(lineType == LineType.BlockBreak)
+		if(lineType == LineType.BlockBreak
+			|| lineType == LineType.StatementStart)
 		{
-			switch(block.Type)
+			if(current_statement.length > 0)
 			{
-				case FileBlock.Cells:
-				{
-					mcnp_data.CellBlock = block;
-					block = new Block();
-					block.Type = FileBlock.Surfaces;
-					break;
-				}
-				case FileBlock.Surfaces:
-				{
-					mcnp_data.SurfaceBlock = block;
-					block = new Block();
-					block.Type = FileBlock.Data;
-					break;
-				}
-				case FileBlock.Data:
-				{
-					mcnp_data.DataBlock = block;
+				// Add to current block
+				block.Statements.push(new Statement(current_statement,last_comment));
 
-					// todo throw error across all following lines
+				// Erarse previous comment header
+				last_comment = null;
 
-					return mcnp_data;
-				}
+				current_statement = Array<MCNPLine>();
 			}
-		}				
-		else if(lineType == LineType.StatementStart)
-		{
-			if(l == 0)
+
+			if(lineType == LineType.BlockBreak)
 			{
-				mcnp_data.Title = newLine.Contents;
+				switch(block.Type)
+				{
+					case FileBlock.Cells:
+					{
+						mcnp_data.CellBlock = block;
+						block = new Block();
+						block.Type = FileBlock.Surfaces;
+						break;
+					}
+					case FileBlock.Surfaces:
+					{
+						mcnp_data.SurfaceBlock = block;
+						block = new Block();
+						block.Type = FileBlock.Data;
+						break;
+					}
+					case FileBlock.Data:
+					{
+						mcnp_data.DataBlock = block;
+	
+						// todo throw error across all following lines
+	
+						return mcnp_data;
+					}
+				}
 			}
 			else
 			{
-				if(current_statement.length > 0)
-				{
-					// Create statement
-					var newStatement: Statement;
-	
-					// Add to current block
-					block.Statements.push(new Statement(current_statement));
-	
-					// Erarse previous comment header
-					last_comment = null;
-				}
-	
-				current_statement = Array<MCNPLine>();
-				current_statement.push(newLine)
+				if(l == 0)				
+					mcnp_data.Title = newLine.Contents;	
+				else					
+					current_statement.push(newLine)			
 			}			
-		}
-		else if(lineType == LineType.StatementExtension)
-		{
-			current_statement.push(newLine)
-		}
-		else if(lineType == LineType.Comment)
-		{
-			last_comment = newLine;
-		}
+		}		
+		else if(lineType == LineType.StatementExtension)		
+			current_statement.push(newLine)		
+		else if(lineType == LineType.Comment)		
+			last_comment = newLine;		
 
 		file_position += newLine.Contents.length+1;
 	}
@@ -121,17 +116,6 @@ export function GetLineType(line: string): LineType
 		return LineType.StatementStart;
 	}
 }
-
-/*export function ParseStatement(lines: Array<string>): Argument
-{
-	Array
-	lines.forEach(element => {
-		
-	});
-
-	return new Argument();
-}
-*/
 
 export function GetLines(file: string):Array<MCNPLine>
 {
