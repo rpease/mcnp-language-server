@@ -29,4 +29,3 @@ export function GetParticleFromChar(text: string): Particle
 		default: { return Particle.NONE}
 	}
 }
-

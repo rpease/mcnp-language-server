@@ -8,3 +8,4 @@ export const STATEMENT_EXTENSION_MATCH = "^[ ]{6,}(\\S+)";
 
 export const BLOCK_BREAK_MATCH = "^\\s*$";
 
+export const ARGUMENT = "\\S+";
