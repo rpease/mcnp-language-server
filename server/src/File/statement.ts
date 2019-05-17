@@ -35,7 +35,7 @@ export class Statement
 		var comment_split = line.Contents.split("$");
 		
 		if(comment_split.length > 1)		
-			this.InlineComments.push(comment_split[1]);		
+			this.InlineComments.push(comment_split[1].trim());								
 
 		var arg_ex = new RegExp(ARGUMENT,'g');
 

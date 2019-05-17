@@ -4,6 +4,8 @@ import { FileBlock } from './enumerations';
 import * as regex from './regexpressions';
 import { MCNPLine, Statement } from './File/statement';
 import { Block } from './File/block';
+import { utils } from 'mocha';
+import { GetCommentText } from './utilities';
 
 export function ParseFile(file: TextDocument): MCNPFile
 {
@@ -74,17 +76,25 @@ export function ParseFile(file: TextDocument): MCNPFile
 				if(l == 0)				
 					mcnp_data.Title = newLine.Contents;	
 				else					
-					current_statement.push(newLine)			
+					current_statement.push(newLine);		
 			}			
 		}		
 		else if(lineType == LineType.StatementExtension)		
 			current_statement.push(newLine)		
-		else if(lineType == LineType.Comment)		
-			last_comment = newLine;		
+		else if(lineType == LineType.Comment)	
+		{
+			last_comment = newLine
+			last_comment.Contents = GetCommentText(last_comment.Contents);
+
+			if(last_comment.Contents == "")
+				last_comment = null;
+		}	
+					
 
 		file_position += newLine.Contents.length+1;
 	}
 
+	// todo throw error for not having enough blocks
 	return mcnp_data;
 }
 

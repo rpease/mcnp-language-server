@@ -1,5 +1,6 @@
 import { Particle } from "./enumerations";
 import { ParameterInformation } from "vscode-languageserver";
+import { FULL_LINE_COMMENT_MATCH } from './regexpressions';
 
 export function SplitStringNumberCombo(text: String): [string, string, number]
 {
@@ -28,4 +29,13 @@ export function GetParticleFromChar(text: string): Particle
 		case "e":{ return Particle.electron;}
 		default: { return Particle.NONE}
 	}
+}
+
+export function GetCommentText(text: string): string
+{
+	var comment_split = text.match(FULL_LINE_COMMENT_MATCH);
+
+	if(comment_split.length == 2)	
+		return comment_split[1].trim();		
+	return "";
 }

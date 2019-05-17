@@ -43,6 +43,40 @@ describe('Utilities', () =>
 		expect(() => utilities.GetParticleFromChar(test4)).to.throw(Error);
 	});
 
+	it('GetCommentText', () => 
+	{	
+		var comment = "This is the Comment bro c C more butts";
+		var tests = Array<string>();
+		tests.push("c " + comment);
+		tests.push("C " + comment);
+		tests.push("c " + comment + "     ");
+		tests.push(" c " + comment + "     ");
+		tests.push(" c  " + comment + "     ");
+		tests.push(" c   " + comment + "     ");
+		tests.push(" c    " + comment + "     ");
+		
+		tests.forEach(test => {
+			console.log(test);
+			expect(utilities.GetCommentText(test)).to.equal(comment);
+		});
+	});  
+
+	it('GetCommentText_NoComment', () => 
+	{	
+		var tests = Array<string>();
+		tests.push("c");
+		tests.push("C");
+		tests.push("c ");
+		tests.push("c  ");
+		tests.push(" c  ");
+		tests.push("  c   ");		
+		tests.forEach(test => {
+			console.log(test);
+			expect(utilities.GetCommentText(test)).to.equal("");
+		});
+
+	}); 
+
 	it('SplitStringNumberCombo_Standard', () => 
 	{		
 		let test1 = "M4";
