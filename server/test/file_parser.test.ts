@@ -12,12 +12,10 @@ function GetCommentSamples(): Array<string>
 	comments.push("  C still a comment");
 	comments.push("   c still a comment");
 	comments.push("    C still a comment");
-	comments.push("     c still a comment");
-	comments.push("     c M83 1001.00c 1.0 ");
-	comments.push("     c");
-	comments.push("    C");
+	comments.push("    c M83 1001.00c 1.0 ");
+	comments.push("    C ");
 	comments.push("   c");
-	comments.push("  C");
+	comments.push("  C  ");
 	comments.push(" c");
 	comments.push("c");
 	comments.push("c\r");
@@ -37,7 +35,7 @@ function GetStatementSamples(): Array<string>
 	statements.push("  M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("   M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("    M1 7014 78.084 8016 20.946 18000 0.46 ");
-	statements.push("     M1 7014 78.084 8016 20.946 18000 0.46 $ Comment");
+	statements.push("    M1 7014 78.084 8016 20.946 18000 0.46 $ Comment");
 	statements.push("cThis is not a comment");
 
 	return statements;
@@ -46,12 +44,13 @@ function GetStatementSamples(): Array<string>
 function GetStatementExtensionSamples(): Array<string>
 {
 	let extensions = Array();
+	extensions.push("     u=1 lat=1 erg=2.3 $ input parameters");
 	extensions.push("      u=1 lat=1 erg=2.3 $ input parameters");
 	extensions.push("       u=1 lat=1 erg=2.3 $ input parameters");
 	extensions.push("        u=1 lat=1 erg=2.3 $ input parameters");
-	extensions.push("         u=1 lat=1 erg=2.3 $ input parameters");
-	extensions.push("      cThis is not a comment");
-	extensions.push("      0.25Y 0 0.75v2 0 0 0 0 0 0 0");
+	extensions.push("     cThis is not a comment");
+	extensions.push("     c This is also not a comment");
+	extensions.push("     0.25Y 0 0.75v2 0 0 0 0 0 0 0");
 
 	return extensions;
 }

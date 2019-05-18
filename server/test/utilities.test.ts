@@ -52,8 +52,8 @@ describe('Utilities', () =>
 		tests.push("c " + comment + "     ");
 		tests.push(" c " + comment + "     ");
 		tests.push(" c  " + comment + "     ");
-		tests.push(" c   " + comment + "     ");
-		tests.push(" c    " + comment + "     ");
+		tests.push("  c   " + comment + "     ");
+		tests.push("   c    " + comment + "     ");
 		
 		tests.forEach(test => {
 			console.log(test);

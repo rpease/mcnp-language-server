@@ -29,7 +29,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "^[ ]{0,5}(c|C)( .*\\n|\\n)",					
+					"match": "^[ ]{0,4}(c|C)( .*\\n|\\n)",					
 					"contentName": "comment.line.comment.mcnp"					
 				},
 				{					
