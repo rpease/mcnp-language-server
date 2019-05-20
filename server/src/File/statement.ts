@@ -10,18 +10,6 @@ export class MCNPLine
 
 export class Statement
 {
-	// ex.) *F14:p
-	// Prefix to Card identifier (*)
-	Modifier: string
-
-	// ex.) *F14:p
-	// Character-Set that identifies what card the statement represents (F)
-	CardIdentifier: string
-
-	// ex.) *F14:p
-	// Most cards have a number identifier (14)
-	ID: number;
-
 	Arguments = Array<Argument>();
 
 	// Full statement in a single string. Includes multi-line extensions of a statment
