@@ -44,6 +44,9 @@ export class Statement
 		if(comment_split.length > 1)		
 			this.InlineComments.push(comment_split[1].trim());								
 
+		// Replace all '=' with a space since they are equivalent
+		comment_split[0] = comment_split[0].replace('=',' ');
+
 		var arg_ex = new RegExp(ARGUMENT,'g');
 
 		let m: RegExpExecArray | null;
