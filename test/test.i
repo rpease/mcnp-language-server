@@ -199,7 +199,7 @@ c Tungsten Tamper (19.25)
 M9 74000 1 
 c
 c High Explosive (TNT) (1.654)
-M10 6000 7 1001 5 7014 3 8016 6
+M10 6000 7 1001 5 7014 3 8016 6 $ this is a comment
 c
 c Aluminum (2.6989)
 M11 13027 1 
