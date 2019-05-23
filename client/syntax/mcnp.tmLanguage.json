@@ -29,7 +29,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "^[ ]{0,5}(c|C)( .*\\n|\\n)",					
+					"match": "^[ ]{0,4}(c|C)( .*\\n|\\n)",					
 					"contentName": "comment.line.comment.mcnp"					
 				},
 				{					
@@ -42,32 +42,32 @@
 			"patterns": 
 			[
                 {					
-					"name": "constant.character.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(\\*|\\+)?[0-9]{1,5}",				
 					"contentName": "entity.name.cells.cell.mcnp"					
 				},
 				{
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(imp|ext|fcl):(n|p|e)(=| )",				
 					"contentName": "entity.name.cells.data.particle_specific.mcnp"					
 				},
 				{
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(vol|pwt|wwn|dxc|nonu|pd|tmp)(=| )",				
 					"contentName": "entity.name.cells.data.general.mcnp"					
 				},
 				{
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(u|trcl|\\*trcl|lat|fill)(=| )",				
 					"contentName": "entity.name.cells.repeated_structures.mcnp"					
 				},
 				{
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)tmp[0-9]?=",				
 					"contentName": "entity.name.cells.data.temperature.mcnp"					
 				},
 				{
-					"name": "markup.italic.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)like [0-9]{1,} but ",				
 					"contentName": "entity.name.cells.likebut.mcnp"					
 				}					       
@@ -75,49 +75,49 @@
 		},
 		"surface": {
 			"patterns": 
-			[				
+			[
                 {					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(p|pz|py|px) ",				
 					"contentName": "entity.name.surface.plane.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(so|s|sx|sy|sz) ",				
 					"contentName": "entity.name.surface.sphere.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(c\/x|c\/y|c\/z|cx|cy|cz) ",				
 					"contentName": "entity.name.surface.cylinder.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(k\/x|k\/y|k\/z|kx|ky|kz) ",				
 					"contentName": "entity.name.surface.cone.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(sq) ",				
 					"contentName": "entity.name.surface.parallel_ellipsoid.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(gq) ",				
 					"contentName": "entity.name.surface.not_parallel_ellipsoid.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(tx|ty|tz) ",				
 					"contentName": "entity.name.surface.torus.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(xyzp) ",				
 					"contentName": "entity.name.surface.points.mcnp"					
 				},
 				{					
-					"name": "support.function.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": " (?i)(box|rpp|sph|rcc|rhp|hex|rec|trc|ell|wed|arb) ",				
 					"contentName": "entity.name.surface.macrobodies.mcnp"					
 				}									       
@@ -126,50 +126,8 @@
 		"data_cards": {
 			"patterns": 
 			[
-				{
-					"include": "#material"
-				},
-				{
-					"include": "#geometry"
-				},
-				{
-					"include": "#variance_reduction"
-				},
-				{
-					"include": "#source_definition"
-				},
-				{
-					"include": "#kcode"
-				},
-				{
-					"include": "#tallies"
-				},
-				{
-					"include": "#energy_thermal"
-				},
-				{
-					"include": "#run_specification"
-				},
-				{
-					"include": "#peripheral"
-				},
-				{					
-					"name": "string.regexp.mcnp",
-					"match": "^( ){0,4}(?i)mode ",				
-					"contentName": "entity.name.data.problem.mode.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(idum|rdum) ",				
-					"contentName": "entity.name.data.user_data_arrays.mcnp"					
-				}									       
-            ]
-		},
-		"material": {
-			"patterns": 
-			[
                 {					
-					"name": "keyword.control.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)m[0-9]{1,} ",				
 					"contentName": "entity.name.data.material.mcnp"					
 				},
@@ -182,12 +140,12 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt) ",				
 					"contentName": "entity.name.data.material.reactions.mcnp"					
-				}            
-            ]
-		},
-		"geometry": {
-			"patterns": 
-			[
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)mode ",				
+					"contentName": "entity.name.data.problem.mode.mcnp"					
+				},
 				{					
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(vol|area|uran) ",				
@@ -197,12 +155,7 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)\\*?tr[0-9]{1,3} ",				
 					"contentName": "entity.name.data.geometry.coordinate_transformation.mcnp"					
-				}     
-            ]
-		},
-		"variance_reduction": {
-			"patterns": 
-			[
+				},
 				{					
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(var|pwt|wwg|bbrem|spdtl) ",				
@@ -222,44 +175,34 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(pd)[0-9]{1,} ",				
 					"contentName": "entity.name.data.var_reduction.detector_contribution.mcnp"					
-				}
-            ]
-		},
-		"source_definition": {
-			"patterns": 
-			[
+				},
 				{					
-					"name": "constant.character.escape",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(sdef|ssw|ssr) ",				
 					"contentName": "entity.name.data.source_definition.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(cel|sur|erg|tme|dir|vec|nrm|pos|rad|ext|axs|x|y|z|ccc|ara|wgt|eef|par|tr)(=| )",				
 					"contentName": "entity.name.data.source_definition.variables.mcnp"					
 				},
 				{					
-					"name": "constant.character.escape",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(si|sp|sb|ds|sc)[0-9]{1,} ",				
 					"contentName": "entity.name.data.source_definition.distributions.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(old|cel|new|pty|col|wgt|tr|psc|axs|ext|poa|bcw)(=| )",				
 					"contentName": "entity.name.data.source_definition.ssr.mcnp"					
-				}
-            ]
-		},
-		"kcode": {
-			"patterns": 
-			[
+				},
 				{					
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(kcode) ",				
 					"contentName": "entity.name.data.kcode.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(nsrck|rkk|ikz|kct|msrk|knrm|mrkp|kc8)(=| )",				
 					"contentName": "entity.name.data.kcode.variables.mcnp"					
 				},
@@ -267,44 +210,39 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(ksrc|hsrc) ",				
 					"contentName": "entity.name.data.kcode.cards.mcnp"					
-				}
-            ]
-		},
-		"tallies": {
-			"patterns": 
-			[
+				},
 				{					
-					"name": "string.other.mcnp",
-					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}(1|2|4):(n|p|e) ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}(1|2|4):(n|p|e) ",				
 					"contentName": "entity.name.data.tally.fna.f_npe.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
-					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}5a:(n|p) ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}5[xyz]:(n|p) ",				
 					"contentName": "entity.name.data.tally.fna.f5a.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
-					"match": "^( ){0,4}(?i)(f|fip|fir|fic)[0-9]{0,2}5:(n|p) ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)[*+]?(f|fip|fir|fic)[0-9]{0,2}5:(n|p) ",				
 					"contentName": "entity.name.data.tally.fna.f5.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
-					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}6:(n|p|n,p|p,n) ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}6:(n|p|n,p|p,n) ",				
 					"contentName": "entity.name.data.tally.fna.f6.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
-					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}7:n ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}7:n ",				
 					"contentName": "entity.name.data.tally.fna.f7.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
-					"match": "^( ){0,4}(?i)(f)[0-9]{0,2}8:(p|e|p,e|e,p) ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}8:(p|e|p,e|e,p) ",				
 					"contentName": "entity.name.data.tally.fna.f8.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(\\+f)[0-9]{0,2}8:(e) ",				
 					"contentName": "entity.name.data.tally.fna.f8eplus.mcnp"					
 				},
@@ -329,30 +267,25 @@
 					"contentName": "entity.name.data.tally.bins.12467.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(dxt):(n|p) ",				
 					"contentName": "entity.name.data.tally.dxtran.mcnp"					
 				},
 				{					
-					"name": "string.other.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(fmesh)[0-9]{0,2}4:(n|p|e) ",				
 					"contentName": "entity.name.data.tally.fmesh.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(geom|origin|axs|vec|factor|out|tr)(=| )",				
 					"contentName": "entity.name.data.tally.fmesh.variables.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(i|j|k|e)(mesh|ints)(=| )",				
 					"contentName": "entity.name.data.tally.fmesh.bins.mcnp"					
-				}
-            ]
-		},
-		"energy_thermal": {
-			"patterns": 
-			[
+				},
 				{					
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(phys):(n|p|e) ",				
@@ -367,39 +300,34 @@
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(thtme) ",				
 					"contentName": "entity.name.data.energy_thermal.adjustment.mcnp"					
-				}
-            ]
-		},
-		"run_specification": {
-			"patterns": 
-			[
+				},
 				{					
-					"name": "string.regexp.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(cut|elpt):(n|p|e) ",				
 					"contentName": "entity.name.data.run_spec.particle.mcnp"					
 				},
 				{					
-					"name": "string.regexp.mcnp",
-					"match": "^( ){0,4}(?i)(nps|stop) ",				
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(nps) ",				
 					"contentName": "entity.name.data.run_spec.mcnp"					
 				},
 				{					
-					"name": "string.regexp.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(ctme)[0-9]{0,} ",				
 					"contentName": "entity.name.data.run_spec.adjustment.mcnp"					
-				}
-            ]
-		},
-		"peripheral": {
-			"patterns": 
-			[
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "^( ){0,4}(?i)(idum|rdum) ",				
+					"contentName": "entity.name.data.user_data_arrays.mcnp"					
+				},
 				{					
 					"name": "entity.name.type.mcnp",
 					"match": "^( ){0,4}(?i)(prdmp|lost|rand|dbcn|files|print|talnp|mplot|ptrac) ",				
 					"contentName": "entity.name.data.peripheral.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(buffer|file|max|meph|write|event|filter|type|nps|cell|surface|tally|value)(=| )",				
 					"contentName": "entity.name.data.peripheral.ptrac.mcnp"					
 				},
@@ -409,10 +337,10 @@
 					"contentName": "entity.name.data.peripheral.pert.mcnp"					
 				},
 				{					
-					"name": "support.variable.mcnp",
+					"name": "entity.name.type.mcnp",
 					"match": "(?i)(cell|mat|rho|method|erg|rxn)(=| )",				
 					"contentName": "entity.name.data.peripheral.pert.mcnp"					
-				}
+				}					       
             ]
 		}		
 	}        
