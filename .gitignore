@@ -4,3 +4,5 @@ client/server
 .vscode-test
 /.vs/slnx.sqlite
 /.vs/slnx.sqlite-journal
+.vs/mcnp-language-server/v15/.suo
+.vs/VSWorkspaceState.json
