@@ -236,7 +236,7 @@ TR4 0 225 0 $ Port Detector
 TR5 0 225 150 $ Detectors
 c
 c
-T0  0 10I 5e4 20I 1.5e5 20I 3.5e5 10I 1e8 2I 3e8 30I 30e8
+T0  0 10I 5e4 20I 1.5e5 20I 3.5e5 10I 1e8 2I 3e8 30I 30e8 $ This is a comment
 E0  .025e-6 300e-6 14
 c
 FM14 1e11

@@ -32,12 +32,16 @@
 			"patterns": 
 			[
                 {	
-					"match": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)(\\s.*)",				
-					"contentName": "entity.line.data_card.mcnp",
-					"captures": 
+					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
+					"end":"\n",				
+					"contentName": "entity.line.data_card.mcnp",					
+					"patterns":
+					[
+						 {"include": "#arguments"}
+					],
+					"captures":
 					{
-						"1": { "name": "entity.name.type.mcnp"},
-						"2": { "include": "#arguments"}
+						"1": {"name":"invalid.illegal"}
 					}					
 				}
 			]
@@ -48,6 +52,10 @@
                 {					
 					"name": "comment.line.double-slash.mcnp",
 					"match": "\\$(.*)"								
+				},
+				{					
+					"name": "entity.name.type.mcnp",
+					"match": "FMESH114:n"								
 				}
 			]
 		}
