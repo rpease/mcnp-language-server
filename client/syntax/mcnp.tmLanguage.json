@@ -37,18 +37,10 @@
 		"statement_begin": 
 		{
 			"patterns": 
-			[
-                {					
-					"name":"invalid.illegal",					
-					"begin": "^ {0,4}\\S+",
-					"end": "\n",				
-					"contentName": "entity.statement.begin.mcnp",
-					"patterns":
-					[
-						 {"include": "#inline_comment"},
-						 {"include": "#data_card"}
-					]					
-				}           
+			[        
+				{"include": "#cell_card"},
+				{"include": "#surface_card"},        					
+				{"include": "#data_card"}
             ]
 		},
 
@@ -67,6 +59,44 @@
 					]					
 				}           
             ]
+		},		
+
+		"data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"1": {"name":"invalid.illegal"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"}
+					]					
+				}
+			]
+		},
+
+		"surface_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(\\d+) (\\d )?([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"3": {"name":"invalid.illegal"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"}
+					]
+				}
+			]
 		},
 
 		"inline_comment":
@@ -79,20 +109,6 @@
 					"contentName": "comment.inline.mcnp"								
 				}          
             ]
-		},
-
-		"data_card": {
-			"patterns": 
-			[
-                {	
-					"match": "[*+]?(?i)([[:alpha:]]\\S+)",							
-					"contentName": "entity.line.data_card.mcnp",					
-					"captures":
-					{
-						"1": {"name":"invalid.illegal"}
-					}					
-				}
-			]
-		}
+		}		
 	}        
 }
