@@ -3,17 +3,22 @@
     "name": "MCNP",
     "scopeName": "source.mcnp",
     "patterns": [{
-        "include": "#line"
+        "include": "#statments"
     }],
     "repository": {
 
-        "line": {
-            "patterns": [
+		"statments": 
+		{
+			"patterns": 
+			[
 				{
 					"include": "#full_line_comment"					
-				},			
+				},
 				{
-					"include": "#data_card"
+					"include": "#statement_begin"
+				},
+				{
+					"include": "#statement_extension"
 				}
             ]
 		},		
@@ -24,38 +29,68 @@
                 {					
 					"name": "comment.line.double-slash.mcnp",
 					"match": "^[ ]{0,4}(c|C)( .*\\n|\\n)",					
-					"contentName": "comment.line.comment.mcnp"					
+					"contentName": "comment.line.mcnp"					
 				}           
             ]
 		},
-		"data_card": {
+
+		"statement_begin": 
+		{
 			"patterns": 
 			[
-                {	
-					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
-					"end":"\n",				
-					"contentName": "entity.line.data_card.mcnp",					
+                {					
+					"name":"invalid.illegal",					
+					"begin": "^ {0,4}\\S+",
+					"end": "\n",				
+					"contentName": "entity.statement.begin.mcnp",
 					"patterns":
 					[
-						 {"include": "#arguments"}
-					],
-					"captures":
-					{
-						"1": {"name":"invalid.illegal"}
-					}					
-				}
-			]
+						 {"include": "#inline_comment"},
+						 {"include": "#data_card"}
+					]					
+				}           
+            ]
 		},
-		"arguments": {
+
+		"statement_extension": 
+		{
+			"patterns": 
+			[
+                {					
+					"name":"markup.italic",
+					"begin": "^ {5,}\\S+",
+					"end": "\n",					
+					"contentName": "entity.statement.extension.mcnp",
+					"patterns":
+					[
+						 {"include": "#inline_comment"}
+					]					
+				}           
+            ]
+		},
+
+		"inline_comment":
+		{
 			"patterns": 
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "\\$(.*)"								
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "FMESH114:n"								
+					"match": "\\$(.*)",
+					"contentName": "comment.inline.mcnp"								
+				}          
+            ]
+		},
+
+		"data_card": {
+			"patterns": 
+			[
+                {	
+					"match": "[*+]?(?i)([[:alpha:]]\\S+)",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"1": {"name":"invalid.illegal"}
+					}					
 				}
 			]
 		}
