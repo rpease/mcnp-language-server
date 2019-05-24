@@ -99,6 +99,25 @@
 			]
 		},
 
+		"cell_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(\\d+) (0|(\\d+) +([+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?))",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"4": {"name":"invalid.illegal"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"}
+					]
+				}
+			]
+		},
+
 		"inline_comment":
 		{
 			"patterns": 

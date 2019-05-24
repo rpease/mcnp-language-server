@@ -31,7 +31,7 @@ c
 c
 13 12 -8 (26 -25 -27 28):(-25 27 -29):(-25 -28 30) imp:n=100 imp:p=5 $ He-3 vac-vessel
 c
-15 12 -8 (32 -31 -27 28):(-31 27 -29):(-31 -28 30) imp:n=100 imp:p=5 $ BF3-3 vac-vessel
+15 10 -8.0 (32 -31 -27 28):(-31 27 -29):(-31 -28 30) imp:n=100 imp:p=5 $ BF3-3 vac-vessel
 c
 c Shipping Container interior
 c
