@@ -28,7 +28,8 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "^[ ]{0,4}(c|C)( .*\\n|\\n)",					
+					"begin": "^[ ]{0,4}(c|C)",
+					"end":"\n",				
 					"contentName": "comment.line.mcnp"					
 				}           
             ]
@@ -69,15 +70,17 @@
 					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
 					"end": "\n",							
 					"contentName": "entity.line.data_card.mcnp",					
-					"captures":
-					{
-						"1": {"name":"entity.name.type.mcnp"}
-					},
+					
 					"patterns":
 					[
 						 {"include": "#inline_comment"},
-						 {"include": "#argument"}
-					]					
+						 {"include": "#argument"},
+						 {"include": "#test"}
+					],
+					"captures":
+					{
+						"1": {"name":"entity.name.type.mcnp"}
+					}					
 				}
 			]
 		},
@@ -113,7 +116,9 @@
 					"contentName": "entity.line.data_card.mcnp",					
 					"captures":
 					{
-						"4": {"name":"invalid.illegal"}
+						"1": {"name":"constant.character.mcnp"},
+						"2": {"name":"keyword.control.mcnp"},
+						"4": {"name":"markup.italic"}
 					},
 					"patterns":
 					[
