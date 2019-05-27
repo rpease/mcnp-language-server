@@ -115,6 +115,7 @@
 				{"include": "#material_data_card"}, 
 				{"include": "#tally_data_card"}, 
 				{"include": "#problem_data_card"}, 
+				{"include": "#variance_reduction_data_card"}, 
 				{"include": "#generic_data_card"}
 			]
 		},
@@ -309,6 +310,73 @@
 						"1": {"name":"invalid.illegal"}
 					}					
 				}          
+            ]
+		},
+
+		"variance_reduction_data_card":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}(?i)(imp|esplt|tsplt|ext|fcl|wwe|wwn|wwp|wwge):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.particle.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(var|pwt|vect|wwg|mesh)",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(pd)\\d+",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.detec_contrib.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(dxc)\\d+:[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.dextran.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				}           
             ]
 		},
 
