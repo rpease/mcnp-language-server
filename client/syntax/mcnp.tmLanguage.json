@@ -42,6 +42,7 @@
 				{"include": "#cell_card"},
 				{"include": "#surface_card"},
 				{"include": "#source_data_card"},        					
+				{"include": "#material_data_card"}, 
 				{"include": "#generic_data_card"}
             ]
 		},
@@ -162,6 +163,43 @@
 					{
 						"1": {"name":"string.quoted.single"},
 						"2": {"name":"string.quoted.single"}
+					}					
+				}
+			]
+		},
+
+		"material_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}[*+]?(?i)(m|mpn|xs)(\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.material.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"keyword.control"},
+						"2": {"name":"keyword.control"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}[*+]?(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt)",
+					"end": "\n",							
+					"contentName": "entity.line.material.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"keyword.control"}
 					}					
 				}
 			]
