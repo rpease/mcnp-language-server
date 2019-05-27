@@ -6,3 +6,4 @@ client/server
 /.vs/slnx.sqlite-journal
 .vs/mcnp-language-server/v15/.suo
 .vs/VSWorkspaceState.json
+*.vsix
