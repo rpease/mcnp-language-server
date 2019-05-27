@@ -3,66 +3,408 @@
     "name": "MCNP",
     "scopeName": "source.mcnp",
     "patterns": [{
-        "include": "#line"
+        "include": "#statments"
     }],
     "repository": {
 
-        "line": {
-            "patterns": [
+		"statments": 
+		{
+			"patterns": 
+			[
 				{
-					"include": "#title"
+					"include": "#full_line_comment"					
 				},
 				{
-					"include": "#comment"					
+					"include": "#statement_begin"
 				},
-                {
-					"include": "#statement"					
-				}				
+				{
+					"include": "#statement_extension"
+				}
             ]
-		},
+		},		
 
-		"title": {
-			"name": "entity.title.mcnp",
-			"match": "^\\A(.*)$",
-			"captures": {
-				"1": {"name":"entity.other.section.mcnp"} 
-			}
-		},	
-
-		"comment": {
+		"full_line_comment": {
 			"patterns": 
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"begin": "(^[ ]{0,5})(c|C)",
-					"beginCaptures": {
-						"1": {
-							"name": "punctuation.whitespace.comment.leading.mcnp"
-						},
-						"2": {
-							"name": "comment.line.c.mcnp"
-						}
-					},
-					"contentName": "comment.line.comment.mcnp",
-					"end": "\\n"
-					
-				},
-				{					
-					"name": "comment.line.double-slash.mcnp",
-					"match": "\\$(.*)$"								
-				}            
+					"begin": "^[ ]{0,4}(c|C)",
+					"end":"\n",				
+					"contentName": "comment.line.mcnp"					
+				}           
             ]
 		},
 
-		"statement": {
-			"match":"(^.*?)[\\n\\$]",
-			"captures": {
-				"1": {"name":"support.function.mcnp"} 
-			},	
-			"patterns":
-			{
+		"statement_begin": 
+		{
+			"patterns": 
+			[        
+				{"include": "#cell_card"},
+				{"include": "#surface_card"},
+				{"include": "#data_card"}
+            ]
+		},
 
-			}			
+		"statement_extension": 
+		{
+			"patterns": 
+			[
+                {					
+					"name":"markup.italic",
+					"begin": "^ {5,}",
+					"end": "\n",					
+					"contentName": "entity.statement.extension.mcnp",
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					]					
+				}           
+            ]
+		},		
+
+		"surface_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(\\d+) (\\d+ )?([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"1": {"name":"constant.character.mcnp"},
+						"2": {"name":"entity.name.type.mcnp"},
+						"3": {"name":"support.function.mcnp"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					]
+				}
+			]
+		},
+
+		"cell_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(\\d+) (0|(\\d+) +([+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?))",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"1": {"name":"constant.character.mcnp"},
+						"2": {"name":"keyword.control.mcnp"},
+						"4": {"name":"markup.italic"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					]
+				}
+			]
+		},
+
+		"data_card":
+		{
+			"patterns":
+			[
+				{"include": "#source_data_card"},        					
+				{"include": "#material_data_card"}, 
+				{"include": "#tally_data_card"}, 
+				{"include": "#problem_data_card"}, 
+				{"include": "#variance_reduction_data_card"}, 
+				{"include": "#generic_data_card"}
+			]
+		},
+
+		"generic_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"},
+						 {"include": "#test"}
+					],
+					"captures":
+					{
+						"1": {"name":"entity.name.type.mcnp"}
+					}					
+				}
+			]
+		},
+
+		"source_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(?i)(sdef|ssw|ssr|kcode|ksrc|hsrc)",
+					"end": "\n",							
+					"contentName": "entity.line.source.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.quoted.single"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(si|sp|sb|ds|sc)(\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.source.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.quoted.single"},
+						"2": {"name":"string.quoted.single"}
+					}					
+				}
+			]
+		},
+
+		"material_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(?i)(m|mpn|xs)(\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.material.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"keyword.control"},
+						"2": {"name":"keyword.control"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt)",
+					"end": "\n",							
+					"contentName": "entity.line.material.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"keyword.control"}
+					}					
+				}
+			]
+		},
+
+		"tally_data_card": {
+			"patterns": 
+			[
+				{"include": "#f5_tally"},
+				{"include": "#fmesh_tally"},
+                {"include": "#generic_tally"}
+			]
+		},
+
+		"generic_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*+]?(?i)(f\\d+):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"f5_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*+]?(?i)((f|fip|fir|fic)\\d*5a?):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.ring.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"fmesh_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*]?(?i)(fmesh\\d*4):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.fmesh.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"problem_data_card":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}(?i)(mode|cut|elpt|notrn|nps|ctme)",
+					"end": "\n",							
+					"contentName": "entity.line.problem.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"invalid.illegal"}
+					}					
+				}          
+            ]
+		},
+
+		"variance_reduction_data_card":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}(?i)(imp|esplt|tsplt|ext|fcl|wwe|wwn|wwp|wwge):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.particle.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(var|pwt|vect|wwg|mesh)",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(pd)\\d+",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.detec_contrib.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(dxc)\\d+:[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.dextran.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				}           
+            ]
+		},
+
+		"inline_comment":
+		{
+			"patterns": 
+			[
+                {					
+					"name": "comment.line.double-slash.mcnp",
+					"match": "\\$(.*)",
+					"contentName": "comment.inline.mcnp"								
+				}          
+            ]
+		},
+		
+		"argument":
+		{
+			"patterns": 
+			[
+                {						
+					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)[= ]",
+					"contentName": "entity.argument.mcnp",
+					"captures":
+					{
+						"1": {"name":"support.variable.mcnp"}
+					}								
+				}          
+            ]
 		}
 	}        
 }

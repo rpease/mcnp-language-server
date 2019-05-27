@@ -1,13 +1,13 @@
 {
-	"name": "lsp-sample-client",
-	"description": "VSCode part of a language server",
+	"name": "MCNP-language-client",
+	"description": "VSCode part of a MCNP language server",
 	"author": "Microsoft Corporation",
 	"license": "MIT",
 	"version": "0.0.1",
 	"publisher": "vscode",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/Microsoft/vscode-extension-samples"
+		"url": "https://github.com/rpease/mcnp-language-server"
 	},
 	"engines": {
 		"vscode": "^1.23.0"
