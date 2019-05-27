@@ -4,7 +4,7 @@ A language server for Los Alamos' [Monte Carlo N-Particle (MCNP)](https://mcnp.l
 
 The project currently has client support for [Visual Studio Code](https://code.visualstudio.com/).
 
-<a href="https://imgur.com/ZX7zHeo"><img src="https://imgur.com/ZX7zHeo" title="source: imgur.com" /></a>
+<a href="https://imgur.com/ZX7zHeo"><img src="https://i.imgur.com/ZX7zHeo.png" title="source: imgur.com" /></a>
 
 ## Features
 
