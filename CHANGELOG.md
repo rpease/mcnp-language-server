@@ -7,6 +7,4 @@
 ## Bug Fixes
 
 ## Known Bugs
-- **Uppercase Only  Words** All words that are entirely uppercase letters will be highlighted as an error
 - **Title Card Highlighting** Currently the Title Card has not been isolated and will be colored based on other card definitons
-
