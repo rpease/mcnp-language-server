@@ -40,8 +40,9 @@
 			"patterns": 
 			[        
 				{"include": "#cell_card"},
-				{"include": "#surface_card"},        					
-				{"include": "#data_card"}
+				{"include": "#surface_card"},
+				{"include": "#source_data_card"},        					
+				{"include": "#generic_data_card"}
             ]
 		},
 
@@ -62,28 +63,6 @@
 				}           
             ]
 		},		
-
-		"data_card": {
-			"patterns": 
-			[
-                {	
-					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
-					"end": "\n",							
-					"contentName": "entity.line.data_card.mcnp",					
-					
-					"patterns":
-					[
-						 {"include": "#inline_comment"},
-						 {"include": "#argument"},
-						 {"include": "#test"}
-					],
-					"captures":
-					{
-						"1": {"name":"entity.name.type.mcnp"}
-					}					
-				}
-			]
-		},
 
 		"surface_card": {
 			"patterns": 
@@ -125,6 +104,65 @@
 						 {"include": "#inline_comment"},
 						 {"include": "#argument"}
 					]
+				}
+			]
+		},
+
+		"generic_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"},
+						 {"include": "#test"}
+					],
+					"captures":
+					{
+						"1": {"name":"entity.name.type.mcnp"}
+					}					
+				}
+			]
+		},
+
+		"source_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}[*+]?(?i)(sdef|ssw|ssr|kcode|ksrc|hsrc)",
+					"end": "\n",							
+					"contentName": "entity.line.source.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.quoted.single"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}[*+]?(?i)(si|sp|sb|ds|sc)(\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.source.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.quoted.single"},
+						"2": {"name":"string.quoted.single"}
+					}					
 				}
 			]
 		},
