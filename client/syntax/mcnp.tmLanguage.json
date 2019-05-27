@@ -41,9 +41,7 @@
 			[        
 				{"include": "#cell_card"},
 				{"include": "#surface_card"},
-				{"include": "#source_data_card"},        					
-				{"include": "#material_data_card"}, 
-				{"include": "#generic_data_card"}
+				{"include": "#data_card"}
             ]
 		},
 
@@ -109,6 +107,18 @@
 			]
 		},
 
+		"data_card":
+		{
+			"patterns":
+			[
+				{"include": "#source_data_card"},        					
+				{"include": "#material_data_card"}, 
+				{"include": "#tally_data_card"}, 
+				{"include": "#problem_data_card"}, 
+				{"include": "#generic_data_card"}
+			]
+		},
+
 		"generic_data_card": {
 			"patterns": 
 			[
@@ -135,7 +145,7 @@
 			"patterns": 
 			[
                 {	
-					"begin": "^ {0,4}[*+]?(?i)(sdef|ssw|ssr|kcode|ksrc|hsrc)",
+					"begin": "^ {0,4}(?i)(sdef|ssw|ssr|kcode|ksrc|hsrc)",
 					"end": "\n",							
 					"contentName": "entity.line.source.data_card.mcnp",					
 					
@@ -150,7 +160,7 @@
 					}					
 				},
 				{	
-					"begin": "^ {0,4}[*+]?(?i)(si|sp|sb|ds|sc)(\\d+)",
+					"begin": "^ {0,4}(?i)(si|sp|sb|ds|sc)(\\d+)",
 					"end": "\n",							
 					"contentName": "entity.line.source.data_card.mcnp",					
 					
@@ -172,7 +182,7 @@
 			"patterns": 
 			[
                 {	
-					"begin": "^ {0,4}[*+]?(?i)(m|mpn|xs)(\\d+)",
+					"begin": "^ {0,4}(?i)(m|mpn|xs)(\\d+)",
 					"end": "\n",							
 					"contentName": "entity.line.material.data_card.mcnp",					
 					
@@ -188,7 +198,7 @@
 					}					
 				},
 				{	
-					"begin": "^ {0,4}[*+]?(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt)",
+					"begin": "^ {0,4}(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt)",
 					"end": "\n",							
 					"contentName": "entity.line.material.data_card.mcnp",					
 					
@@ -203,6 +213,103 @@
 					}					
 				}
 			]
+		},
+
+		"tally_data_card": {
+			"patterns": 
+			[
+				{"include": "#f5_tally"},
+				{"include": "#fmesh_tally"},
+                {"include": "#generic_tally"}
+			]
+		},
+
+		"generic_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*+]?(?i)(f\\d+):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"f5_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*+]?(?i)((f|fip|fir|fic)\\d*5a?):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.ring.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"fmesh_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*]?(?i)(fmesh\\d*4):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.fmesh.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"problem_data_card":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}(?i)(mode|cut|elpt|notrn|nps|ctme)",
+					"end": "\n",							
+					"contentName": "entity.line.problem.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"invalid.illegal"}
+					}					
+				}          
+            ]
 		},
 
 		"inline_comment":
