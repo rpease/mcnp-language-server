@@ -1,0 +1,5 @@
+To create .vsix
+	* Install vsce
+		npm install vsce -g
+	* Run packager
+		vsce package
