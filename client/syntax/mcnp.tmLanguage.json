@@ -3,345 +3,408 @@
     "name": "MCNP",
     "scopeName": "source.mcnp",
     "patterns": [{
-        "include": "#line"
+        "include": "#statments"
     }],
     "repository": {
 
-        "line": {
-            "patterns": [
+		"statments": 
+		{
+			"patterns": 
+			[
 				{
-					"include": "#comment"					
+					"include": "#full_line_comment"					
 				},
 				{
-					"include": "#cell_cards"					
+					"include": "#statement_begin"
 				},
-                {
-					"include": "#surface"					
-				},				
 				{
-					"include": "#data_cards"
+					"include": "#statement_extension"
 				}
             ]
 		},		
 
-		"comment": {
+		"full_line_comment": {
 			"patterns": 
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "^[ ]{0,4}(c|C)( .*\\n|\\n)",					
-					"contentName": "comment.line.comment.mcnp"					
+					"begin": "^[ ]{0,4}(c|C)",
+					"end":"\n",				
+					"contentName": "comment.line.mcnp"					
+				}           
+            ]
+		},
+
+		"statement_begin": 
+		{
+			"patterns": 
+			[        
+				{"include": "#cell_card"},
+				{"include": "#surface_card"},
+				{"include": "#data_card"}
+            ]
+		},
+
+		"statement_extension": 
+		{
+			"patterns": 
+			[
+                {					
+					"name":"markup.italic",
+					"begin": "^ {5,}",
+					"end": "\n",					
+					"contentName": "entity.statement.extension.mcnp",
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					]					
+				}           
+            ]
+		},		
+
+		"surface_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(\\d+) (\\d+ )?([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"1": {"name":"constant.character.mcnp"},
+						"2": {"name":"entity.name.type.mcnp"},
+						"3": {"name":"support.function.mcnp"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					]
+				}
+			]
+		},
+
+		"cell_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(\\d+) (0|(\\d+) +([+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?))",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					"captures":
+					{
+						"1": {"name":"constant.character.mcnp"},
+						"2": {"name":"keyword.control.mcnp"},
+						"4": {"name":"markup.italic"}
+					},
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					]
+				}
+			]
+		},
+
+		"data_card":
+		{
+			"patterns":
+			[
+				{"include": "#source_data_card"},        					
+				{"include": "#material_data_card"}, 
+				{"include": "#tally_data_card"}, 
+				{"include": "#problem_data_card"}, 
+				{"include": "#variance_reduction_data_card"}, 
+				{"include": "#generic_data_card"}
+			]
+		},
+
+		"generic_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}[*+]?(?i)([[:alpha:]]\\S+)",
+					"end": "\n",							
+					"contentName": "entity.line.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"},
+						 {"include": "#test"}
+					],
+					"captures":
+					{
+						"1": {"name":"entity.name.type.mcnp"}
+					}					
+				}
+			]
+		},
+
+		"source_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(?i)(sdef|ssw|ssr|kcode|ksrc|hsrc)",
+					"end": "\n",							
+					"contentName": "entity.line.source.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.quoted.single"}
+					}					
 				},
-				{					
+				{	
+					"begin": "^ {0,4}(?i)(si|sp|sb|ds|sc)(\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.source.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.quoted.single"},
+						"2": {"name":"string.quoted.single"}
+					}					
+				}
+			]
+		},
+
+		"material_data_card": {
+			"patterns": 
+			[
+                {	
+					"begin": "^ {0,4}(?i)(m|mpn|xs)(\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.material.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"keyword.control"},
+						"2": {"name":"keyword.control"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt)",
+					"end": "\n",							
+					"contentName": "entity.line.material.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"keyword.control"}
+					}					
+				}
+			]
+		},
+
+		"tally_data_card": {
+			"patterns": 
+			[
+				{"include": "#f5_tally"},
+				{"include": "#fmesh_tally"},
+                {"include": "#generic_tally"}
+			]
+		},
+
+		"generic_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*+]?(?i)(f\\d+):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"f5_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*+]?(?i)((f|fip|fir|fic)\\d*5a?):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.ring.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"fmesh_tally":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}[*]?(?i)(fmesh\\d*4):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.tally.fmesh.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"problem_data_card":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}(?i)(mode|cut|elpt|notrn|nps|ctme)",
+					"end": "\n",							
+					"contentName": "entity.line.problem.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"invalid.illegal"}
+					}					
+				}          
+            ]
+		},
+
+		"variance_reduction_data_card":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^ {0,4}(?i)(imp|esplt|tsplt|ext|fcl|wwe|wwn|wwp|wwge):[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.particle.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(var|pwt|vect|wwg|mesh)",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(pd)\\d+",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.detec_contrib.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				},
+				{	
+					"begin": "^ {0,4}(?i)(dxc)\\d+:[[:alpha:]]",
+					"end": "\n",							
+					"contentName": "entity.line.variance_reduction.dextran.data_card.mcnp",					
+					
+					"patterns":
+					[
+						 {"include": "#inline_comment"},
+						 {"include": "#argument"}
+					],
+					"captures":
+					{
+						"1": {"name":"constant.character.escape"}
+					}					
+				}           
+            ]
+		},
+
+		"inline_comment":
+		{
+			"patterns": 
+			[
+                {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "\\$(.*)$"								
-				}            
+					"match": "\\$(.*)",
+					"contentName": "comment.inline.mcnp"								
+				}          
             ]
 		},
-		"cell_cards": {
+		
+		"argument":
+		{
 			"patterns": 
 			[
-                {					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(\\*|\\+)?[0-9]{1,5}",				
-					"contentName": "entity.name.cells.cell.mcnp"					
-				},
-				{
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(imp|ext|fcl):(n|p|e)(=| )",				
-					"contentName": "entity.name.cells.data.particle_specific.mcnp"					
-				},
-				{
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(vol|pwt|wwn|dxc|nonu|pd|tmp)(=| )",				
-					"contentName": "entity.name.cells.data.general.mcnp"					
-				},
-				{
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(u|trcl|\\*trcl|lat|fill)(=| )",				
-					"contentName": "entity.name.cells.repeated_structures.mcnp"					
-				},
-				{
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)tmp[0-9]?=",				
-					"contentName": "entity.name.cells.data.temperature.mcnp"					
-				},
-				{
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)like [0-9]{1,} but ",				
-					"contentName": "entity.name.cells.likebut.mcnp"					
-				}					       
+                {						
+					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)[= ]",
+					"contentName": "entity.argument.mcnp",
+					"captures":
+					{
+						"1": {"name":"support.variable.mcnp"}
+					}								
+				}          
             ]
-		},
-		"surface": {
-			"patterns": 
-			[
-                {					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(p|pz|py|px) ",				
-					"contentName": "entity.name.surface.plane.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(so|s|sx|sy|sz) ",				
-					"contentName": "entity.name.surface.sphere.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(c\/x|c\/y|c\/z|cx|cy|cz) ",				
-					"contentName": "entity.name.surface.cylinder.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(k\/x|k\/y|k\/z|kx|ky|kz) ",				
-					"contentName": "entity.name.surface.cone.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(sq) ",				
-					"contentName": "entity.name.surface.parallel_ellipsoid.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(gq) ",				
-					"contentName": "entity.name.surface.not_parallel_ellipsoid.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(tx|ty|tz) ",				
-					"contentName": "entity.name.surface.torus.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(xyzp) ",				
-					"contentName": "entity.name.surface.points.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": " (?i)(box|rpp|sph|rcc|rhp|hex|rec|trc|ell|wed|arb) ",				
-					"contentName": "entity.name.surface.macrobodies.mcnp"					
-				}									       
-            ]
-		},
-		"data_cards": {
-			"patterns": 
-			[
-                {					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)m[0-9]{1,} ",				
-					"contentName": "entity.name.data.material.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(mpn|xs)[0-9]{1,} ",				
-					"contentName": "entity.name.data.material.adjustment.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(drxs|totnu|nonu|awtab|void|pikmt|mgopt) ",				
-					"contentName": "entity.name.data.material.reactions.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)mode ",				
-					"contentName": "entity.name.data.problem.mode.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(vol|area|uran) ",				
-					"contentName": "entity.name.data.geometry.general.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)\\*?tr[0-9]{1,3} ",				
-					"contentName": "entity.name.data.geometry.coordinate_transformation.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(var|pwt|wwg|bbrem|spdtl) ",				
-					"contentName": "entity.name.data.var_reduction.general.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(imp|ext|fcl|esplt|tsplt|wwe|wwp|wwge):(n|e|p) ",				
-					"contentName": "entity.name.data.var_reduction.particle_specific.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(wwn)[0-9]{1,}:(n|e|p) ",				
-					"contentName": "entity.name.data.var_reduction.weight_window_bound.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(pd)[0-9]{1,} ",				
-					"contentName": "entity.name.data.var_reduction.detector_contribution.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(sdef|ssw|ssr) ",				
-					"contentName": "entity.name.data.source_definition.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(cel|sur|erg|tme|dir|vec|nrm|pos|rad|ext|axs|x|y|z|ccc|ara|wgt|eef|par|tr)(=| )",				
-					"contentName": "entity.name.data.source_definition.variables.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(si|sp|sb|ds|sc)[0-9]{1,} ",				
-					"contentName": "entity.name.data.source_definition.distributions.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(old|cel|new|pty|col|wgt|tr|psc|axs|ext|poa|bcw)(=| )",				
-					"contentName": "entity.name.data.source_definition.ssr.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(kcode) ",				
-					"contentName": "entity.name.data.kcode.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(nsrck|rkk|ikz|kct|msrk|knrm|mrkp|kc8)(=| )",				
-					"contentName": "entity.name.data.kcode.variables.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(ksrc|hsrc) ",				
-					"contentName": "entity.name.data.kcode.cards.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}(1|2|4):(n|p|e) ",				
-					"contentName": "entity.name.data.tally.fna.f_npe.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}5[xyz]:(n|p) ",				
-					"contentName": "entity.name.data.tally.fna.f5a.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)[*+]?(f|fip|fir|fic)[0-9]{0,2}5:(n|p) ",				
-					"contentName": "entity.name.data.tally.fna.f5.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}6:(n|p|n,p|p,n) ",				
-					"contentName": "entity.name.data.tally.fna.f6.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}7:n ",				
-					"contentName": "entity.name.data.tally.fna.f7.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)[*+]?(f)[0-9]{0,2}8:(p|e|p,e|e,p) ",				
-					"contentName": "entity.name.data.tally.fna.f8.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(\\+f)[0-9]{0,2}8:(e) ",				
-					"contentName": "entity.name.data.tally.fna.f8eplus.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(fc)[0-9]{0,3} ",				
-					"contentName": "entity.name.data.tally.fna.comment.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(e|t|c|fq|fm|de|df|em|tm|fu|tf|dd|ft)[0-9]{0,3} ",				
-					"contentName": "entity.name.data.tally.bins.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(cm)[0-9]{0,2}1 ",				
-					"contentName": "entity.name.data.tally.bins.cm.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(cf|sf|fs|sd)[0-9]{0,2}(1|2|4|6|7) ",				
-					"contentName": "entity.name.data.tally.bins.12467.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(dxt):(n|p) ",				
-					"contentName": "entity.name.data.tally.dxtran.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(fmesh)[0-9]{0,2}4:(n|p|e) ",				
-					"contentName": "entity.name.data.tally.fmesh.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(geom|origin|axs|vec|factor|out|tr)(=| )",				
-					"contentName": "entity.name.data.tally.fmesh.variables.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(i|j|k|e)(mesh|ints)(=| )",				
-					"contentName": "entity.name.data.tally.fmesh.bins.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(phys):(n|p|e) ",				
-					"contentName": "entity.name.data.energy_thermal.physics.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(tmp|mt)[0-9]{0,} ",				
-					"contentName": "entity.name.data.energy_thermal.adjustment.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(thtme) ",				
-					"contentName": "entity.name.data.energy_thermal.adjustment.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(cut|elpt):(n|p|e) ",				
-					"contentName": "entity.name.data.run_spec.particle.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(nps) ",				
-					"contentName": "entity.name.data.run_spec.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(ctme)[0-9]{0,} ",				
-					"contentName": "entity.name.data.run_spec.adjustment.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(idum|rdum) ",				
-					"contentName": "entity.name.data.user_data_arrays.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(prdmp|lost|rand|dbcn|files|print|talnp|mplot|ptrac) ",				
-					"contentName": "entity.name.data.peripheral.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(buffer|file|max|meph|write|event|filter|type|nps|cell|surface|tally|value)(=| )",				
-					"contentName": "entity.name.data.peripheral.ptrac.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "^( ){0,4}(?i)(pert)[0-9]{1,}:(n|p|n,p|p,n) ",				
-					"contentName": "entity.name.data.peripheral.pert.mcnp"					
-				},
-				{					
-					"name": "entity.name.type.mcnp",
-					"match": "(?i)(cell|mat|rho|method|erg|rxn)(=| )",				
-					"contentName": "entity.name.data.peripheral.pert.mcnp"					
-				}					       
-            ]
-		}		
+		}
 	}        
 }
