@@ -28,8 +28,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"begin": "^[ ]{0,4}(c|C)",
-					"end":"\n",				
+					"match": "^[ ]{0,4}[cC].*$",		
 					"contentName": "comment.line.mcnp"					
 				}           
             ]
@@ -131,8 +130,7 @@
 					"patterns":
 					[
 						 {"include": "#inline_comment"},
-						 {"include": "#argument"},
-						 {"include": "#test"}
+						 {"include": "#argument"}
 					],
 					"captures":
 					{
@@ -221,6 +219,7 @@
 			[
 				{"include": "#f5_tally"},
 				{"include": "#fmesh_tally"},
+				{"include": "#tally_comment"},
                 {"include": "#generic_tally"}
 			]
 		},
@@ -242,6 +241,22 @@
 					"captures":
 					{
 						"1": {"name":"string.regexp"}
+					}					
+				}          
+            ]
+		},
+
+		"tally_comment":
+		{
+			"patterns": 
+			[
+				{	
+					"begin": "^[ ]{0,4}(?i)(fc\\d+)",
+					"end": "\n",							
+					"contentName": "entity.line.tally.comment.mcnp",					
+					"captures":
+					{
+						"1": {"name":"entity.name.type.mcnp"}
 					}					
 				}          
             ]
