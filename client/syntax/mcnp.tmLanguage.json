@@ -410,9 +410,9 @@
 		"argument":
 		{
 			"patterns": 
-			[
-                {						
-					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)[=\\s]",
+			[	  
+				{						
+					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)\\b=?",
 					"contentName": "entity.argument.mcnp",
 					"captures":
 					{
