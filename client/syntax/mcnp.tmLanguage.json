@@ -50,7 +50,7 @@
 			[
                 {					
 					"name":"markup.italic",
-					"begin": "^ {5,}",
+					"begin": "^( {5,}|\\t)",
 					"end": "\n",					
 					"contentName": "entity.statement.extension.mcnp",
 					"patterns":
@@ -66,9 +66,9 @@
 			"patterns": 
 			[
                 {	
-					"begin": "^ {0,4}(\\d+) (\\d+ )?([[:alpha:]]\\S+)",
+					"begin": "^ {0,4}(\\d+)\\s+(\\d+\\s+)?([[:alpha:]]\\S+)",
 					"end": "\n",							
-					"contentName": "entity.line.data_card.mcnp",					
+					"contentName": "entity.line.surface.mcnp",					
 					"captures":
 					{
 						"1": {"name":"constant.character.mcnp"},
@@ -88,9 +88,9 @@
 			"patterns": 
 			[
                 {	
-					"begin": "^ {0,4}(\\d+) (0|(\\d+) +([+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?))",
+					"begin": "^ {0,4}(\\d+)\\s+(0|(\\d+)\\s+([+\\-]?(?:0|[1-9]\\d*)(?:\\.\\d*)?(?:[eE][+\\-]?\\d+)?))",
 					"end": "\n",							
-					"contentName": "entity.line.data_card.mcnp",					
+					"contentName": "entity.line.cell.mcnp",					
 					"captures":
 					{
 						"1": {"name":"constant.character.mcnp"},
@@ -412,7 +412,7 @@
 			"patterns": 
 			[
                 {						
-					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)[= ]",
+					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)[=\\s]",
 					"contentName": "entity.argument.mcnp",
 					"captures":
 					{
