@@ -28,7 +28,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "^[ ]{0,4}[cC].*$",		
+					"match": "^[ ]{0,4}[cC]\\s.*$",		
 					"contentName": "comment.line.mcnp"					
 				}           
             ]
