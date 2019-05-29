@@ -50,7 +50,7 @@
 			[
                 {					
 					"name":"markup.italic",
-					"begin": "^( {5,}|\\t)",
+					"begin": "^",
 					"end": "\n",					
 					"contentName": "entity.statement.extension.mcnp",
 					"patterns":
@@ -412,7 +412,7 @@
 			"patterns": 
 			[	  
 				{						
-					"match": "\\b([[:alpha:]]+(:[[:alpha:]])?)\\b=?",
+					"match": "[^=:]\\b([[:alpha:]]+(:[[:alpha:]])?)\\b=?",
 					"contentName": "entity.argument.mcnp",
 					"captures":
 					{
