@@ -273,5 +273,15 @@ EXT:n 0 0 0 0.75y 0.75y 0 0 0.25y 0.25y 0.25y
       0.85Y 0.85Y 0.85Y 0 0    
 VECT v2 0 -1 0 
 TSPLT:n  1 5e4  2 1e5  2 1.5e5  2 2.5e5  2 3.0e5 2 3.5e5 2 5e5
+c
+c
+F1:p 200.5 201.5 202.5 203.5 T 
+FC1 Photon current on the topo of the detectors [g/source n]
+c
+ FMESH324:n geom=xyz ORIGIN= 0 0 0
+          IMESH= 1  IINTS=2
+FC324 PX0 Neutron Flux $ still a comment
+c
+FMESH334:n geom=xyz orign- -40 0
+c
 
-      
