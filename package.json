@@ -4,7 +4,7 @@
 	"description": "Language Server to aid with MCNP input file developement",
 	"author": "Ryan Pease",
 	"license": "MIT",
-	"version": "0.0.4",
+	"version": "0.0.6",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rpease/mcnp-language-server"
