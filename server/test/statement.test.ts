@@ -117,7 +117,31 @@ describe('Statement', () =>
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text).index+position);
     });	
 
-    // Equal signs are replaced with spaces to ensure consistent parsing behavior further on
+    it('Multiline_1', () => 
+    {
+        const text_lines = `666      rpp -1 20 $ X-bounds
+        -15 15 $Y-bounds
+        -10 10 $    Z-bounds`;
+
+        const text_single = "666      rpp -1 20 $ X-bounds        -15 15 $Y-bounds        -10 10 $    Z-bounds";
+
+        const line_number = 10;
+        const position = 55;
+        var line = StringToMCNPLines(text_lines,line_number,position);
+
+        var statement = new st.Statement(line,null);
+
+        expect(statement.Arguments.length).to.equal(8);
+        expect(statement.InlineComments.length).to.equal(3);
+        expect(statement.RawText).to.equal(text_single);
+        expect(statement.StartIndex).to.equal(position);
+        
+        expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("-10");
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(61+position);
+        expect(statement.Arguments[statement.Arguments.length-3].Contents).to.equal("15");
+        expect(statement.Arguments[statement.Arguments.length-3].FilePosition).to.equal(41+position);	
+    });	
+
     it('GetLineType_EqualSign', () => 
     {
         const text_equal = "2  2 5.0  -2 3 100   imp:n=2 $ Half-Sphere"
@@ -152,5 +176,5 @@ describe('Statement', () =>
         expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(21+position);
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(27+position);
-    });	
+    });
 });
