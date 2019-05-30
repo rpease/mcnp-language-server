@@ -1,5 +1,6 @@
 import { MCNPFile } from './File/file';
 import { TextDocument, Range, Position } from 'vscode-languageserver-types';
+import {Diagnostic} from 'vscode-languageserver';
 import * as regex from './regexpressions';
 import { MCNPLine, Statement } from './File/statement';
 import { IBlock } from './Block/block';
@@ -9,9 +10,10 @@ import { CellBlock } from './Block/CellBlock';
 import { SurfaceBlock } from './Block/SurfaceBlock';
 import { DataBlock } from './Block/DataBlock';
 
-export function ParseFile(file: TextDocument): MCNPFile
+export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 {
 	let mcnp_data = new MCNPFile();
+	let diagnostics: Diagnostic[] = [];
 
 	// Split up entire file into sepearte lines
 	let lines = file.getText().split('\n');
@@ -42,8 +44,12 @@ export function ParseFile(file: TextDocument): MCNPFile
 		{
 			if(current_statement.length > 0)
 			{
+				let new_statement = new Statement(current_statement,last_comment)
+
+				diagnostics = diagnostics.concat(new_statement.GetDiagnostics());
+
 				// Add to current block
-				block.ParseStatement(new Statement(current_statement,last_comment));
+				block.ParseStatement(new_statement);
 
 				// Erase previous comment header
 				last_comment = null;
@@ -70,7 +76,7 @@ export function ParseFile(file: TextDocument): MCNPFile
 
 					// todo have warnings for all lines past this point
 
-					return mcnp_data;
+					return [mcnp_data,diagnostics];
 				}				
 			} // end if BlockBreak
 			else
@@ -90,16 +96,14 @@ export function ParseFile(file: TextDocument): MCNPFile
 
 			if(last_comment.Contents == "")
 				last_comment = null;
-		}	
-					
+		}						
 
 		file_position += newLine.Contents.length+1;
 	}
 
 	// todo throw error for not having enough blocks
-	return mcnp_data;
+	return [mcnp_data,diagnostics];
 }
-
 
 export enum LineType
 {

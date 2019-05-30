@@ -1,5 +1,6 @@
 import { Argument } from './argument';
 import { ARGUMENT } from '../regexpressions';
+import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
 
 export class MCNPLine
 {
@@ -24,6 +25,8 @@ export class Statement
 	// The index of the start of the statement relative to the entire file
 	StartIndex: number;
 
+	private Errors: Diagnostic[] = [];
+
 	constructor(text: Array<MCNPLine>,header: MCNPLine)
 	{
 		this.HeaderComment = header;
@@ -42,12 +45,15 @@ export class Statement
 		var comment_split = line.Contents.split("$");
 		
 		if(comment_split.length > 1)		
-			this.InlineComments.push(comment_split[1].trim());								
+			this.InlineComments.push(comment_split[1].trim());
+			
+		if(comment_split[0].length > 80)
+			this.CreateLineTooLongError(line.FilePosition+81,comment_split[0].length)
 
 		// Replace all '=' with a space since they are equivalent
 		comment_split[0] = comment_split[0].replace('=',' ');
 
-		var arg_ex = new RegExp(ARGUMENT,'g');
+		var arg_ex = new RegExp(ARGUMENT,'g')
 
 		let m: RegExpExecArray | null;
 		while (m = arg_ex.exec(comment_split[0]))
@@ -58,5 +64,24 @@ export class Statement
 
 			this.Arguments.push(arg);
 		}
+	}
+
+	private CreateLineTooLongError(start,length)
+	{
+		let diagnostic: Diagnostic = {
+			severity: DiagnosticSeverity.Warning,
+			range: {
+				start: start,
+				end: start+length
+			},
+			message: `MCNP will ignore this because the line is too long!`,
+			source: 'ex'
+		};
+		this.Errors.push(diagnostic);
+	}
+
+	public GetDiagnostics(): Diagnostic[]
+	{
+		return this.Errors;
 	}
 }
