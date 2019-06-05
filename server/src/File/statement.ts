@@ -6,7 +6,6 @@ export class MCNPLine
 {
 	LineNumber: number;
 	Contents: string;
-	FilePosition: number;
 }
 
 export class Statement
@@ -23,14 +22,14 @@ export class Statement
 	HeaderComment: MCNPLine;
 
 	// The index of the start of the statement relative to the entire file
-	StartIndex: number;
+	StartLine: number;
 
 	private Errors: Diagnostic[] = [];
 
 	constructor(text: Array<MCNPLine>,header: MCNPLine)
 	{
 		this.HeaderComment = header;
-		this.StartIndex = text[0].FilePosition;
+		this.StartLine = text[0].LineNumber;
 
 		text.forEach(line => 
 		{
@@ -48,7 +47,7 @@ export class Statement
 			this.InlineComments.push(comment_split[1].trim());
 			
 		if(comment_split[0].length > 80)
-			this.CreateLineTooLongError(line.FilePosition+81,comment_split[0].length)
+			this.CreateLineTooLongError(line.LineNumber,comment_split[0].length)
 
 		// Replace all '=' with a space since they are equivalent
 		comment_split[0] = comment_split[0].replace('=',' ');
@@ -60,22 +59,32 @@ export class Statement
 		{
 			var arg = new Argument();
 			arg.Contents = m[0];
-			arg.FilePosition = line.FilePosition + m.index;
+			arg.FilePosition = 
+			{
+				line: line.LineNumber,
+				character: m.index
+			}
 
 			this.Arguments.push(arg);
 		}
 	}
 
-	private CreateLineTooLongError(start,length)
+	private CreateLineTooLongError(lineNum: number, end: number, limit: number = 80)
 	{
 		let diagnostic: Diagnostic = {
 			severity: DiagnosticSeverity.Warning,
 			range: {
-				start: start,
-				end: start+length
+				start: {
+					line: lineNum,
+					character: limit-1
+				},
+				end: {
+					line: lineNum,
+					character: end
+				}
 			},
-			message: `MCNP will ignore this because the line is too long!`,
-			source: 'ex'
+			message: `MCNP will ignore this because the line because it is over ${limit} characters deep`,
+			source: 'MCNP'
 		};
 		this.Errors.push(diagnostic);
 	}

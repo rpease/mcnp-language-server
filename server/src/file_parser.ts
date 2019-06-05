@@ -23,7 +23,6 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 	// First block is always Cells
 	block = new CellBlock();
 
-	let file_position = 0;
 	let last_comment: MCNPLine;
 	let current_statement = Array<MCNPLine>();
 	for (let l = 0; l < lines.length; l++) 
@@ -31,10 +30,11 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 		console.log(l);
 		
 		// Create MCNPLine
-		let newLine = new MCNPLine();
-		newLine.Contents = lines[l].replace('\r','');
-		newLine.LineNumber = l+1;
-		newLine.FilePosition = file_position;
+		let newLine = 
+		{
+			Contents: lines[l].replace('\r',''),
+			LineNumber: l
+		}
 		
 		// Determine what type of line this is
 		var lineType = GetLineType(newLine.Contents);
@@ -96,9 +96,7 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 
 			if(last_comment.Contents == "")
 				last_comment = null;
-		}						
-
-		file_position += newLine.Contents.length+1;
+		}
 	}
 
 	// todo throw error for not having enough blocks

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import * as st from '../src/File/statement';
 import { stat } from 'fs';
 
-function StringToMCNPLines(text:string,line_num:number=0,position:number=0):Array<st.MCNPLine>
+function StringToMCNPLines(text:string,line_num:number=0):Array<st.MCNPLine>
 {
     var mcnp_lines = new Array<st.MCNPLine>();
 
@@ -11,11 +11,9 @@ function StringToMCNPLines(text:string,line_num:number=0,position:number=0):Arra
         var mcnp_line = new st.MCNPLine();
 
         mcnp_line.Contents = line;
-        mcnp_line.LineNumber = line_num;
-        mcnp_line.FilePosition = position;
+        mcnp_line.LineNumber = line_num;        
 
         line_num += 1;
-        position += line.length;
 
         mcnp_lines.push(mcnp_line);
     });	
@@ -32,39 +30,38 @@ describe('Statement', () =>
         const text_3 = "1 2  3   4    5     6";
 
         const line_number = 10;
-        const position = 55;
 
-        var line = StringToMCNPLines(text_1,line_number,position);
+        var line = StringToMCNPLines(text_1,line_number);
         var statement = new st.Statement(line,null);
 
-        expect(statement.StartIndex).to.equal(position);
-        var expected_position = position;
+        var expected_position = 0;
         statement.Arguments.forEach(arg => 
         {
-            expect(arg.FilePosition).to.equal(expected_position)
+            expect(arg.FilePosition.line).to.equal(line_number)
+            expect(arg.FilePosition.character).to.equal(expected_position)
             expected_position += 2;
         });	
         
-        var line = StringToMCNPLines(text_2,line_number,position);
+        var line = StringToMCNPLines(text_2,line_number);
         var statement = new st.Statement(line,null);
 
-        expect(statement.StartIndex).to.equal(position);
-        var expected_position = position + 1;
+        var expected_position = 1;
         statement.Arguments.forEach(arg => 
         {
-            expect(arg.FilePosition).to.equal(expected_position)
+            expect(arg.FilePosition.line).to.equal(line_number)
+            expect(arg.FilePosition.character).to.equal(expected_position)
             expected_position += 2;
         });
         
-        var line = StringToMCNPLines(text_3,line_number,position);
+        var line = StringToMCNPLines(text_3,line_number);
         var statement = new st.Statement(line,null);
 
-        expect(statement.StartIndex).to.equal(position);
-        var expected_position = position;
+        var expected_position = 0;
         var h = 2;
         statement.Arguments.forEach(arg => 
         {
-            expect(arg.FilePosition).to.equal(expected_position)
+            expect(arg.FilePosition.line).to.equal(line_number)
+            expect(arg.FilePosition.character).to.equal(expected_position)
             expected_position += h;
             h += 1;
         });
@@ -77,69 +74,74 @@ describe('Statement', () =>
         const text =      "2 PY TEXT"
 
         const line_number = 10;
-        const position = 55;
 
-        var line = StringToMCNPLines(text_tab1,line_number,position);
+        var line = StringToMCNPLines(text_tab1,line_number);
         var statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(3);
         expect(statement.RawText).to.equal(text_tab1);
-        expect(statement.StartIndex).to.equal(position);
         
         var arg_ex = new RegExp("TEXT",'g');
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text_tab1).index+position);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text_tab1).index);
 
         ///////////////////////////////////////////////////////////////////////////////////////////
 
-        line = StringToMCNPLines(text_tab2,line_number,position);
+        line = StringToMCNPLines(text_tab2,line_number);
         statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(3);
         expect(statement.RawText).to.equal(text_tab2);
-        expect(statement.StartIndex).to.equal(position);
         
         var arg_ex = new RegExp("TEXT",'g');
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text_tab2).index+position);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text_tab2).index);
         
         ///////////////////////////////////////////////////////////////////////////////////////////
 
-        line = StringToMCNPLines(text,line_number,position);
+        line = StringToMCNPLines(text,line_number);
         statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(3);
         expect(statement.RawText).to.equal(text);
-        expect(statement.StartIndex).to.equal(position);
         
         var arg_ex = new RegExp("TEXT",'g');
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text).index+position);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text).index);
     });	
 
     it('Multiline_1', () => 
     {
         const text_lines = `666      rpp -1 20 $ X-bounds
-        -15 15 $Y-bounds
+        -15 15 
         -10 10 $    Z-bounds`;
 
-        const text_single = "666      rpp -1 20 $ X-bounds        -15 15 $Y-bounds        -10 10 $    Z-bounds";
+        const text_single = "666      rpp -1 20 $ X-bounds        -15 15         -10 10 $    Z-bounds";
 
         const line_number = 10;
-        const position = 55;
-        var line = StringToMCNPLines(text_lines,line_number,position);
+        var line = StringToMCNPLines(text_lines,line_number);
 
         var statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(8);
-        expect(statement.InlineComments.length).to.equal(3);
+        expect(statement.InlineComments.length).to.equal(2);
         expect(statement.RawText).to.equal(text_single);
-        expect(statement.StartIndex).to.equal(position);
         
-        expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("-10");
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(61+position);
-        expect(statement.Arguments[statement.Arguments.length-3].Contents).to.equal("15");
-        expect(statement.Arguments[statement.Arguments.length-3].FilePosition).to.equal(41+position);	
+        // First-Line
+        // rpp
+        expect(statement.Arguments[1].Contents).to.equal("rpp");
+        expect(statement.Arguments[1].FilePosition.character).to.equal(9);
+        expect(statement.Arguments[1].FilePosition.line).to.equal(10);
+
+        // Second-Line
+        expect(statement.Arguments[5].Contents).to.equal("15");
+        expect(statement.Arguments[5].FilePosition.character).to.equal(12);
+        expect(statement.Arguments[5].FilePosition.line).to.equal(11);
+
+        // Third-Line
+        expect(statement.Arguments[6].Contents).to.equal("-10");
+        expect(statement.Arguments[6].FilePosition.character).to.equal(8);
+        expect(statement.Arguments[6].FilePosition.line).to.equal(12);        	
     });	
 
     it('GetLineType_EqualSign', () => 
@@ -149,28 +151,26 @@ describe('Statement', () =>
 
         const line_number = 10;
         const position = 55;
-        var line = StringToMCNPLines(text_equal,line_number,position);
+        var line = StringToMCNPLines(text_equal,line_number);
 
         var statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(8);
         expect(statement.InlineComments.length).to.equal(1);
         expect(statement.RawText).to.equal(text_equal);
-        expect(statement.StartIndex).to.equal(position);
         
         expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
         expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(21+position);
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(27+position);	
 
-        var line = StringToMCNPLines(text,line_number,position);
+        var line = StringToMCNPLines(text,line_number);
 
         var statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(8);
         expect(statement.InlineComments.length).to.equal(1);
         expect(statement.RawText).to.equal(text);
-        expect(statement.StartIndex).to.equal(position);
         
         expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
         expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(21+position);
