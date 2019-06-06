@@ -83,7 +83,7 @@ describe('Statement', () =>
         
         var arg_ex = new RegExp("TEXT",'g');
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text_tab1).index);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(5);
 
         ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -95,7 +95,7 @@ describe('Statement', () =>
         
         var arg_ex = new RegExp("TEXT",'g');
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text_tab2).index);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(9);
         
         ///////////////////////////////////////////////////////////////////////////////////////////
 
@@ -107,7 +107,7 @@ describe('Statement', () =>
         
         var arg_ex = new RegExp("TEXT",'g');
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(arg_ex.exec(text).index);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(5);
     });	
 
     it('Multiline_1', () => 
@@ -146,11 +146,10 @@ describe('Statement', () =>
 
     it('GetLineType_EqualSign', () => 
     {
-        const text_equal = "2  2 5.0  -2 3 100   imp:n=2 $ Half-Sphere"
-        const text =       "2  2 5.0  -2 3 100   imp:n 2 $ Half-Sphere"
+        const text_equal = "2  2 5.0  -2 3 100   imp:n= 2 $ Half-Sphere"
+        const text =       "2  2 5.0  -2 3 100   imp:n  2 $ Half-Sphere"
 
         const line_number = 10;
-        const position = 55;
         var line = StringToMCNPLines(text_equal,line_number);
 
         var statement = new st.Statement(line,null);
@@ -160,9 +159,9 @@ describe('Statement', () =>
         expect(statement.RawText).to.equal(text_equal);
         
         expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(21+position);
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(27+position);	
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);	
 
         var line = StringToMCNPLines(text,line_number);
 
@@ -173,8 +172,8 @@ describe('Statement', () =>
         expect(statement.RawText).to.equal(text);
         
         expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition).to.equal(21+position);
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition).to.equal(27+position);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
     });
 });
