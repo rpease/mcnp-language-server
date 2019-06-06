@@ -83,5 +83,15 @@ describe('Utilities', () =>
 		let test2 = "SI1";
 		let test3 = "FM314";
 		expect(1).to.equal(0);
-	});    
+	});
+	
+	it('ReplaceTabs', () => 
+	{		
+		// Strings that MCNP considers length 81
+		let length_81_1 = "1 RPP 1 2  -10 1  8   					                        8";
+		let length_81_2 = "1 RPP 1 2  -10 10  -8 							        8";
+		
+		// todo create a method that correctly replaces tabs with spaces. Tabs go to the next multiple of 7
+		expect(1).to.equal(0);
+	});  
 });
