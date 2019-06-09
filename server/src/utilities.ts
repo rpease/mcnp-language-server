@@ -39,3 +39,20 @@ export function GetCommentText(text: string): string
 		return comment_split[1].trim();		
 	return "";
 }
+
+export function ReplaceTabsInLine(line: string, tabBreak=7): string
+{
+	while(line.search('\t') != -1)
+	{
+		let tab_split = line.split('\t',1);
+
+		let spaces_to_add = tab_split[0].length % tabBreak;
+
+		for (let i = 0; i < spaces_to_add; i++) 
+		{
+			tab_split[0] += " ";
+		}
+		line = tab_split[0].concat(tab_split[1]);
+	}
+	return line
+}
