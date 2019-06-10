@@ -5,7 +5,7 @@ import * as regex from './regexpressions';
 import { MCNPLine, Statement } from './File/statement';
 import { IBlock } from './Block/block';
 import { utils } from 'mocha';
-import { GetCommentText } from './utilities';
+import { GetCommentText, ReplaceTabsInLine } from './utilities';
 import { CellBlock } from './Block/CellBlock';
 import { SurfaceBlock } from './Block/SurfaceBlock';
 import { DataBlock } from './Block/DataBlock';
@@ -28,11 +28,13 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 	for (let l = 0; l < lines.length; l++) 
 	{
 		console.log(l);
+
+		let line = ReplaceTabsInLine(lines[l]);
 		
 		// Create MCNPLine
 		let newLine = 
 		{
-			Contents: lines[l].replace('\r',''),
+			Contents: line.replace('\r',''),
 			LineNumber: l
 		}
 		
