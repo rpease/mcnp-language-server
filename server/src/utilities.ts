@@ -40,19 +40,24 @@ export function GetCommentText(text: string): string
 	return "";
 }
 
-export function ReplaceTabsInLine(line: string, tabBreak=7): string
+export function ReplaceTabsInLine(line: string, tabBreak=8): string
 {
-	while(line.search('\t') != -1)
+	let tab_split = line.split('\t');
+	let mcnp_string = '';
+
+	for (let i = 0; i < tab_split.length; i++) 
 	{
-		let tab_split = line.split('\t',1);
-
-		let spaces_to_add = tab_split[0].length % tabBreak;
-
-		for (let i = 0; i < spaces_to_add; i++) 
-		{
-			tab_split[0] += " ";
-		}
-		line = tab_split[0].concat(tab_split[1]);
+		const text = tab_split[i];
+		mcnp_string += text;
+		if(i < tab_split.length-1)
+		{		
+			let mod = text.length % tabBreak;
+			let n_spaces_to_add = tabBreak - mod;	
+			
+			for (let i = 0; i < n_spaces_to_add; i++) 
+				mcnp_string += " ";
+		}		
 	}
-	return line
+		
+	return mcnp_string
 }

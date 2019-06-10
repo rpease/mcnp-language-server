@@ -66,49 +66,7 @@ describe('Statement', () =>
             h += 1;
         });
     });
-
-    it('GetLineType_Tab', () => 
-    {
-        const text_tab1 = "2 PY	TEXT"
-        const text_tab2 = "2 PY		TEXT"
-        const text =      "2 PY TEXT"
-
-        const line_number = 10;
-
-        var line = StringToMCNPLines(text_tab1,line_number);
-        var statement = new st.Statement(line,null);
-
-        expect(statement.Arguments.length).to.equal(3);
-        expect(statement.RawText).to.equal(text_tab1);
         
-        var arg_ex = new RegExp("TEXT",'g');
-        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(5);
-
-        ///////////////////////////////////////////////////////////////////////////////////////////
-
-        line = StringToMCNPLines(text_tab2,line_number);
-        statement = new st.Statement(line,null);
-
-        expect(statement.Arguments.length).to.equal(3);
-        expect(statement.RawText).to.equal(text_tab2);
-        
-        var arg_ex = new RegExp("TEXT",'g');
-        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(9);
-        
-        ///////////////////////////////////////////////////////////////////////////////////////////
-
-        line = StringToMCNPLines(text,line_number);
-        statement = new st.Statement(line,null);
-
-        expect(statement.Arguments.length).to.equal(3);
-        expect(statement.RawText).to.equal(text);
-        
-        var arg_ex = new RegExp("TEXT",'g');
-        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("TEXT");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(5);
-    });	
 
     it('Multiline_1', () => 
     {

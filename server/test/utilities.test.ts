@@ -87,18 +87,18 @@ describe('Utilities', () =>
 
 	it('ReplaceTabs_Basic', () => 
 	{		
-		const tab_break = 7
-		for (let i = 0; i <= 8; i++) 
+		const tab_break = 8
+		for (let i = 0; i <= 17; i++) 
 		{
 			console.log(i)
 			let line = '';
-			for (let j = 0; j <= i; j++)
+			for (let j = 0; j < i; j++)
 				line += " ";				
 			line += "\t";
 
-			let expected_length = Math.ceil(i+1/tab_break)*7
+			let expected_length = Math.ceil((i+1)/tab_break)*tab_break
 			
-			expect(utilities.ReplaceTabsInLine(line).length).to.be.equal(expected_length);
+			expect(utilities.ReplaceTabsInLine(line, tab_break).length).to.be.equal(expected_length);
 		}		
 	});
 	
@@ -107,10 +107,12 @@ describe('Utilities', () =>
 		// Strings that MCNP considers length 81
 		let length_81_1 = "1 RPP 1 2  -10 1  8   					                        8";
 		let length_81_2 = "1 RPP 1 2  -10 10  -8 							        8";
+		let length_81_3 = "1 RPP 1 2  -10 							                8";
 		
 		let new_line = utilities.ReplaceTabsInLine(length_81_1);
 
 		expect(utilities.ReplaceTabsInLine(length_81_1).length).to.equal(81);
 		expect(utilities.ReplaceTabsInLine(length_81_2).length).to.equal(81);
+		expect(utilities.ReplaceTabsInLine(length_81_3).length).to.equal(81);
 	});  
 });
