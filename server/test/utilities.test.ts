@@ -84,6 +84,23 @@ describe('Utilities', () =>
 		let test3 = "FM314";
 		expect(1).to.equal(0);
 	});
+
+	it('ReplaceTabs_Basic', () => 
+	{		
+		const tab_break = 7
+		for (let i = 0; i <= 8; i++) 
+		{
+			console.log(i)
+			let line = '';
+			for (let j = 0; j <= i; j++)
+				line += " ";				
+			line += "\t";
+
+			let expected_length = Math.ceil(i+1/tab_break)*7
+			
+			expect(utilities.ReplaceTabsInLine(line).length).to.be.equal(expected_length);
+		}		
+	});
 	
 	it('ReplaceTabs', () => 
 	{		
@@ -91,7 +108,9 @@ describe('Utilities', () =>
 		let length_81_1 = "1 RPP 1 2  -10 1  8   					                        8";
 		let length_81_2 = "1 RPP 1 2  -10 10  -8 							        8";
 		
-		// todo create a method that correctly replaces tabs with spaces. Tabs go to the next multiple of 7
-		expect(1).to.equal(0);
+		let new_line = utilities.ReplaceTabsInLine(length_81_1);
+
+		expect(utilities.ReplaceTabsInLine(length_81_1).length).to.equal(81);
+		expect(utilities.ReplaceTabsInLine(length_81_2).length).to.equal(81);
 	});  
 });
