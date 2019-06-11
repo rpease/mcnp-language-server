@@ -2,6 +2,15 @@ import { expect } from 'chai';
 import * as utilities from '../src/utilities';
 import { Particle } from '../src/enumerations';
 
+
+function CompareArrays(array1, array2): void
+{
+	expect(array1.length).to.be.equal(array2.length)
+
+	for (let index = 0; index < array1.length; index++) 	
+		expect(array1[index]).to.be.equal(array2[index])
+}
+
 describe('Utilities', () => 
 {
 	it('GetParticleFromChar_npe', () => 
@@ -80,9 +89,14 @@ describe('Utilities', () =>
 	it('SplitStringNumberCombo_Standard', () => 
 	{		
 		let test1 = "M4";
-		let test2 = "SI1";
-		let test3 = "FM314";
-		expect(1).to.equal(0);
+		let test2 = "si100";
+		let test3 = "*Fm314";
+		let test4 = "+F15a";
+		
+		CompareArrays(utilities.SplitStringNumberCombo(test1),["M",4, ""]);
+		CompareArrays(utilities.SplitStringNumberCombo(test2),["si",100, ""]);
+		CompareArrays(utilities.SplitStringNumberCombo(test3),["Fm",314, "*"]);
+		CompareArrays(utilities.SplitStringNumberCombo(test4),["F",15, "+"]);
 	});
 
 	it('ReplaceTabs_Basic', () => 

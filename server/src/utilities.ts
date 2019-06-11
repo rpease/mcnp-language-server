@@ -2,10 +2,11 @@ import { Particle } from "./enumerations";
 import { ParameterInformation } from "vscode-languageserver";
 import { FULL_LINE_COMMENT_MATCH } from './regexpressions';
 
-export function SplitStringNumberCombo(text: String): [string, string, number]
+export function SplitStringNumberCombo(text: String): [string, number, string]
 {
-	var matches = text.match("(+|*|)([a-zA-Z]+)([0-9]+)");
-	return [matches[0], matches[1], parseFloat(matches[2])]
+	var matches = text.match("^([\\*!+\\-#]?)([a-zA-Z]+)([0-9]+)");
+	
+	return [matches[2], parseFloat(matches[3]), matches[1]]
 }
 
 export function SplitParticleCombo(text: String): [string,Particle]
