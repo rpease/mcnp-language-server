@@ -9,3 +9,19 @@ The project currently has client support for [Visual Studio Code](https://code.v
 ## Features
 
 - synatx highlighting
+
+## Installation
+
+- Edit VS Code User Settings
+* For proper functionality and highlighting, your user settings will have to be edited.
+	1. Open Settings
+		* __Ctrl__+__,__
+		or
+		* File -> Preferences -> Settings
+	2. Open User settings.json
+		* In upper right corner of settings menu, click the __Open Settings (JSON)__ button
+	3. Add the below settings
+		"editor.detectIndentation": false,
+		"[mcnp]": {
+			"editor.tabSize":8
+		}
