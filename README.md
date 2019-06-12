@@ -21,7 +21,7 @@ The project currently has client support for [Visual Studio Code](https://code.v
 	2. Open User settings.json
 		* In upper right corner of settings menu, click the __Open Settings (JSON)__ button
 	3. Add the below settings
-		"editor.detectIndentation": false,
 		"[mcnp]": {
+			"editor.detectIndentation": false,
 			"editor.tabSize":8
 		}
