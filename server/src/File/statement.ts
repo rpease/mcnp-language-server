@@ -27,6 +27,8 @@ export class Statement
 
 	private Errors: Diagnostic[] = [];
 
+	private LINE_TOO_LONG_LIMIT = 80;
+
 	constructor(text: Array<MCNPLine>,header: MCNPLine)
 	{
 		this.HeaderComment = header;
@@ -59,6 +61,10 @@ export class Statement
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
 		var mcnp_arg_re = new RegExp(ARGUMENT,'g');		
 			
+		let line_too_long_start_index = -1;
+		let line_too_long_end_index = -1;
+		let line_too_long_end_verbose_index = -1;
+
 		var m;
 		var v;
 		do
@@ -80,41 +86,49 @@ export class Statement
 
 			this.Arguments.push(arg);
 
-			if(m.index+arg.Contents.length > 80)			
-				this.CreateLineTooLongError(arg);			
+			if(m.index+arg.Contents.length > this.LINE_TOO_LONG_LIMIT)
+			{
+				if(line_too_long_start_index == -1)
+				{
+					line_too_long_start_index = arg.FilePosition.character;
+					let i = arg.FilePosition.mcnp_character;
+					for(var char of arg.Contents)
+					{
+						if(i >= this.LINE_TOO_LONG_LIMIT)
+							break
+						
+						line_too_long_start_index += 1;
+						i += 1;
+					}
+				}
+				line_too_long_end_index = arg.FilePosition.character + arg.Contents.length; 	
+				line_too_long_end_verbose_index = arg.FilePosition.mcnp_character + arg.Contents.length;		
+			}			
 
 		} while (v);
+
+		if(line_too_long_start_index != -1)
+			this.CreateLineTooLongError(arg.FilePosition.line, 
+				line_too_long_start_index, 
+				line_too_long_end_index, 
+				line_too_long_end_verbose_index);	
 	}
 
-	private CreateLineTooLongError(arg: Argument, limit: number = 80)
+	private CreateLineTooLongError(line_num:number, start: number, end: number, verbose_end: number)
 	{
-		var start_vs_index = arg.FilePosition.character;
-		let m = arg.FilePosition.mcnp_character;
-		for(var char of arg.Contents)
-		{
-			if(m >= limit)
-				break
-			
-			start_vs_index += 1;
-			m += 1;
-		}
-
-		var end_index = arg.FilePosition.character + arg.Contents.length;
-		var end_index_verbose = arg.FilePosition.mcnp_character + arg.Contents.length;
-
-		let diagnostic: Diagnostic = {
+			let diagnostic: Diagnostic = {
 			severity: DiagnosticSeverity.Error,
 			range: {
 				start: {
-					line: arg.FilePosition.line,
-					character: start_vs_index
+					line: line_num,
+					character: start
 				},
 				end: {
-					line: arg.FilePosition.line,
-					character: end_index
+					line: line_num,
+					character: end
 				}
 			},
-			message: `Line too long for MCNP ( ${end_index_verbose} > ${limit} )`,
+			message: `Line too long for MCNP ( ${verbose_end} > ${this.LINE_TOO_LONG_LIMIT} )`,
 			source: 'MCNP'
 		};
 		this.Errors.push(diagnostic);

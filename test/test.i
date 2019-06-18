@@ -27,7 +27,7 @@ c
 c Doesn't Crash
 4 RPP 1 2  -10 							               8
 c Line too Long (over 80)
-5 RPP 1 2  -10 							               88 70
+5 RPP 1 2  -10 							               88 70 5R10 $ not in the error
                    
 c --------------- Data Cards -----------------------------------------------
 NPS 10
