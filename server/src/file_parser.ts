@@ -27,14 +27,10 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 	let current_statement = Array<MCNPLine>();
 	for (let l = 0; l < lines.length; l++) 
 	{
-		console.log(l);
-
-		let line = ReplaceTabsInLine(lines[l]);
-		
 		// Create MCNPLine
 		let newLine = 
 		{
-			Contents: line.replace('\r',''),
+			Contents: lines[l].replace('\r',''),
 			LineNumber: l
 		}
 		

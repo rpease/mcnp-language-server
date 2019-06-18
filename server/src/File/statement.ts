@@ -1,6 +1,7 @@
 import { Argument } from './argument';
 import { ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
+import { ReplaceTabsInLine } from '../utilities';
 
 export class MCNPLine
 {
@@ -33,7 +34,6 @@ export class Statement
 
 		text.forEach(line => 
 		{
-			console.log(line)
 			this.RawText += line.Contents;
 			this.AppendArguments(line)
 		});
@@ -45,45 +45,59 @@ export class Statement
 		
 		if(comment_split.length > 1)		
 			this.InlineComments.push(comment_split[1].trim());
-			
-		if(comment_split[0].length > 80)
-			this.CreateLineTooLongError(line.LineNumber,comment_split[0].length)
 
 		// Replace all '=' with a space since they are equivalent
-		comment_split[0] = comment_split[0].replace('=',' ');
+		var vs_code_interp = comment_split[0].replace('=',' ');	
 
-		var arg_ex = new RegExp(ARGUMENT,'g')
+		var mcnp_interp = vs_code_interp;
+		if(vs_code_interp.includes('\t'))		
+			mcnp_interp = ReplaceTabsInLine(vs_code_interp);
 
-		let m: RegExpExecArray | null;
-		while (m = arg_ex.exec(comment_split[0]))
+		var vs_arg_re = new RegExp(ARGUMENT,'g');
+		var mcnp_arg_re = new RegExp(ARGUMENT,'g');		
+			
+		var m;
+		var v;
+		do
 		{
+			v = vs_arg_re.exec(vs_code_interp);
+			m = mcnp_arg_re.exec(mcnp_interp);
+
+			if (m == null)
+				break;
+
 			var arg = new Argument();
-			arg.Contents = m[0];
+			arg.Contents = v[0];
 			arg.FilePosition = 
 			{
 				line: line.LineNumber,
-				character: m.index
+				character: v.index,
+				mcnp_character: m.index
 			}
 
 			this.Arguments.push(arg);
-		}
+
+			if(m.index+m.length > 80)			
+				this.CreateLineTooLongError(arg);			
+
+		} while (v);
 	}
 
-	private CreateLineTooLongError(lineNum: number, end: number, limit: number = 80)
+	private CreateLineTooLongError(arg: Argument, limit: number = 80)
 	{
 		let diagnostic: Diagnostic = {
-			severity: DiagnosticSeverity.Warning,
+			severity: DiagnosticSeverity.Error,
 			range: {
 				start: {
-					line: lineNum,
-					character: limit-1
+					line: arg.FilePosition.line,
+					character: Math.max(limit, arg.FilePosition.character)
 				},
 				end: {
-					line: lineNum,
-					character: end
+					line: arg.FilePosition.line,
+					character: arg.FilePosition.character + arg.Contents.length
 				}
 			},
-			message: `MCNP will ignore this because the line because it is over ${limit} characters deep`,
+			message: `MCNP will ignore this because it is over ${limit} characters deep`,
 			source: 'MCNP'
 		};
 		this.Errors.push(diagnostic);
