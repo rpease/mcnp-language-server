@@ -23,6 +23,11 @@ C Graveyard
 666      rpp -1 20 $ X-bounds
      -15 15 $Y-bounds
 	 -10 10 $    Z-bounds
+c
+c Doesn't Crash
+4 RPP 1 2  -10 							               8
+c Line too Long (over 80)
+5 RPP 1 2  -10 							               88 70
                    
 c --------------- Data Cards -----------------------------------------------
 NPS 10
@@ -49,4 +54,3 @@ c	Paraffin
 c 	Density = 0.930
   m2	1001 -0.148605
 		6000 -0.851395
-	
