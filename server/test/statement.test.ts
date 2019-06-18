@@ -39,6 +39,7 @@ describe('Statement', () =>
         {
             expect(arg.FilePosition.line).to.equal(line_number)
             expect(arg.FilePosition.character).to.equal(expected_position)
+            expect(arg.FilePosition.mcnp_character).to.equal(expected_position)
             expected_position += 2;
         });	
         
@@ -50,6 +51,7 @@ describe('Statement', () =>
         {
             expect(arg.FilePosition.line).to.equal(line_number)
             expect(arg.FilePosition.character).to.equal(expected_position)
+            expect(arg.FilePosition.mcnp_character).to.equal(expected_position)
             expected_position += 2;
         });
         
@@ -62,13 +64,13 @@ describe('Statement', () =>
         {
             expect(arg.FilePosition.line).to.equal(line_number)
             expect(arg.FilePosition.character).to.equal(expected_position)
+            expect(arg.FilePosition.mcnp_character).to.equal(expected_position)
             expected_position += h;
             h += 1;
         });
-    });
-        
+    });        
 
-    it('Multiline_1', () => 
+    it('Multiline', () => 
     {
         const text_lines = `666      rpp -1 20 $ X-bounds
         -15 15 
@@ -89,16 +91,19 @@ describe('Statement', () =>
         // rpp
         expect(statement.Arguments[1].Contents).to.equal("rpp");
         expect(statement.Arguments[1].FilePosition.character).to.equal(9);
+        expect(statement.Arguments[1].FilePosition.mcnp_character).to.equal(9);
         expect(statement.Arguments[1].FilePosition.line).to.equal(10);
 
         // Second-Line
         expect(statement.Arguments[5].Contents).to.equal("15");
         expect(statement.Arguments[5].FilePosition.character).to.equal(12);
+        expect(statement.Arguments[5].FilePosition.mcnp_character).to.equal(12);
         expect(statement.Arguments[5].FilePosition.line).to.equal(11);
 
         // Third-Line
         expect(statement.Arguments[6].Contents).to.equal("-10");
         expect(statement.Arguments[6].FilePosition.character).to.equal(8);
+        expect(statement.Arguments[6].FilePosition.mcnp_character).to.equal(8);
         expect(statement.Arguments[6].FilePosition.line).to.equal(12);        	
     });	
 
@@ -118,8 +123,10 @@ describe('Statement', () =>
         
         expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
         expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.mcnp_character).to.equal(21);
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);	
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);		
 
         var line = StringToMCNPLines(text,line_number);
 
@@ -131,7 +138,19 @@ describe('Statement', () =>
         
         expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
         expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.mcnp_character).to.equal(21);
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);
+    });
+
+    it('Tabs', () =>
+    {
+        expect(true).to.be.false;
+    });
+
+    it('Line_Too_Long_Error', () =>
+    {
+        expect(true).to.be.false;
     });
 });
