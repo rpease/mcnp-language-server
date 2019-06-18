@@ -49,6 +49,9 @@ export class Statement
 		// Replace all '=' with a space since they are equivalent
 		var vs_code_interp = comment_split[0].replace('=',' ');	
 
+		// MCNP always considers tabs to go to stops every 8 spaces.
+		// VS Code allows users to control what they actually see and use when working, however.
+		// Because of this the VS code interpretation and MCNP interpretation must both be considered
 		var mcnp_interp = vs_code_interp;
 		if(vs_code_interp.includes('\t'))		
 			mcnp_interp = ReplaceTabsInLine(vs_code_interp);
@@ -77,7 +80,7 @@ export class Statement
 
 			this.Arguments.push(arg);
 
-			if(m.index+m.length > 80)			
+			if(m.index+arg.Contents.length > 80)			
 				this.CreateLineTooLongError(arg);			
 
 		} while (v);
@@ -85,19 +88,33 @@ export class Statement
 
 	private CreateLineTooLongError(arg: Argument, limit: number = 80)
 	{
+		var start_vs_index = arg.FilePosition.character;
+		let m = arg.FilePosition.mcnp_character;
+		for(var char of arg.Contents)
+		{
+			if(m >= limit)
+				break
+			
+			start_vs_index += 1;
+			m += 1;
+		}
+
+		var end_index = arg.FilePosition.character + arg.Contents.length;
+		var end_index_verbose = arg.FilePosition.mcnp_character + arg.Contents.length;
+
 		let diagnostic: Diagnostic = {
 			severity: DiagnosticSeverity.Error,
 			range: {
 				start: {
 					line: arg.FilePosition.line,
-					character: Math.max(limit, arg.FilePosition.character)
+					character: start_vs_index
 				},
 				end: {
 					line: arg.FilePosition.line,
-					character: arg.FilePosition.character + arg.Contents.length
+					character: end_index
 				}
 			},
-			message: `MCNP will ignore this because it is over ${limit} characters deep`,
+			message: `Line too long for MCNP ( ${end_index_verbose} > ${limit} )`,
 			source: 'MCNP'
 		};
 		this.Errors.push(diagnostic);
