@@ -48,8 +48,7 @@
 		{
 			"patterns": 
 			[
-                {					
-					"name":"markup.italic",
+                {		
 					"begin": "^",
 					"end": "\n",					
 					"contentName": "entity.statement.extension.mcnp",
