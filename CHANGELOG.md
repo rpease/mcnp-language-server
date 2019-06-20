@@ -1,3 +1,14 @@
+# [0.0.7] (2019-6-19)
+
+## Features
+- **Line Too Long Error** Lines that are over 80 characters long are now flagged as an error
+
+## Bug Fixes
+- **Grammar Updates** Minor coloring and fixes for some cards
+
+## Known Bugs
+- **Title Card Highlighting** Currently the Title Card has not been isolated and will be colored based on other card definitons
+
 # [0.0.6] (2019-5-27)
 
 ## Features

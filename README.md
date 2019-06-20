@@ -9,11 +9,12 @@ The project currently has client support for [Visual Studio Code](https://code.v
 ## Features
 
 - synatx highlighting
+- minor error highlighting
 
 ## Installation
 
 - Edit VS Code User Settings
-* For proper functionality and highlighting, your user settings will have to be edited.
+* For 1-to-1 MCNP comparisons, your user settings will have to be edited.
 	1. Open Settings
 		* __Ctrl__+__,__
 		or
