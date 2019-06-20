@@ -129,4 +129,10 @@ describe('Utilities', () =>
 		expect(utilities.ReplaceTabsInLine(length_81_2).length).to.equal(81);
 		expect(utilities.ReplaceTabsInLine(length_81_3).length).to.equal(81);
 	});  
+
+	it('CaseInsensitiveCompare', () => 
+	{				
+		expect(true).to.be.false;
+	});  
+
 });

@@ -62,3 +62,8 @@ export function ReplaceTabsInLine(line: string, tabBreak=8): string
 		
 	return mcnp_string
 }
+
+export function CaseInsensitiveCompare(a: string, b: string): boolean
+{
+	return a.toLowerCase() === b.toLowerCase();
+}
