@@ -9,3 +9,20 @@ The project currently has client support for [Visual Studio Code](https://code.v
 ## Features
 
 - synatx highlighting
+- minor error highlighting
+
+## Installation
+
+- Edit VS Code User Settings
+* For 1-to-1 MCNP comparisons, your user settings will have to be edited.
+	1. Open Settings
+		* __Ctrl__+__,__
+		or
+		* File -> Preferences -> Settings
+	2. Open User settings.json
+		* In upper right corner of settings menu, click the __Open Settings (JSON)__ button
+	3. Add the below settings
+		"[mcnp]": {
+			"editor.detectIndentation": false,
+			"editor.tabSize":8
+		}

@@ -1,9 +1,11 @@
 out
 node_modules
+client\node_modules\**
 client/server
 .vscode-test
 /.vs/slnx.sqlite
 /.vs/slnx.sqlite-journal
-.vs/mcnp-language-server/v15/.suo
 .vs/VSWorkspaceState.json
 *.vsix
+.vs/ProjectSettings.json
+*.suo

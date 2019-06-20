@@ -48,8 +48,7 @@
 		{
 			"patterns": 
 			[
-                {					
-					"name":"markup.italic",
+                {		
 					"begin": "^",
 					"end": "\n",					
 					"contentName": "entity.statement.extension.mcnp",
@@ -66,7 +65,7 @@
 			"patterns": 
 			[
                 {	
-					"begin": "^ {0,4}(\\d+)\\s+(\\d+\\s+)?([[:alpha:]]\\S+)",
+					"begin": "^ {0,4}[*]?(\\d+)\\s+(\\d+\\s+)?([[:alpha:]]\\S+)",
 					"end": "\n",							
 					"contentName": "entity.line.surface.mcnp",					
 					"captures":
