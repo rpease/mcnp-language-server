@@ -146,11 +146,51 @@ describe('Statement', () =>
 
     it('Tabs', () =>
     {
-        expect(true).to.be.false;
+        // Strings that MCNP considers length 81
+		let length_81_1 = "1 RPP 1 2  -10 1  8   					                        8";
+		let length_81_2 = "1 RPP 1 2  -10 10  -8 							        856";
+        let length_81_3 = "1 RPP 1 2  -10 							                8";
+        
+        var statement = new st.Statement(StringToMCNPLines(length_81_1), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(80);
+        statement = new st.Statement(StringToMCNPLines(length_81_2), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(80);
+        statement = new st.Statement(StringToMCNPLines(length_81_3), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(80);
     });
 
     it('Line_Too_Long_Error', () =>
     {
-        expect(true).to.be.false;
+        // Strings that MCNP considers length 81
+		let tabs1 = "1 RPP 1 2  -10 1  8   					                        8";
+		let tabs2 = "1 RPP 1 2  -10 1  8   					                         8";
+        let tabs3 = "1 RPP 1 2  -10 							                856";
+        let spaces1 = "1 RPP 1 2  -10 1  8                                                             8";
+        let good_length1 = "1 RPP 1 2  -10 1  8   					                       8";
+        let good_length2 = "1 RPP 1 2  -10 1  8                                                            8";
+        
+        var statement = new st.Statement(StringToMCNPLines(tabs1), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(80);
+        expect(statement.GetDiagnostics().length).to.equal(1);
+
+        statement = new st.Statement(StringToMCNPLines(tabs2), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(81);
+        expect(statement.GetDiagnostics().length).to.equal(1);
+
+        statement = new st.Statement(StringToMCNPLines(tabs3), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(80);
+        expect(statement.GetDiagnostics().length).to.equal(1);
+
+        statement = new st.Statement(StringToMCNPLines(spaces1), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(80);
+        expect(statement.GetDiagnostics().length).to.equal(1);
+
+        statement = new st.Statement(StringToMCNPLines(good_length1), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(79);
+        expect(statement.GetDiagnostics().length).to.equal(0);
+
+        statement = new st.Statement(StringToMCNPLines(good_length2), null)
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(79);
+        expect(statement.GetDiagnostics().length).to.equal(0);
     });
 });
