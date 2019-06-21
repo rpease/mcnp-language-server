@@ -4,7 +4,7 @@
 	"description": "Language Server to aid with MCNP input file developement",
 	"author": "Ryan Pease",
 	"license": "MIT",
-	"version": "0.0.7",
+	"version": "0.0.8",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/rpease/mcnp-language-server"
@@ -78,7 +78,8 @@
 		"watch": "tsc -b -w",
 		"postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
 		"test": "mocha --require node_modules/ts-node/register server/test/**/*.ts",
-		"package": "vsce package"
+		"prepackage": "git clean -xfd node_modules && npm install && npm audit fix && npm run compile",
+		"package": "npm run prepackage && vsce package"
 	},
 	"devDependencies": {
 		"@types/chai": "^4.1.7",
@@ -92,6 +93,7 @@
 		"chai": "^4.2.0",
 		"mocha": "^6.1.4",
 		"vsce": "^1.59.0",
+		"vscode-languageserver": "^5.2.1",
 		"webpack": "^4.30.0"
 	}
 }
