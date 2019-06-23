@@ -8,6 +8,11 @@ contributing.md
 .travis.yml
 client/node_modules/**
 server/node_modules/**
+!server/node_modules/vscode-languageserver/**
+!server/node_modules/vscode-uri/**
+!server/node_modules/vscode-languageserver-protocol/**
+!server/node_modules/vscode-jsonrpc/**
+!server/node_modules/vscode-languageserver-types
 test/**
 !client/node_modules/vscode-jsonrpc/**
 !client/node_modules/vscode-languageclient/**
