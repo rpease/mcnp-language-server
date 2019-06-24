@@ -63,7 +63,21 @@ export function ReplaceTabsInLine(line: string, tabBreak=8): string
 	return mcnp_string
 }
 
+// Compares two strings without considering case. MCNP is case-insensitive
 export function CaseInsensitiveCompare(a: string, b: string): boolean
 {
 	return a.toLowerCase() === b.toLowerCase();
+}
+
+// Only parses pure Integer values (i.e. 1 not 1.0). MCNP is picky and expects pure integers for certain
+// things such as surface IDs and Tally numbers. Returns NaN if the provided string is not a Pure Integer.
+export function ParseOnlyInt(s: string): number
+{
+	return 0.0;
+}
+
+// Converts MCNP shorthand features (nr, ni, nilog, nm, nj) to their actual values.
+export function ConvertShorthandFeature(s: string): Array<number>
+{
+	return new Array<number>();
 }

@@ -132,7 +132,96 @@ describe('Utilities', () =>
 
 	it('CaseInsensitiveCompare', () => 
 	{				
+		let original = "1RpP"
+		expect(utilities.CaseInsensitiveCompare(original,"1rpp")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1Rpp")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1rpP")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1rPp")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,original)).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1RPP")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1Rppp")).to.be.false;
+	}); 
+	
+	it('ParseOnlyInt_Integers', () => 
+	{				
+		for (let index = -100; index < 100; index++) 		
+			expect(utilities.ParseOnlyInt(index.toString())).to.be.equal(index);	
+	});
+
+	it('ParseOnlyInt_Doubles', () => 
+	{				
+		for (let i = -100; i < 100; i++)
+		{			
+			for (let j = 0; j < 10; j++)
+			{
+				let string_base = i.toString();
+				string_base += "." + j.toString();
+				expect(utilities.ParseOnlyInt(string_base)).to.be.equal(NaN);
+			} 	
+		}		
+	});
+	
+	it('ParseOnlyInt_Scientific', () => 
+	{				
+		for (let i = -100; i < 100; i++)
+		{
+			let string_base = i.toString();
+			for (let j = 0; j < 10; j++)
+			{
+				for (let e = -2; e < 3; e++)
+				{
+					let string_base = i.toString();
+					string_base += "." + j.toString();
+					string_base += "E" + e.toString();					
+					expect(utilities.ParseOnlyInt(string_base)).to.be.equal(NaN);
+				}				
+			} 	
+		}		
+	});
+
+	it('ConvertShorthandFeature_Repeat', () => 
+	{				
+		// ex.) 2 5r
 		expect(true).to.be.false;
-	});  
+	});
+
+	it('ConvertShorthandFeature_LinearInterp', () => 
+	{				
+		// ex.) 1 2i 4
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_LogInterp', () => 
+	{				
+		// ex.) .01 2ilog 10
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_Multiply', () => 
+	{				
+		// ex.) 1 3m 3m 3m
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_Jump', () => 
+	{				
+		// ex.) 2J 1e-10
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_Combinations', () => 
+	{				
+		// ex.) 1 3m 2r = 1 3 3 3
+		// ex.) 1 3m i 5 = 1 3 4 5
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_BadCombinations', () => 
+	{				
+		// ex.) 3j 4r
+		// ex.) 1 4i 3m
+		// ex.) 1 3i j
+		expect(true).to.be.false;
+	});
 
 });
