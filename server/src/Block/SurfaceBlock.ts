@@ -46,14 +46,11 @@ export class SurfaceBlock implements IBlock
 	private GetModifierType(args: Array<Argument>): SurfaceModifier
 	{
 		const first_char = args[0].Contents.charAt(0);
+
 		if(first_char == '*')
 			return SurfaceModifier.Reflective;
 		if(first_char == '+')
-			return SurfaceModifier.WhiteBoundary;
-		if(first_char.match(regex.NUMBER).length == 0)
-			// todo if first character is anything but [a-zA-Z] throw an error
-			return null;			
-			
+			return SurfaceModifier.WhiteBoundary;			
 		return null;
 	}
 
@@ -62,7 +59,7 @@ export class SurfaceBlock implements IBlock
 		var id_string = args[0].Contents;
 		if(modfier)		
 			id_string = args[0].Contents.substring(1)
-			
+
 		if( id_string.match('[.eE+-]').length > 0)
 		{
 			// todo throw error because only pure ints are allowed
@@ -73,6 +70,11 @@ export class SurfaceBlock implements IBlock
 		var max_num = 99999;
 		if(transform)
 			max_num = 999;
+
+		if(id == NaN)
+		{
+			// todo throw error because the ID is not a number
+		}
 
 		if(id < 0 || id > max_num)
 		{
