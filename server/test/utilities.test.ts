@@ -238,7 +238,26 @@ describe('Utilities', () =>
 
 	it('ConvertShorthandFeature_LinearInterp', () => 
 	{				
-		// ex.) 1 2i 4
+		// 1 2i 4 = 1 2 3 4
+
+		// 1 2 i 4 = 1 2 3 4
+
+		// 2 5i 4 = 2 2.33 2.66 3 3.33 3.66 4
+
+		// 2 5i 100 = 2 18.33 34.66 51 67.33 83.66 100
+
+		// 2 5 i 30 = 2 5 17.5 30
+
+		// 2 5 1i 30 = 2 5 17.5 30
+		
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_LinearInterp_Bad', () => 
+	{		
+		// 2 5 0i 30 = 2 5 30
+
+		// 2 5 -1i 30 = 2 5 30
 		expect(true).to.be.false;
 	});
 
