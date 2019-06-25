@@ -156,7 +156,7 @@ describe('Utilities', () =>
 			{
 				let string_base = i.toString();
 				string_base += "." + j.toString();
-				expect(utilities.ParseOnlyInt(string_base)).to.be.equal(NaN);
+				expect(utilities.ParseOnlyInt(string_base)).to.be.NaN;
 			} 	
 		}		
 	});
@@ -173,7 +173,7 @@ describe('Utilities', () =>
 					let string_base = i.toString();
 					string_base += "." + j.toString();
 					string_base += "E" + e.toString();					
-					expect(utilities.ParseOnlyInt(string_base)).to.be.equal(NaN);
+					expect(utilities.ParseOnlyInt(string_base)).to.be.NaN;
 				}				
 			} 	
 		}		

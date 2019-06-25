@@ -73,7 +73,9 @@ export function CaseInsensitiveCompare(a: string, b: string): boolean
 // things such as surface IDs and Tally numbers. Returns NaN if the provided string is not a Pure Integer.
 export function ParseOnlyInt(s: string): number
 {
-	return 0.0;
+	if(s.match('[\.e\+]'))
+		return NaN;
+	return parseInt(s)
 }
 
 // Converts MCNP shorthand features (nr, ni, nilog, nm, nj) to their actual values.
