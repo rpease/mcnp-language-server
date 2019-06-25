@@ -79,7 +79,18 @@ export function ParseOnlyInt(s: string): number
 }
 
 // Converts MCNP shorthand features (nr, ni, nilog, nm, nj) to their actual values.
-export function ConvertShorthandFeature(s: string): Array<number>
+// Provided string much encapsulate everything the shorthand needs or be an array of it's required components including
+// the mnemonic
+export function ConvertShorthandFeature(s: string | Array<string> ): Array<number>
 {
+	// First split string by spaces
+	if(typeof s === "string")
+	{
+
+	}
+
+	// todo 
+
+
 	return new Array<number>();
 }

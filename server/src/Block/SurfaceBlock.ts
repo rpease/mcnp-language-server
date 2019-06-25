@@ -17,6 +17,7 @@ export class SurfaceBlock implements IBlock
 	Errors: Diagnostic[];
 	Cards = Array<Surface>();
 	
+	// Parses the MCNP Statement, creates the proper surface, and adds it to the Block
 	ParseStatement(statement: Statement)
 	{
 		const args = statement.Arguments;
@@ -43,6 +44,7 @@ export class SurfaceBlock implements IBlock
 		let parameters = this.GetParameters(args, has_modifier)	
 	}
 
+	// Gets the modfier for the surface, if any.
 	private GetModifierType(args: Array<Argument>): SurfaceModifier
 	{
 		const first_char = args[0].Contents.charAt(0);
@@ -54,6 +56,7 @@ export class SurfaceBlock implements IBlock
 		return null;
 	}
 
+	// Returns the integer ID number of the surface.
 	private GetIDNumber(args: Array<Argument>, modfier: boolean, transform: boolean): number
 	{
 		var id_string = args[0].Contents;

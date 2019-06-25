@@ -180,9 +180,60 @@ describe('Utilities', () =>
 	});
 
 	it('ConvertShorthandFeature_Repeat', () => 
-	{				
-		// ex.) 2 5r
-		expect(true).to.be.false;
+	{			
+		let expected = [2,2,2,2,2,2];
+
+		let string_input = [];
+		string_input.push('2 5r');
+		string_input.push('2 5R');
+		string_input.push('2 5 r');
+		string_input.push('2 5 r ');
+		string_input.push(' 2  5   R ');
+
+		let array_input = [];
+		array_input.push('2','5','r');
+		array_input.push('2','5','R');
+
+		string_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+		});
+
+		array_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+		});
+	});
+
+	// MCNP Ignores bad inputs and will just completely skip over the shorthand
+	it('ConvertShorthandFeature_Repeat_Bad', () => 
+	{			
+		let expected = [2];
+
+		let string_input = [];
+		string_input.push('2 0r');
+		string_input.push('2 0R');
+		string_input.push('2 0 R');
+		string_input.push('2 -1 R');
+		string_input.push('2 -3 R');
+
+		let array_input = [];
+		array_input.push('2','0','r');
+		array_input.push('2','-1','R');
+
+		string_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+		});
+
+		array_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+		});
 	});
 
 	it('ConvertShorthandFeature_LinearInterp', () => 
