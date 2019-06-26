@@ -186,13 +186,66 @@ describe('Utilities', () =>
 		let string_input = [];
 		string_input.push('2 5r');
 		string_input.push('2 5R');
+		string_input.push('2  5R ');
+		string_input.push(' 2   5R  ');
+		
+		let array_input = [];
+		array_input.push('2','5r');
+		array_input.push('2','5R');
+
+		string_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+		});
+
+		array_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+		});
+	});
+
+	it('ConvertShorthandFeature_Repeat_Space', () => 
+	{			
+		let expected = [2,5,5];
+
+		let string_input = [];		
 		string_input.push('2 5 r');
 		string_input.push('2 5 r ');
 		string_input.push(' 2  5   R ');
 
 		let array_input = [];
-		array_input.push('2','5','r');
-		array_input.push('2','5','R');
+		array_input.push('5','r');
+		array_input.push('5','R');
+
+		string_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element), expected)).to.be.true;
+		});
+
+		array_input.forEach(element => 
+		{
+			console.log(element);
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element), expected)).to.be.true;
+		});
+	});
+
+	// MCNP Ignores bad inputs and will just completely skip over the shorthand
+	it('ConvertShorthandFeature_Repeat_Ignore', () => 
+	{			
+		let expected = [2];
+
+		let string_input = [];
+		string_input.push('2 0r');
+		string_input.push('2 0R');
+		string_input.push('2 -1R');
+		string_input.push('2 -3R');
+
+		let array_input = [];
+		array_input.push('2','0r');
+		array_input.push('2','-1R');
 
 		string_input.forEach(element => 
 		{
@@ -210,35 +263,26 @@ describe('Utilities', () =>
 	// MCNP Ignores bad inputs and will just completely skip over the shorthand
 	it('ConvertShorthandFeature_Repeat_Bad', () => 
 	{			
-		let expected = [2];
+		// 1 2.0r = 
 
-		let string_input = [];
-		string_input.push('2 0r');
-		string_input.push('2 0R');
-		string_input.push('2 0 R');
-		string_input.push('2 -1 R');
-		string_input.push('2 -3 R');
+		// 1 2.1r = 
 
-		let array_input = [];
-		array_input.push('2','0','r');
-		array_input.push('2','-1','R');
+		// 1 2e0r = 
 
-		string_input.forEach(element => 
-		{
-			console.log(element);
-			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
-		});
+		// 1 2.1e0r = 
 
-		array_input.forEach(element => 
-		{
-			console.log(element);
-			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
-		});
+		// 1 2e+1r = 
+
+		// 1 2e-1r = 
+
+		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_LinearInterp', () => 
 	{				
 		// 1 2i 4 = 1 2 3 4
+
+		// 1 2I 4 = 1 2 3 4
 
 		// 1 2 i 4 = 1 2 3 4
 
@@ -253,7 +297,7 @@ describe('Utilities', () =>
 		expect(true).to.be.false;
 	});
 
-	it('ConvertShorthandFeature_LinearInterp_Bad', () => 
+	it('ConvertShorthandFeature_LinearInterp_Ignore', () => 
 	{		
 		// 2 5 0i 30 = 2 5 30
 
@@ -263,7 +307,23 @@ describe('Utilities', () =>
 
 	it('ConvertShorthandFeature_LogInterp', () => 
 	{				
-		// ex.) .01 2ilog 10
+		// 0.01 2ilog 10 = 0.1 4.6416e-1 2.1544 10
+
+		// 0.01 2iLoG 10 = 0.1 4.6416e-1 2.1544 10
+
+		// 0.01 1ilog 10 = 0.1 1 10.0
+
+		// 0.01 2 ilog 10 = 0.1 2 10
+
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_LogInterp_Ignore', () => 
+	{				
+		// 0.1 2 0ilog 10 = 0.1 2 10
+
+		// 0.1 2 -1ilog 10 = 0.1 2 10
+
 		expect(true).to.be.false;
 	});
 
