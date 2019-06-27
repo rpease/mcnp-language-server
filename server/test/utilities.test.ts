@@ -263,73 +263,256 @@ describe('Utilities', () =>
 	// MCNP Ignores bad inputs and will just completely skip over the shorthand
 	it('ConvertShorthandFeature_Repeat_Bad', () => 
 	{			
-		// 1 2.0r = 
+		// 1 2.0r 
+		expect
 
-		// 1 2.1r = 
+		// 1 -2.0r 
 
-		// 1 2e0r = 
+		// 1 2.1r
 
-		// 1 2.1e0r = 
+		// 1 2e0r 
 
-		// 1 2e+1r = 
+		// 1 2.1e0r 
 
-		// 1 2e-1r = 
+		// 1 2e+1r
+
+		// 1 2e-1r
 
 		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_LinearInterp', () => 
 	{				
+		var expected = [];
+		var string_input = '';
+		var array_input = [];
+
 		// 1 2i 4 = 1 2 3 4
+		expected = [1,2,3,4];
+		string_input = '1 2i 4';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 1 2I 4 = 1 2 3 4
+		expected = [1,2,3,4];
+		string_input = '1 2I 4';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 1 2 i 4 = 1 2 3 4
+		expected = [2,3,4];
+		string_input = '2 i 4';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 2 5i 4 = 2 2.33 2.66 3 3.33 3.66 4
+		expected = [2,2.33333,2.66666,3,3.3333333,3.666666,4];
+		string_input = '2 5i 4';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 2 5i 100 = 2 18.33 34.66 51 67.33 83.66 100
+		expected = [2,18.3333333,34.666666,51,67.333333,83.6666666,100];
+		string_input = '2 5i 100';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 2 5 i 30 = 2 5 17.5 30
+		expected = [5,17.5,30];
+		string_input = '5 i 30';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 2 5 1i 30 = 2 5 17.5 30
-		
-		expect(true).to.be.false;
+		expected = [5,17.5,30];
+		string_input = '5 1i 30';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;		
 	});
 
 	it('ConvertShorthandFeature_LinearInterp_Ignore', () => 
-	{		
+	{	
+		var expected = [];
+		var string_input = '';
+		var array_input = [];
+
 		// 2 5 0i 30 = 2 5 30
+		expected = [5,30];
+		string_input = '5 0i 30';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 2 5 -1i 30 = 2 5 30
+		expected = [5,30];
+		string_input = '5 -1i 30';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+	});
+
+	it('ConvertShorthandFeature_LinearInterp_Bad', () => 
+	{		
+		// 2 5.0i 4
+
+		// 2 -5.0i 4
+
+		// 2 5.1i 4
+
+		// 2 5e0i 4
+
+		// 2 5.0e0i 4
 		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_LogInterp', () => 
 	{				
+		var expected = [];
+		var string_input = '';
+		var array_input = [];		
+
 		// 0.01 2ilog 10 = 0.1 4.6416e-1 2.1544 10
+		expected = [0.1, 4.6416e-1, 2.1544, 10];
+		string_input = '0.01 2ilog 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 0.01 2iLoG 10 = 0.1 4.6416e-1 2.1544 10
+		expected = [0.1, 4.6416e-1, 2.1544, 10];
+		string_input = '0.01 2iLoG 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 0.01 1ilog 10 = 0.1 1 10.0
+		expected = [0.1, 1, 10];
+		string_input = '0.01 1ilog 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 0.01 2 ilog 10 = 0.1 2 10
-
-		expect(true).to.be.false;
+		expected = [2, 10];
+		string_input = '2 ilog 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 	});
 
 	it('ConvertShorthandFeature_LogInterp_Ignore', () => 
 	{				
+		var expected = [];
+		var string_input = '';
+		var array_input = [];
+
 		// 0.1 2 0ilog 10 = 0.1 2 10
+		expected = [2, 10];
+		string_input = '2 0ilog 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
 
 		// 0.1 2 -1ilog 10 = 0.1 2 10
+		expected = [2, 10];
+		string_input = '2 -1ilog 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_LogInterp_Bad', () => 
+	{				
+		// 0.1 2 2.0ilog 10
+
+		// 0.1 2 -2.0ilog 10
+
+		// 0.1 2 2.1ilog 10
+
+		// 0.1 2 2e0ilog 10
+
+		// 0.1 2 2e+1ilog 10
 
 		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_Multiply', () => 
 	{				
-		// ex.) 1 3m 3m 3m
+		var expected = [];
+		var string_input = '';
+		var array_input = [];
+
+		// 1 3m = 1 3
+		expected = [1, 3];
+		string_input = '1 3m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 1 -2m = 1 -2
+		expected = [1, -2];
+		string_input = '1 -2m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 2.4 4.2m = 2.4 10.08
+		expected = [2.4, 10.08];
+		string_input = '2.4 4.2m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 5.5 1m = 5.5 5.5
+		expected = [5.5, 5.5];
+		string_input = '5.5 1m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 5.5 0m = 5.5 0
+		expected = [5.5, 0];
+		string_input = '5.5 0m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 1 3e1m = 1 30
+		expected = [1, 30];
+		string_input = '1 3e1m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 2.4 3e+1m = 2.4 72
+		expected = [2.4, 72];
+		string_input = '2.4 3e+1m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+
+		// 1 2.0e-1m = 1 0.2
+		expect(true).to.be.false;
+		expected = [1, 0.2];
+		string_input = '1 2.0e-1m';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(string_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+	});
+
+	it('ConvertShorthandFeature_Multiply_Bad', () => 
+	{				
+		// 1 m
+
 		expect(true).to.be.false;
 	});
 
