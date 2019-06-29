@@ -78,19 +78,58 @@ export function ParseOnlyInt(s: string): number
 	return parseInt(s)
 }
 
-// Converts MCNP shorthand features (nr, ni, nilog, nm, nj) to their actual values.
-// Provided string much encapsulate everything the shorthand needs or be an array of it's required components including
-// the mnemonic
-export function ConvertShorthandFeature(s: string | Array<string> ): Array<number>
+// Converts MCNP shorthand features (r, i, ilog, m) to their actual values.
+// Provided array must have the string arguments in order that are required
+// to expand the shorthand. ex.) 2 3 4 5i 10 -> ["4","5i","10"]. 
+// Return array will only be the numbers that replace that actual shorthand
+// argument (i.e. 3 2r will return [3,3] instead of [3,3,3])
+export function ConvertShorthandFeature(s: Array<string> ): Array<number>
 {
-	// First split string by spaces
-	if(typeof s === "string")
+	if(s[1].toLocaleLowerCase().includes('r'))
+	{
+		try 
+		{
+			return RepeatShorthand(s[0], s[1].split('r')[0]);
+		}
+		catch (error)
+		{
+			
+		}
+	}
+	else if(s[1].toLocaleLowerCase().includes('i'))
+	{
+
+	}
+	else if(s[1].toLocaleLowerCase().includes('ilog'))
+	{
+
+	}
+	else if(s[1].toLocaleLowerCase().includes('m'))
 	{
 
 	}
 
-	// todo 
-
-
 	return new Array<number>();
+}
+
+function RepeatShorthand(n_string: string, num_repeats_string: string): Array<number>
+{
+	var num_repeats = ParseOnlyInt(num_repeats_string);
+
+	// number of repeats must be a pure int for MCNP to be able to run
+	if(isNaN(num_repeats))
+	{
+		// todo throw error
+	}
+	// Any number <= 0 will not repeat the provided number
+	else if(num_repeats < 0)	
+		num_repeats = 0;
+
+	var n = parseFloat(n_string);
+
+	var repeat_array = Array<number>();
+	for (let i = 0; i < num_repeats; i++) 	
+		repeat_array.push(n);
+		
+	return repeat_array;
 }
