@@ -205,7 +205,7 @@ describe('Utilities', () =>
 
 	it('ConvertShorthandFeature_Repeat_Space', () => 
 	{			
-		let expected = [];
+		let expected = [5];
 
 		let array_input = [];
 		array_input.push(['5','r']);

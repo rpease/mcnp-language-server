@@ -85,7 +85,8 @@ export function ParseOnlyInt(s: string): number
 // argument (i.e. 3 2r will return [3,3] instead of [3,3,3])
 export function ConvertShorthandFeature(preceding: string, shorthand: string, post?: string ): Array<number>
 {
-	if(shorthand.toLocaleLowerCase().includes('r'))
+	shorthand = shorthand.toLowerCase();
+	if(shorthand.includes('r'))
 	{
 		try 
 		{
@@ -96,18 +97,18 @@ export function ConvertShorthandFeature(preceding: string, shorthand: string, po
 			
 		}
 	}	
-	else if(shorthand.toLocaleLowerCase().includes('ilog'))
+	else if(shorthand.includes('ilog'))
 	{
 		try 
 		{
-			return LogInterpolateShorthand(shorthand.split('i')[0], preceding, post);
+			return LogInterpolateShorthand(shorthand.split('ilog')[0], preceding, post);
 		}
 		catch (error)
 		{
 			
 		}
 	}
-	else if(shorthand.toLocaleLowerCase().includes('i'))
+	else if(shorthand.includes('i'))
 	{
 		try 
 		{
@@ -118,11 +119,11 @@ export function ConvertShorthandFeature(preceding: string, shorthand: string, po
 			
 		}
 	}
-	else if(shorthand.toLocaleLowerCase().includes('m'))
+	else if(shorthand.includes('m'))
 	{
 		try 
 		{
-			return MultiplyShorthand(preceding, shorthand.split('i')[0]);
+			return MultiplyShorthand(preceding, shorthand.split('m')[0]);
 		}
 		catch (error)
 		{
@@ -135,6 +136,10 @@ export function ConvertShorthandFeature(preceding: string, shorthand: string, po
 
 function RepeatShorthand(n_string: string, num_repeats_string: string): Array<number>
 {
+
+	if(num_repeats_string == "")
+		num_repeats_string = "1";
+
 	var num_repeats = ParseOnlyInt(num_repeats_string);
 
 	// number of repeats must be a pure int for MCNP to be able to run
