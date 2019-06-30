@@ -200,7 +200,7 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	var interp_array = Array<number>();
 
 	if(n_string == "")
-		n_string = "1";
+		n_string = "0";
 
 	var num = ParseOnlyInt(n_string);
 

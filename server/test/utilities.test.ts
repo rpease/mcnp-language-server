@@ -342,27 +342,21 @@ describe('Utilities', () =>
 		var string_input = '';
 		var array_input = [];		
 
-		// 0.01 2ilog 10 = 0.1 4.6416e-1 2.1544 10
-		expected = [ 4.6416e-1, 2.1544];
+		// 0.01 2ilog 10 = 0.01 0.1 1.0 10
+		expected = [ 0.1, 1.0];
 		string_input = '0.01 2ilog 10';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
-		// 0.01 2iLoG 10 = 0.1 4.6416e-1 2.1544 10
-		expected = [4.6416e-1, 2.1544];
+		// 0.01 2iLoG 10 = 0.01 0.1 1.0 10
+		expected = [ 0.1, 1.0];
 		string_input = '0.01 2iLoG 10';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
-		// 0.01 1ilog 10 = 0.1 1 10.0
-		expected = [1];
-		string_input = '0.01 1ilog 10';
-		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
-
-		// 0.01 2 ilog 10 = 0.1 2 10
-		expected = [];
-		string_input = '2 ilog 10';
+		// 0.01 1ilog 10 = 0.01 3.1623E-01 10.0
+		expected = [3.1623E-01];
+		string_input = '0.01 1ilOG 10';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
@@ -372,6 +366,12 @@ describe('Utilities', () =>
 		var expected = [];
 		var string_input = '';
 		var array_input = [];
+
+		// 0.01 2 ilog 10 = 0.1 10
+		expected = [];
+		string_input = '2 ilog 10';
+		array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
 		// 0.1 2 0ilog 10 = 0.1 2 10
 		expected = [];
@@ -384,8 +384,6 @@ describe('Utilities', () =>
 		string_input = '2 -1ilog 10';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
-
-		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_LogInterp_Bad', () => 
@@ -467,7 +465,38 @@ describe('Utilities', () =>
 
 	it('ConvertShorthandFeature_Jump', () => 
 	{				
-		// ex.) 2J 1e-10
+		// ex.) 3 2J 1e-10 = 3 ? ? 1e-10
+		var expected = [];
+		var string_input = '3 2J 1e-10';
+		var array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
+
+		var expected = [];
+		var string_input = '3 J 1e-10';
+		var array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
+
+		var expected = [];
+		var string_input = '3 1J 1e-10';
+		var array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
+	});
+
+	it('ConvertShorthandFeature_Jump_Bad', () => 
+	{				
+		// 3 -1J 1e-10
+
+		// 3 -J 1e-10
+
+		// 3 1.0j 2
+
+		// 3 2e1j 2
+
+		// 3 2e+1j 2
+
+		// 3 2e-1j 2
+
+		// 3 -1.0J 4
 		expect(true).to.be.false;
 	});
 
