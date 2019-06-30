@@ -6,7 +6,7 @@ export function SplitStringNumberCombo(text: String): [string, number, string]
 {
 	var matches = text.match("^([\\*!+\\-#]?)([a-zA-Z]+)([0-9]+)");
 	
-	return [matches[2], parseFloat(matches[3]), matches[1]]
+	return [matches[2], parseFloat(matches[3]), matches[1]];
 }
 
 export function SplitParticleCombo(text: String): [string,Particle]
@@ -21,14 +21,14 @@ export function GetParticleFromChar(text: string): Particle
 {
 	if(text.length != 1)
 	{
-		throw new Error("Can not parse particle type from a string that is more than a single character!\n")
+		throw new Error("Can not parse particle type from a string that is more than a single character!\n");
 	}
 	switch(text.toLowerCase())
 	{
 		case "n":{ return Particle.neutron;}
 		case "p":{ return Particle.photon;}
 		case "e":{ return Particle.electron;}
-		default: { return Particle.NONE}
+		default: { return Particle.NONE;}
 	}
 }
 
@@ -60,7 +60,7 @@ export function ReplaceTabsInLine(line: string, tabBreak=8): string
 		}		
 	}
 		
-	return mcnp_string
+	return mcnp_string;
 }
 
 // Compares two strings without considering case. MCNP is case-insensitive
@@ -75,36 +75,36 @@ export function ParseOnlyInt(s: string): number
 {
 	if(s.match('[\.e\+]'))
 		return NaN;
-	return parseInt(s)
+	return parseInt(s);
 }
 
 // Converts MCNP shorthand features (r, i, ilog, m) to their actual values.
-// Provided array must have the string arguments in order that are required
-// to expand the shorthand. ex.) 2 3 4 5i 10 -> ["4","5i","10"]. 
+// Each shorthand requires different number of arguments, but all require the preceding number and shorthand argument.
+// ex.) 2 3 4 5i 10 -> preceding="4", shorthand="5i", post="10"
 // Return array will only be the numbers that replace that actual shorthand
 // argument (i.e. 3 2r will return [3,3] instead of [3,3,3])
-export function ConvertShorthandFeature(s: Array<string> ): Array<number>
+export function ConvertShorthandFeature(preceding: string, shorthand: string, post?: string ): Array<number>
 {
-	if(s[1].toLocaleLowerCase().includes('r'))
+	if(shorthand.toLocaleLowerCase().includes('r'))
 	{
 		try 
 		{
-			return RepeatShorthand(s[0], s[1].split('r')[0]);
+			return RepeatShorthand(preceding, shorthand.split('r')[0]);
 		}
 		catch (error)
 		{
 			
 		}
 	}
-	else if(s[1].toLocaleLowerCase().includes('i'))
+	else if(shorthand.toLocaleLowerCase().includes('i'))
 	{
 
 	}
-	else if(s[1].toLocaleLowerCase().includes('ilog'))
+	else if(shorthand.toLocaleLowerCase().includes('ilog'))
 	{
 
 	}
-	else if(s[1].toLocaleLowerCase().includes('m'))
+	else if(shorthand.toLocaleLowerCase().includes('m'))
 	{
 
 	}

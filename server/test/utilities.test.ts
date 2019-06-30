@@ -5,10 +5,10 @@ import { Particle } from '../src/enumerations';
 
 function CompareArrays(array1, array2): void
 {
-	expect(array1.length).to.be.equal(array2.length)
+	expect(array1.length).to.be.equal(array2.length);
 
 	for (let index = 0; index < array1.length; index++) 	
-		expect(array1[index]).to.be.equal(array2[index])
+		expect(array1[index]).to.be.equal(array2[index]);
 }
 
 describe('Utilities', () => 
@@ -101,16 +101,16 @@ describe('Utilities', () =>
 
 	it('ReplaceTabs_Basic', () => 
 	{		
-		const tab_break = 8
+		const tab_break = 8;
 		for (let i = 0; i <= 17; i++) 
 		{
-			console.log(i)
+			console.log(i);
 			let line = '';
 			for (let j = 0; j < i; j++)
 				line += " ";				
 			line += "\t";
 
-			let expected_length = Math.ceil((i+1)/tab_break)*tab_break
+			let expected_length = Math.ceil((i+1)/tab_break)*tab_break;
 			
 			expect(utilities.ReplaceTabsInLine(line, tab_break).length).to.be.equal(expected_length);
 		}		
@@ -132,7 +132,7 @@ describe('Utilities', () =>
 
 	it('CaseInsensitiveCompare', () => 
 	{				
-		let original = "1RpP"
+		let original = "1RpP";
 		expect(utilities.CaseInsensitiveCompare(original,"1rpp")).to.be.true;
 		expect(utilities.CaseInsensitiveCompare(original,"1Rpp")).to.be.true;
 		expect(utilities.CaseInsensitiveCompare(original,"1rpP")).to.be.true;
@@ -190,7 +190,7 @@ describe('Utilities', () =>
 		array_input.forEach(element => 
 		{
 			console.log(element);
-			CompareArrays(utilities.ConvertShorthandFeature(element),expected);
+			CompareArrays(utilities.ConvertShorthandFeature(element[0], element[1]),expected);
 		});
 	});
 
@@ -205,7 +205,7 @@ describe('Utilities', () =>
 		array_input.forEach(element => 
 		{
 			console.log(element);
-			expect(CompareArrays(utilities.ConvertShorthandFeature(element), expected)).to.be.true;
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element[0], element[1]), expected)).to.be.true;
 		});
 	});
 
@@ -221,7 +221,7 @@ describe('Utilities', () =>
 		array_input.forEach(element => 
 		{
 			console.log(element);
-			expect(CompareArrays(utilities.ConvertShorthandFeature(element),expected)).to.be.true;
+			expect(CompareArrays(utilities.ConvertShorthandFeature(element[0], element[1]),expected)).to.be.true;
 		});
 	});
 
@@ -229,7 +229,6 @@ describe('Utilities', () =>
 	it('ConvertShorthandFeature_Repeat_Bad', () => 
 	{			
 		// 1 2.0r 
-		expect
 
 		// 1 -2.0r 
 
@@ -256,43 +255,43 @@ describe('Utilities', () =>
 		expected = [2,3];
 		string_input = '1 2i 4';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 1 2I 4 = 1 2 3 4
 		expected = [2,3];
 		string_input = '1 2I 4';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 1 2 i 4 = 1 2 3 4
 		expected = [3];
 		string_input = '2 i 4';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2 5i 4 = 2 2.33 2.66 3 3.33 3.66 4
 		expected = [2.33333,2.66666,3,3.3333333,3.666666];
 		string_input = '2 5i 4';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2 5i 100 = 2 18.33 34.66 51 67.33 83.66 100
 		expected = [18.3333333,34.666666,51,67.333333,83.6666666];
 		string_input = '2 5i 100';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2 5 i 30 = 2 5 17.5 30
 		expected = [17.5];
 		string_input = '5 i 30';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2 5 1i 30 = 2 5 17.5 30
 		expected = [17.5];
 		string_input = '5 1i 30';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;		
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;		
 	});
 
 	it('ConvertShorthandFeature_LinearInterp_Ignore', () => 
@@ -305,13 +304,13 @@ describe('Utilities', () =>
 		expected = [];
 		string_input = '5 0i 30';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2 5 -1i 30 = 2 5 30
 		expected = [];
 		string_input = '5 -1i 30';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 	});
 
 	it('ConvertShorthandFeature_LinearInterp_Bad', () => 
@@ -338,25 +337,25 @@ describe('Utilities', () =>
 		expected = [ 4.6416e-1, 2.1544];
 		string_input = '0.01 2ilog 10';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 0.01 2iLoG 10 = 0.1 4.6416e-1 2.1544 10
 		expected = [4.6416e-1, 2.1544];
 		string_input = '0.01 2iLoG 10';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 0.01 1ilog 10 = 0.1 1 10.0
 		expected = [1];
 		string_input = '0.01 1ilog 10';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 0.01 2 ilog 10 = 0.1 2 10
 		expected = [];
 		string_input = '2 ilog 10';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 	});
 
 	it('ConvertShorthandFeature_LogInterp_Ignore', () => 
@@ -369,13 +368,13 @@ describe('Utilities', () =>
 		expected = [];
 		string_input = '2 0ilog 10';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 0.1 2 -1ilog 10 = 0.1 2 10
 		expected = [];
 		string_input = '2 -1ilog 10';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		expect(true).to.be.false;
 	});
@@ -405,50 +404,50 @@ describe('Utilities', () =>
 		expected = [3];
 		string_input = '1 3m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 1 -2m = 1 -2
 		expected = [-2];
 		string_input = '1 -2m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2.4 4.2m = 2.4 10.08
 		expected = [10.08];
 		string_input = '2.4 4.2m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 5.5 1m = 5.5 5.5
 		expected = [5.5];
 		string_input = '5.5 1m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 5.5 0m = 5.5 0
 		expected = [0];
 		string_input = '5.5 0m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 1 3e1m = 1 30
 		expected = [30];
 		string_input = '1 3e1m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 2.4 3e+1m = 2.4 72
 		expected = [72];
 		string_input = '2.4 3e+1m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 
 		// 1 2.0e-1m = 1 0.2
 		expect(true).to.be.false;
 		expected = [0.2];
 		string_input = '1 2.0e-1m';
 		array_input = string_input.split(' ');
-		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input),expected)).to.be.true;
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected)).to.be.true;
 	});
 
 	it('ConvertShorthandFeature_Multiply_Bad', () => 
