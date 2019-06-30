@@ -95,18 +95,39 @@ export function ConvertShorthandFeature(preceding: string, shorthand: string, po
 		{
 			
 		}
+	}	
+	else if(shorthand.toLocaleLowerCase().includes('ilog'))
+	{
+		try 
+		{
+			return LogInterpolateShorthand(shorthand.split('i')[0], preceding, post);
+		}
+		catch (error)
+		{
+			
+		}
 	}
 	else if(shorthand.toLocaleLowerCase().includes('i'))
 	{
-
-	}
-	else if(shorthand.toLocaleLowerCase().includes('ilog'))
-	{
-
+		try 
+		{
+			return LinearInterpolateShorthand(shorthand.split('i')[0], preceding, post);
+		}
+		catch (error)
+		{
+			
+		}
 	}
 	else if(shorthand.toLocaleLowerCase().includes('m'))
 	{
-
+		try 
+		{
+			return MultiplyShorthand(preceding, shorthand.split('i')[0]);
+		}
+		catch (error)
+		{
+			
+		}
 	}
 
 	return new Array<number>();
@@ -132,4 +153,85 @@ function RepeatShorthand(n_string: string, num_repeats_string: string): Array<nu
 		repeat_array.push(n);
 		
 	return repeat_array;
+}
+
+function Interpolate(left: number, right:number, n:number): Array<number>
+{
+	var h = (right-left)/(n+1);
+
+	var interp_array = Array<number>();
+	for (let i = 1; i <= n; i++) 	
+		interp_array.push(left+h*i);
+		
+	return interp_array;
+}
+
+function LinearInterpolateShorthand(n_string: string, left_bound: string, right_bound: string): Array<number>
+{
+	var interp_array = Array<number>();
+
+	if(n_string == "")
+		n_string = "1";
+
+	var num = ParseOnlyInt(n_string);
+
+	// number of points must be a pure int for MCNP to be able to run
+	if(isNaN(num))
+	{
+		// todo throw error
+	}
+	// Any number <= 0 will result in nothing
+	else if(num <= 0)	
+		return interp_array;
+
+	var left = parseFloat(left_bound);
+	var right = parseFloat(right_bound);
+	
+	return Interpolate(left, right, num);	
+}
+
+function LogInterpolateShorthand(n_string: string, left_bound: string, right_bound: string): Array<number>
+{
+	var interp_array = Array<number>();
+
+	if(n_string == "")
+		n_string = "1";
+
+	var num = ParseOnlyInt(n_string);
+
+	// number of points must be a pure int for MCNP to be able to run
+	if(isNaN(num))
+	{
+		// todo throw error
+	}
+	// Any number <= 0 will result in nothing
+	else if(num <= 0)	
+		return interp_array;
+
+	var left_log = Math.log10(parseFloat(left_bound));
+	var right_log = Math.log10(parseFloat(right_bound));
+	
+	var log_interp =  Interpolate(left_log, right_log, num);
+
+	log_interp.forEach(element => {
+		interp_array.push(Math.pow(10.0, element));
+	});
+
+	return interp_array;
+}
+
+function MultiplyShorthand(n_string: string, factor_string: string): Array<number>
+{
+	var interp_array = Array<number>();
+
+	if(n_string == "")
+	{
+		// todo throw error
+	}
+
+	var num = parseFloat(n_string);
+	var factor = parseFloat(factor_string);
+
+	interp_array.push(num*factor);
+	return interp_array;
 }
