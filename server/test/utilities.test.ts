@@ -333,6 +333,14 @@ describe('Utilities', () =>
 		// 2 5e0i 4
 
 		// 2 5.0e0i 4
+
+		// 2 2i 5i 10
+
+		// 2 2ilog 2j 10
+
+		// 2 2ilog 3m 10
+
+		// 2 2ilog 3m
 		expect(true).to.be.false;
 	});
 
@@ -386,19 +394,48 @@ describe('Utilities', () =>
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
 
-	it('ConvertShorthandFeature_LogInterp_Bad', () => 
-	{				
-		// 0.1 2 2.0ilog 10
+	it('ConvertShorthandFeature_LogInterp_BadNum', () => 
+	{	
+		// Bad arguments for the number of numbers added
+		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1"];
+	
+		var preceding = "2";
+		var post = "10";
+		bad_n.forEach(element => 
+		{			
+			expect(utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw
+		});		
+	});
 
-		// 0.1 2 -2.0ilog 10
+	it('ConvertShorthandFeature_LogInterp_BadPrePost', () => 
+	{	
+		// Bad arguments for the pre/post arguments
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
 
-		// 0.1 2 2.1ilog 10
+		var preceding: string;
+		var post: string;
+		var shorthand = "2ilog";
 
-		// 0.1 2 2e0ilog 10
+		for (let i = 0; i <= bad_pre_post.length; i++) 
+		{
+			if(i==0)
+				preceding = "2"; // Good pre
+			else
+				preceding = bad_pre_post[i];
 
-		// 0.1 2 2e+1ilog 10
+			for (let j = 0; j <= bad_pre_post.length; j++) 
+			{
+				if(j==0)
+					post = "10"; // Good post
+				else
+					post = bad_pre_post[j];
 
-		expect(true).to.be.false;
+				if(i==0 && j==0)
+					utilities.ConvertShorthandFeature(preceding, shorthand, post);
+				else				
+					expect(utilities.ConvertShorthandFeature(preceding, shorthand, post), "Should have thrown and error.").to.throw();				
+			}			
+		}		
 	});
 
 	it('ConvertShorthandFeature_Multiply', () => 
@@ -460,6 +497,8 @@ describe('Utilities', () =>
 	{				
 		// 1 m
 
+		// a 2m
+
 		expect(true).to.be.false;
 	});
 
@@ -478,6 +517,16 @@ describe('Utilities', () =>
 
 		var expected = [];
 		var string_input = '3 1J 1e-10';
+		var array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
+
+		var expected = [];
+		var string_input = 'taco 1J 1e-10';
+		var array_input = string_input.split(' ');
+		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
+
+		var expected = [];
+		var string_input = '3 1J taco';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
