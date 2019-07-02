@@ -234,24 +234,31 @@ describe('Utilities', () =>
 		});
 	});
 
-	// MCNP Ignores bad inputs and will just completely skip over the shorthand
-	it('ConvertShorthandFeature_Repeat_Bad', () => 
+	it('ConvertShorthandFeature_Repeat_BadNum', () => 
 	{			
-		// 1 2.0r 
+		// Bad arguments for the number of numbers added
+		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1"];
+	
+		var preceding = "2";
+		bad_n.forEach(element => 
+		{			
+			element += "r";
+			expect(utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw();
+		});
+	});
 
-		// 1 -2.0r 
+	it('ConvertShorthandFeature_Repeat_BadPre', () => 
+	{			
+		// Bad arguments for the pre/post arguments
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
 
-		// 1 2.1r
+		var preceding: string;
+		var shorthand = "2r";
 
-		// 1 2e0r 
-
-		// 1 2.1e0r 
-
-		// 1 2e+1r
-
-		// 1 2e-1r
-
-		expect(true).to.be.false;
+		bad_pre_post.forEach(element => 
+		{
+			expect(utilities.ConvertShorthandFeature(element, shorthand), "Should have thrown and error.").to.throw();
+		});
 	});
 
 	it('ConvertShorthandFeature_LinearInterp', () => 
@@ -322,26 +329,49 @@ describe('Utilities', () =>
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
 
-	it('ConvertShorthandFeature_LinearInterp_Bad', () => 
+	it('ConvertShorthandFeature_LinearInterp_BadNum', () => 
 	{		
-		// 2 5.0i 4
+		// Bad arguments for the number of numbers added
+		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1"];
+	
+		var preceding = "2";
+		var post = "10";
+		bad_n.forEach(element => 
+		{			
+			element += "i";
+			expect(utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw();
+		});
+	});
 
-		// 2 -5.0i 4
+	it('ConvertShorthandFeature_LinearInterp_BadPrePost', () => 
+	{		
+		// Bad arguments for the pre/post arguments
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
 
-		// 2 5.1i 4
+		var preceding: string;
+		var post: string;
+		var shorthand = "2i";
 
-		// 2 5e0i 4
+		for (let i = 0; i <= bad_pre_post.length; i++) 
+		{
+			if(i==0)
+				preceding = "2"; // Good pre
+			else
+				preceding = bad_pre_post[i];
 
-		// 2 5.0e0i 4
+			for (let j = 0; j <= bad_pre_post.length; j++) 
+			{
+				if(j==0)
+					post = "10"; // Good post
+				else
+					post = bad_pre_post[j];
 
-		// 2 2i 5i 10
-
-		// 2 2ilog 2j 10
-
-		// 2 2ilog 3m 10
-
-		// 2 2ilog 3m
-		expect(true).to.be.false;
+				if(i==0 && j==0)
+					utilities.ConvertShorthandFeature(preceding, shorthand, post);
+				else				
+					expect(utilities.ConvertShorthandFeature(preceding, shorthand, post), "Should have thrown and error.").to.throw();				
+			}			
+		}	
 	});
 
 	it('ConvertShorthandFeature_LogInterp', () => 
@@ -403,7 +433,8 @@ describe('Utilities', () =>
 		var post = "10";
 		bad_n.forEach(element => 
 		{			
-			expect(utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw
+			element += "ilog";
+			expect(utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw();
 		});		
 	});
 
@@ -493,13 +524,30 @@ describe('Utilities', () =>
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
 
-	it('ConvertShorthandFeature_Multiply_Bad', () => 
+	it('ConvertShorthandFeature_Multiply_BadPre', () => 
 	{				
 		// 1 m
 
 		// a 2m
 
-		expect(true).to.be.false;
+		// Bad arguments for the pre/post arguments
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
+
+		var preceding: string;
+		var shorthand = "2m";
+
+		bad_pre_post.forEach(element => 
+		{
+			expect(utilities.ConvertShorthandFeature(element, shorthand), "Should have thrown and error.").to.throw();
+		});
+	});
+
+	it('ConvertShorthandFeature_Multiply_BadNum', () => 
+	{			
+		for (let i = -10; i < 10; i++) 
+		{
+			expect(utilities.ConvertShorthandFeature(i.toString(), "m"), "Should have thrown and error.").to.throw();			
+		}			
 	});
 
 	it('ConvertShorthandFeature_Jump', () => 
@@ -531,22 +579,17 @@ describe('Utilities', () =>
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
 
-	it('ConvertShorthandFeature_Jump_Bad', () => 
-	{				
-		// 3 -1J 1e-10
-
-		// 3 -J 1e-10
-
-		// 3 1.0j 2
-
-		// 3 2e1j 2
-
-		// 3 2e+1j 2
-
-		// 3 2e-1j 2
-
-		// 3 -1.0J 4
-		expect(true).to.be.false;
+	it('ConvertShorthandFeature_Jump_BadNum', () => 
+	{			
+		// Bad arguments for the number of numbers added
+		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1"];
+	
+		var preceding = "2";
+		bad_n.forEach(element => 
+		{			
+			element += "j";
+			expect(utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw();
+		});	
 	});
 
 	it('ConvertShorthandFeature_Combinations', () => 
