@@ -1,6 +1,7 @@
 import { Particle } from "./enumerations";
-import { ParameterInformation } from "vscode-languageserver";
+import { ParameterInformation, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { FULL_LINE_COMMENT_MATCH } from './regexpressions';
+import { Argument } from './File/argument';
 
 export function SplitStringNumberCombo(text: String): [string, number, string]
 {
@@ -76,6 +77,41 @@ export function ParseOnlyInt(s: string): number
 	if(s.match('[\.e\+]'))
 		return NaN;
 	return parseInt(s);
+}
+
+export function CreateErrorDiagnostic(arg: Argument, message: string, severity=DiagnosticSeverity.Error, additional_message?: string): Diagnostic
+{
+	let diagnostic: Diagnostic = {
+		severity: severity,
+		range: {
+			start: {
+				line: arg.FilePosition.line,
+				character: arg.FilePosition.character
+			},
+			end: {
+				line: arg.FilePosition.line,
+				character: arg.FilePosition.character + arg.Contents.length
+			},
+		},
+		message: message,
+		source: 'mcnp',		
+	};
+
+	// Additional Information
+	if(additional_message != undefined)
+	{
+		diagnostic.relatedInformation = [
+			{
+				location: {
+					uri:"",
+					range: Object.assign({}, diagnostic.range)
+				},
+				message: additional_message
+			}
+		];
+	}	
+
+	return diagnostic;	
 }
 
 // Converts MCNP shorthand features (r, i, ilog, m) to their actual values.
