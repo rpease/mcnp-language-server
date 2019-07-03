@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import * as utilities from '../src/utilities';
+import { MCNPException } from '../src/mcnp_exception';
 
 function CompareArrays(array1, array2): void
 {
@@ -74,21 +75,21 @@ describe('ShorthandInput', () =>
 		bad_n.forEach(element => 
 		{			
 			element += "r";
-			expect(utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw();
+			expect(() => utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw(MCNPException);
 		});
 	});
 
 	it('ConvertShorthandFeature_Repeat_BadPre', () => 
 	{			
 		// Bad arguments for the pre/post arguments
-		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"];
 
 		var preceding: string;
 		var shorthand = "2r";
 
 		bad_pre_post.forEach(element => 
 		{
-			expect(utilities.ConvertShorthandFeature(element, shorthand), "Should have thrown and error.").to.throw();
+			expect(() => utilities.ConvertShorthandFeature(element, shorthand), "Should have thrown and error.").to.throw(MCNPException);
 		});
 	});
 
@@ -170,14 +171,14 @@ describe('ShorthandInput', () =>
 		bad_n.forEach(element => 
 		{			
 			element += "i";
-			expect(utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw();
+			expect(() => utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw(MCNPException);
 		});
 	});
 
 	it('ConvertShorthandFeature_LinearInterp_BadPrePost', () => 
 	{		
 		// Bad arguments for the pre/post arguments
-		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"];
 
 		var preceding: string;
 		var post: string;
@@ -200,7 +201,7 @@ describe('ShorthandInput', () =>
 				if(i==0 && j==0)
 					utilities.ConvertShorthandFeature(preceding, shorthand, post);
 				else				
-					expect(utilities.ConvertShorthandFeature(preceding, shorthand, post), "Should have thrown and error.").to.throw();				
+					expect(() => utilities.ConvertShorthandFeature(preceding, shorthand, post), "Should have thrown and error.").to.throw(MCNPException);
 			}			
 		}	
 	});
@@ -265,14 +266,14 @@ describe('ShorthandInput', () =>
 		bad_n.forEach(element => 
 		{			
 			element += "ilog";
-			expect(utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw();
+			expect(() => utilities.ConvertShorthandFeature(preceding, element, post),"Should have thrown and error.").to.throw(MCNPException);
 		});		
 	});
 
 	it('ConvertShorthandFeature_LogInterp_BadPrePost', () => 
 	{	
 		// Bad arguments for the pre/post arguments
-		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"];
 
 		var preceding: string;
 		var post: string;
@@ -295,7 +296,7 @@ describe('ShorthandInput', () =>
 				if(i==0 && j==0)
 					utilities.ConvertShorthandFeature(preceding, shorthand, post);
 				else				
-					expect(utilities.ConvertShorthandFeature(preceding, shorthand, post), "Should have thrown and error.").to.throw();				
+					expect(() => utilities.ConvertShorthandFeature(preceding, shorthand, post), "Should have thrown and error.").to.throw(MCNPException);
 			}			
 		}		
 	});
@@ -357,19 +358,15 @@ describe('ShorthandInput', () =>
 
 	it('ConvertShorthandFeature_Multiply_BadPre', () => 
 	{				
-		// 1 m
-
-		// a 2m
-
 		// Bad arguments for the pre/post arguments
-		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"]
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"];
 
 		var preceding: string;
 		var shorthand = "2m";
 
 		bad_pre_post.forEach(element => 
 		{
-			expect(utilities.ConvertShorthandFeature(element, shorthand), "Should have thrown and error.").to.throw();
+			expect(() => utilities.ConvertShorthandFeature(element, shorthand), "Should have thrown and error.").to.throw(MCNPException);
 		});
 	});
 
@@ -377,7 +374,7 @@ describe('ShorthandInput', () =>
 	{			
 		for (let i = -10; i < 10; i++) 
 		{
-			expect(utilities.ConvertShorthandFeature(i.toString(), "m"), "Should have thrown and error.").to.throw();			
+			expect(() => utilities.ConvertShorthandFeature(i.toString(), "m"), "Should have thrown and error.").to.throw(MCNPException);			
 		}			
 	});
 
@@ -419,7 +416,7 @@ describe('ShorthandInput', () =>
 		bad_n.forEach(element => 
 		{			
 			element += "j";
-			expect(utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw();
+			expect(() => utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw(MCNPException);
 		});	
 	});
 

@@ -230,10 +230,8 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
 {
 	var interp_array = Array<number>();
 
-	if(n_string == "")
-	{
-		// todo throw error
-	}
+	if(factor_string == "")
+		throw new MCNPException('Must provide a number for multiplication shorthand');
 
 	var num = parseFloat(n_string);
 	var factor = parseFloat(factor_string);
