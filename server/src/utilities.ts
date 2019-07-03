@@ -11,7 +11,7 @@ export function SplitStringNumberCombo(text: String): [string, number, string]
 	return [matches[2], parseFloat(matches[3]), matches[1]];
 }
 
-export function SplitParticleCombo(text: String): [string,Particle]
+export function SplitParticleCombo(text: String): [string, Particle]
 {
 	var combo = text.split(":");
 	let particle = GetParticleFromChar(combo[0]);
@@ -19,6 +19,10 @@ export function SplitParticleCombo(text: String): [string,Particle]
 	return [combo[0], particle];
 }
 
+/**
+ * Converts a particle string to a particle enumeration
+ * @param text The particle string. i.e. 'p', 'n', 'e', etc
+ */
 export function GetParticleFromChar(text: string): Particle
 {
 	if(text.length != 1)
@@ -34,6 +38,10 @@ export function GetParticleFromChar(text: string): Particle
 	}
 }
 
+/**
+ * Returns only the text located in the MCNP comment if there is one in the provided line.
+ * @param text the line to be read
+ */
 export function GetCommentText(text: string): string
 {
 	var comment_split = text.match(FULL_LINE_COMMENT_MATCH);
@@ -43,6 +51,11 @@ export function GetCommentText(text: string): string
 	return "";
 }
 
+/**
+ * Replaces tabs in a line with the appropriate amount of spaces.
+ * @param line The line to replace tabs in
+ * @param tabBreak [8] The number of spaces by which the tabs will reset the text to. Default value of 8 is the number that MCNPs compiler uses.
+ */
 export function ReplaceTabsInLine(line: string, tabBreak=8): string
 {
 	let tab_split = line.split('\t');
@@ -92,6 +105,13 @@ export function ParseOnlyInt(s: string, throw_error=true): number
 	return parseInt(s);
 }
 
+/**
+ * 
+ * @param arg The argument that will be highlighted with the provided diagnostic information
+ * @param message The message that will appear in the terminal and during hover-over
+ * @param severity The severity type of the diagnostic
+ * @param additional_message Additional information that will be displayed only during hover-over
+ */
 export function CreateErrorDiagnostic(arg: Argument, message: string, severity=DiagnosticSeverity.Error, additional_message?: string): Diagnostic
 {
 	let diagnostic: Diagnostic = {
