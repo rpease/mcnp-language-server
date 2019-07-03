@@ -405,6 +405,9 @@ describe('ShorthandInput', () =>
 		var string_input = '3 1J taco';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
+
+		// todo what about '3 -1j 4'?
+		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_Jump_BadNum', () => 

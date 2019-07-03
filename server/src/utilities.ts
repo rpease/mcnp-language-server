@@ -147,6 +147,8 @@ export function ConvertShorthandFeature(preceding: string, shorthand: string, po
 		return LinearInterpolateShorthand(shorthand.split('i')[0], preceding, post);		
 	else if(shorthand.includes('m'))	
 		return MultiplyShorthand(preceding, shorthand.split('m')[0]);		
+	else if(shorthand.includes('j'))	
+		return DefaultShorthand(shorthand.split('j')[0]);
 
 	return new Array<number>();
 }
@@ -237,6 +239,20 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
 	var factor = parseFloat(factor_string);
 
 	interp_array.push(num*factor);
+	return interp_array;
+}
+
+/**
+ * Currently does not have any conversion capabilities because default values are very specific to the card being used.
+ * Only the value used the 'j' is read to ensure it is at least a valid number.
+ * @param sequence_string The number (i.e. '2' in '2j') of default values
+ */
+function DefaultShorthand(sequence_string: string): Array<number>
+{
+	var interp_array = Array<number>();
+
+	var num = ParseOnlyInt(sequence_string);
+
 	return interp_array;
 }
 
