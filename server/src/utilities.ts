@@ -64,14 +64,25 @@ export function ReplaceTabsInLine(line: string, tabBreak=8): string
 	return mcnp_string;
 }
 
-// Compares two strings without considering case. MCNP is case-insensitive
+/**
+ * Compares two strings to see if they are equal without caring about the case.
+ * 
+ * @param a String 1
+ * @param b String 2
+ * @returns True if the strings are equivalent or False if they are not
+ */
 export function CaseInsensitiveCompare(a: string, b: string): boolean
 {
 	return a.toLowerCase() === b.toLowerCase();
 }
 
-// Only parses pure Integer values (i.e. 1 not 1.0). MCNP is picky and expects pure integers for certain
-// things such as surface IDs and Tally numbers. Returns NaN if the provided string is not a Pure Integer.
+/**
+ * Only parses pure integer values (i.e. 1 not 1.0) from a string. MCNP is picky and expects pure integers for many
+ * operations such as surface IDs and Tally numbers.
+ * 
+ * @param s The string to be parsed
+ * @returns the pure integer value or NaN if the provided string is not a pure integer.
+ */
 export function ParseOnlyInt(s: string): number
 {
 	if(s.match('[\.e\+]'))
@@ -114,65 +125,32 @@ export function CreateErrorDiagnostic(arg: Argument, message: string, severity=D
 	return diagnostic;	
 }
 
-// Converts MCNP shorthand features (r, i, ilog, m) to their actual values.
-// Each shorthand requires different number of arguments, but all require the preceding number and shorthand argument.
-// ex.) 2 3 4 5i 10 -> preceding="4", shorthand="5i", post="10"
-// Return array will only be the numbers that replace that actual shorthand
-// argument (i.e. 3 2r will return [3,3] instead of [3,3,3])
+/**
+ * Converts MCNP shorthand features (r, i, ilog, m) to their actual values. Each shorthand requires different number
+ * of arguments, but all require the preceding string and shorthand argument.
+ * 
+ * @param preceding The contents of the argument directly before the shorthand
+ * @param shorthand The string containing the shorthand (i.e. 6ilog)
+ * @param post The contents of the argument directly after the shorthand. Only required for i and ilog
+ * @returns The array of numbers that ONLY replace the shorthand. Does not include the preceding or post numbers.
+ */
 export function ConvertShorthandFeature(preceding: string, shorthand: string, post?: string ): Array<number>
 {
 	shorthand = shorthand.toLowerCase();
-	if(shorthand.includes('r'))
-	{
-		try 
-		{
-			return RepeatShorthand(preceding, shorthand.split('r')[0]);
-		}
-		catch (error)
-		{
-			
-		}
-	}	
+	if(shorthand.includes('r'))		
+		return RepeatShorthand(preceding, shorthand.split('r')[0]);		
 	else if(shorthand.includes('ilog'))
-	{
-		try 
-		{
-			return LogInterpolateShorthand(shorthand.split('ilog')[0], preceding, post);
-		}
-		catch (error)
-		{
-			
-		}
-	}
+		return LogInterpolateShorthand(shorthand.split('ilog')[0], preceding, post);		
 	else if(shorthand.includes('i'))
-	{
-		try 
-		{
-			return LinearInterpolateShorthand(shorthand.split('i')[0], preceding, post);
-		}
-		catch (error)
-		{
-			
-		}
-	}
-	else if(shorthand.includes('m'))
-	{
-		try 
-		{
-			return MultiplyShorthand(preceding, shorthand.split('m')[0]);
-		}
-		catch (error)
-		{
-			
-		}
-	}
+		return LinearInterpolateShorthand(shorthand.split('i')[0], preceding, post);		
+	else if(shorthand.includes('m'))	
+		return MultiplyShorthand(preceding, shorthand.split('m')[0]);		
 
 	return new Array<number>();
 }
 
 function RepeatShorthand(n_string: string, num_repeats_string: string): Array<number>
 {
-
 	if(num_repeats_string == "")
 		num_repeats_string = "1";
 
