@@ -2,6 +2,7 @@ import { Particle } from "./enumerations";
 import { ParameterInformation, Diagnostic, DiagnosticSeverity } from "vscode-languageserver";
 import { FULL_LINE_COMMENT_MATCH } from './regexpressions';
 import { Argument } from './File/argument';
+import { MCNPException } from './mcnp_exception';
 
 export function SplitStringNumberCombo(text: String): [string, number, string]
 {
@@ -81,12 +82,13 @@ export function CaseInsensitiveCompare(a: string, b: string): boolean
  * operations such as surface IDs and Tally numbers.
  * 
  * @param s The string to be parsed
+ * @param throw_error [true] An MCNP exception will be thrown if set to true and the provided string is not a pure integer
  * @returns the pure integer value or NaN if the provided string is not a pure integer.
  */
-export function ParseOnlyInt(s: string): number
+export function ParseOnlyInt(s: string, throw_error=true): number
 {
 	if(s.match('[\.e\+]'))
-		return NaN;
+		ThrowPureIntegerError(s);
 	return parseInt(s);
 }
 
@@ -156,13 +158,8 @@ function RepeatShorthand(n_string: string, num_repeats_string: string): Array<nu
 
 	var num_repeats = ParseOnlyInt(num_repeats_string);
 
-	// number of repeats must be a pure int for MCNP to be able to run
-	if(isNaN(num_repeats))
-	{
-		// todo throw error
-	}
 	// Any number <= 0 will not repeat the provided number
-	else if(num_repeats < 0)	
+	if(num_repeats < 0)	
 		num_repeats = 0;
 
 	var n = parseFloat(n_string);
@@ -194,13 +191,8 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 
 	var num = ParseOnlyInt(n_string);
 
-	// number of points must be a pure int for MCNP to be able to run
-	if(isNaN(num))
-	{
-		// todo throw error
-	}
 	// Any number <= 0 will result in nothing
-	else if(num <= 0)	
+	if(num <= 0)	
 		return interp_array;
 
 	var left = parseFloat(left_bound);
@@ -218,13 +210,8 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 
 	var num = ParseOnlyInt(n_string);
 
-	// number of points must be a pure int for MCNP to be able to run
-	if(isNaN(num))
-	{
-		// todo throw error
-	}
 	// Any number <= 0 will result in nothing
-	else if(num <= 0)	
+	if(num <= 0)	
 		return interp_array;
 
 	var left_log = Math.log10(parseFloat(left_bound));
@@ -253,4 +240,10 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
 
 	interp_array.push(num*factor);
 	return interp_array;
+}
+
+export function ThrowPureIntegerError(bad_num: string)
+{
+	let num = parseFloat(bad_num);
+	throw new MCNPException(`Expected a pure integer but got a float: ${bad_num}`,`${num.toFixed()} would be acceptable` );
 }

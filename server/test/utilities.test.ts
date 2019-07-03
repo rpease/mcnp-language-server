@@ -133,7 +133,7 @@ describe('Utilities', () =>
 		let length_81_3 = "1 RPP 1 2  -10 							                8";
 		
 		let new_line = utilities.ReplaceTabsInLine(length_81_1);
-
+		
 		expect(utilities.ReplaceTabsInLine(length_81_1).length).to.equal(81);
 		expect(utilities.ReplaceTabsInLine(length_81_2).length).to.equal(81);
 		expect(utilities.ReplaceTabsInLine(length_81_3).length).to.equal(81);
