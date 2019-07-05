@@ -1,7 +1,7 @@
 import { Argument } from './argument';
-import { ARGUMENT } from '../regexpressions';
+import { ARGUMENT, SHORTHAND_ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
-import { ReplaceTabsInLine } from '../utilities';
+import { ReplaceTabsInLine, ConvertShorthandFeature } from '../utilities';
 
 export class MCNPLine
 {
@@ -34,15 +34,27 @@ export class Statement
 		this.HeaderComment = header;
 		this.StartLine = text[0].LineNumber;
 
+		var contains_shorthand = false;
 		text.forEach(line => 
 		{
 			this.RawText += line.Contents;
-			this.AppendArguments(line)
+			contains_shorthand = contains_shorthand || this.ConvertLineToArguments(line);
 		});
+
+		if(contains_shorthand)
+			this.ConvertShorthand();
 	}
 	
-	private AppendArguments(line: MCNPLine)
+	/**
+	 * Converts an MCNP Line to the arguments that make-up that line and adds them to the current Statement's
+	 * list of arguments. Order is maintained.
+	 * Returns true if the line contains any shorthand (i.e. r, m, j, i, ilog)
+	 * @param line The line to convert to arguments.
+	 */
+	private ConvertLineToArguments(line: MCNPLine): boolean
 	{
+		var contains_shorthand = false;
+
 		var comment_split = line.Contents.split("$");
 		
 		if(comment_split.length > 1)		
@@ -59,7 +71,9 @@ export class Statement
 			mcnp_interp = ReplaceTabsInLine(vs_code_interp);
 
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
-		var mcnp_arg_re = new RegExp(ARGUMENT,'g');		
+		var mcnp_arg_re = new RegExp(ARGUMENT,'g');	
+		
+		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'g');
 			
 		let line_too_long_start_index = -1;
 		let line_too_long_end_index = -1;
@@ -74,6 +88,10 @@ export class Statement
 
 			if (m == null)
 				break;
+
+			// Does the contents of this argument contain any shorthand?
+			if(!contains_shorthand && shorthand_re.exec(v[0]) != null)
+				contains_shorthand = true;
 
 			var arg = new Argument();
 			arg.Contents = v[0];
@@ -112,6 +130,49 @@ export class Statement
 				line_too_long_start_index, 
 				line_too_long_end_index, 
 				line_too_long_end_verbose_index);	
+
+		return contains_shorthand;
+	}
+
+	/**
+	 * Converts all shorthand (i.e. r, m, j, i, ilog) arguments to multiple arguments and maintains the 
+	 * correct ordering of the all Arguments in this statement.
+	 */
+	private ConvertShorthand()
+	{
+		var unconverted_args = this.Arguments;
+
+		this.Arguments = new Array<Argument>();
+		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'g');		
+		for (let i = 0; i < unconverted_args.length; i++) 
+		{
+			const arg = unconverted_args[i];
+
+			var shorthand = shorthand_re.exec(arg.Contents)
+
+			if(shorthand != null)
+			{
+				var pre_contents = null;
+				if(i != 0)
+					pre_contents = unconverted_args[i-1].Contents;
+
+				var post_contents = null;
+				if(i != unconverted_args.length-1)
+					post_contents = unconverted_args[i+1].Contents;
+
+				try 
+				{
+					var conversion = ConvertShorthandFeature(
+						pre_contents,
+						arg.Contents,
+						post_contents);
+				} 
+				catch (MCNPException) 
+				{
+					this.Errors.push();
+				}
+			}			
+		}		
 	}
 
 	private CreateLineTooLongError(line_num:number, start: number, end: number, verbose_end: number)

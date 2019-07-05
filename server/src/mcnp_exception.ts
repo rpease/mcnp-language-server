@@ -25,4 +25,9 @@ export class MCNPException extends Error
 		this.stack = message;
 		this.additional_message = additional_message;
 	}
+
+	CreateArgumentException(arg: Argument): MCNPArgumentException
+	{
+		return new MCNPArgumentException(arg, this.stack, this.additional_message);
+	}
 }
