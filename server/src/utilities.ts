@@ -273,6 +273,9 @@ function DefaultShorthand(sequence_string: string): Array<number>
 
 	var num = ParseOnlyInt(sequence_string);
 
+	if(num <= 0)
+		throw new MCNPException("Must provide a pure integer greater than zero","Ints less than or equal to 0 do not cause MCNP to crash but do produce unreliable results")
+
 	return interp_array;
 }
 

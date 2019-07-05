@@ -405,15 +405,12 @@ describe('ShorthandInput', () =>
 		var string_input = '3 1J taco';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
-
-		// todo what about '3 -1j 4'?
-		expect(true).to.be.false;
 	});
 
 	it('ConvertShorthandFeature_Jump_BadNum', () => 
 	{			
 		// Bad arguments for the number of numbers added
-		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1"];
+		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1","-1","-2","0"];
 	
 		var preceding = "2";
 		bad_n.forEach(element => 
