@@ -14,4 +14,4 @@ export const NUMBER = "\d+(\.\d+)"
 
 export const ALPHABET = "[a-zA-Z]"
 
-export const SHORTHAND_ARGUMENT = "(?i)(r|m|j|i|ilog)$"
+export const SHORTHAND_ARGUMENT = "(r|m|j|i|ilog)$"
