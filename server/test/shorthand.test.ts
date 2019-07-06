@@ -137,7 +137,7 @@ describe('ShorthandInput', () =>
 
 		// 2 5 1i 30 = 2 5 17.5 30
 		expected = [17.5];
-		string_input = '5 1i 30';
+		string_input = '5 1I 30';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));		
 	});
@@ -226,7 +226,7 @@ describe('ShorthandInput', () =>
 
 		// 0.01 1ilog 10 = 0.01 3.1623E-01 10.0
 		expected = [3.1623E-01];
-		string_input = '0.01 1ilOG 10';
+		string_input = '0.01 1ILOG 10';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
@@ -315,7 +315,7 @@ describe('ShorthandInput', () =>
 
 		// 1 -2m = 1 -2
 		expected = [-2];
-		string_input = '1 -2m';
+		string_input = '1 -2M';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
@@ -327,7 +327,7 @@ describe('ShorthandInput', () =>
 
 		// 5.5 1m = 5.5 5.5
 		expected = [5.5];
-		string_input = '5.5 1m';
+		string_input = '5.5 1M';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
@@ -339,7 +339,7 @@ describe('ShorthandInput', () =>
 
 		// 1 3e1m = 1 30
 		expected = [30];
-		string_input = '1 3e1m';
+		string_input = '1 3e1M';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
@@ -351,7 +351,7 @@ describe('ShorthandInput', () =>
 
 		// 1 2.0e-1m = 1 0.2
 		expected = [0.2];
-		string_input = '1 2.0e-1m';
+		string_input = '1 2.0e-1M';
 		array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 	});
@@ -382,7 +382,7 @@ describe('ShorthandInput', () =>
 	{				
 		// ex.) 3 2J 1e-10 = 3 ? ? 1e-10
 		var expected = [];
-		var string_input = '3 2J 1e-10';
+		var string_input = '3 2j 1e-10';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
@@ -397,7 +397,7 @@ describe('ShorthandInput', () =>
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
 		var expected = [];
-		var string_input = 'taco 1J 1e-10';
+		var string_input = 'taco 1j 1e-10';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
@@ -433,5 +433,40 @@ describe('ShorthandInput', () =>
 		// ex.) 1 4i 3m
 		// ex.) 1 3i j
 		expect(true).to.be.false;
+	});
+
+	it('ConvertShorthandFeature_Bad_Mnemonics', () => 
+	{			
+		let pre = '100';
+		let post = '500';
+		let good_arg = '2';
+
+		let good_mnemonics = ['r','m','i','ilog','j']
+
+		let bad_trailing = ['r','m','i','ilog','j','+','2','abc']
+		
+		for (const good of good_mnemonics) 
+		{
+			for (const bad of bad_trailing) 
+			{
+				var shorthand = good_arg + good + bad;
+				console.log(shorthand);
+
+				expect(() => utilities.ConvertShorthandFeature(pre, shorthand, post),"Should have thrown and error.").to.throw(MCNPException);
+			}
+		}
+	});
+
+	it('ConvertShorthandFeature_No_Mnemonics', () => 
+	{			
+		let pre = '100';
+		let post = '500';
+
+		let bad_shorthand = ['2','',' ','3$','3h','3q','3log','|'];		
+
+		for (const b of bad_shorthand) 
+		{
+			expect(() => utilities.ConvertShorthandFeature(pre, b, post),"Should have thrown and error.").to.throw(MCNPException);
+		}		
 	});
 });
