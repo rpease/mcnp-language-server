@@ -37,11 +37,11 @@ describe('ShorthandInput', () =>
 
 	it('ConvertShorthandFeature_Repeat_Space', () => 
 	{			
-		let expected = [5];
+		let expected = [5.5];
 
 		let array_input = [];
-		array_input.push(['5','r']);
-		array_input.push(['5','R']);
+		array_input.push(['5.5','r']);
+		array_input.push(['5.5','R']);
 
 		array_input.forEach(element => 
 		{

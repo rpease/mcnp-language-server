@@ -2,6 +2,7 @@ import { Argument } from './argument';
 import { ARGUMENT, SHORTHAND_ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
 import { ReplaceTabsInLine, ConvertShorthandFeature } from '../utilities';
+import { MCNPException } from '../mcnp_exception';
 
 export class MCNPLine
 {
@@ -143,13 +144,14 @@ export class Statement
 		var unconverted_args = this.Arguments;
 
 		this.Arguments = new Array<Argument>();
-		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'g');		
+		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'i');		
 		for (let i = 0; i < unconverted_args.length; i++) 
 		{
 			const arg = unconverted_args[i];
 
 			var shorthand = shorthand_re.exec(arg.Contents)
 
+			// Does this argument contain shorthand?
 			if(shorthand != null)
 			{
 				var pre_contents = null;
@@ -158,20 +160,43 @@ export class Statement
 
 				var post_contents = null;
 				if(i != unconverted_args.length-1)
-					post_contents = unconverted_args[i+1].Contents;
+					post_contents = unconverted_args[i+1].Contents
 
+				var conversion = Array<number>();
 				try 
 				{
-					var conversion = ConvertShorthandFeature(
+					conversion = ConvertShorthandFeature(
 						pre_contents,
 						arg.Contents,
 						post_contents);
 				} 
-				catch (MCNPException) 
+				catch (e) 
 				{
-					this.Errors.push();
+					if(e instanceof MCNPException)					
+						this.Errors.push(e.CreateArgumentException(arg).diagnostic);
+					else
+						throw e;				
 				}
-			}			
+
+				// if the shorthand is converted to nothing or invalid
+				if(conversion.length == 0)
+					this.Arguments.push(arg);
+				else
+				{
+					// Add new arguments that will have the same file-position
+					// as the original shorthand argument
+					for (const num of conversion) 
+					{
+						let new_arg: Argument = {
+							Contents: num.toString(),
+							FilePosition: arg.FilePosition
+						}
+						this.Arguments.push(new_arg);
+					}
+				}
+			} // end if shorthand
+			else
+				this.Arguments.push(arg);			
 		}		
 	}
 
