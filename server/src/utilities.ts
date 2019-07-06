@@ -164,17 +164,29 @@ export function CreateErrorDiagnostic(arg: Argument, message: string, severity=D
  */
 export function ConvertShorthandFeature(preceding: string, shorthand: string, post?: string ): Array<number>
 {
-	shorthand = shorthand.toLowerCase();
-	if(shorthand.includes('r'))		
-		return RepeatShorthand(preceding, shorthand.split('r')[0]);		
-	else if(shorthand.includes('ilog'))
-		return LogInterpolateShorthand(shorthand.split('ilog')[0], preceding, post);		
-	else if(shorthand.includes('i'))
-		return LinearInterpolateShorthand(shorthand.split('i')[0], preceding, post);		
-	else if(shorthand.includes('m'))	
-		return MultiplyShorthand(preceding, shorthand.split('m')[0]);		
-	else if(shorthand.includes('j'))	
-		return DefaultShorthand(shorthand.split('j')[0]);
+	var shorthand_re = new RegExp("(\\S*?)(r|m|j|ilog|i)(\\S*)",'i');
+
+	var breakdown = shorthand_re.exec(shorthand);
+
+	if( breakdown == null)
+		throw new MCNPException(`${shorthand} is not a valid shorthand text`);
+
+	var mnemonic = breakdown[2].toLowerCase();
+	var shorthand_arg = breakdown[1];
+
+	if(breakdown[3] != "")
+		throw new MCNPException(`Trailing text ${breakdown[3]} not allowed after shorthand mnemonics`);
+		
+	if(mnemonic == 'r')		
+		return RepeatShorthand(preceding, shorthand_arg);		
+	else if(mnemonic == 'ilog')
+		return LogInterpolateShorthand(shorthand_arg, preceding, post);		
+	else if(mnemonic == 'i')
+		return LinearInterpolateShorthand(shorthand_arg, preceding, post);		
+	else if(mnemonic == 'm')	
+		return MultiplyShorthand(preceding, shorthand_arg);		
+	else if(mnemonic == 'j')	
+		return DefaultShorthand(shorthand_arg);
 
 	return new Array<number>();
 }
