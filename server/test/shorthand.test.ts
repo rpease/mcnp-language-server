@@ -301,6 +301,20 @@ describe('ShorthandInput', () =>
 		}		
 	});
 
+	it('ConvertShorthandFeature_LogInterp_NegativePrePost', () => 
+	{	
+		var shorthand = "2ilog";
+
+		for(let i = -10; i < 10; i++)
+		{
+			for(let j = -10; j < 10; j++)
+			{
+				if(i <= 0 || j <= 0)
+				expect(() => utilities.ConvertShorthandFeature(i.toString(), shorthand, j.toString()), "Should have thrown and error.").to.throw(MCNPException);
+			}
+		}			
+	});
+
 	it('ConvertShorthandFeature_Multiply', () => 
 	{				
 		var expected = [];
