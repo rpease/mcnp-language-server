@@ -226,8 +226,13 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 	if(num <= 0)	
 		return interp_array;
 
-	var left = parseFloat(left_bound);
-	var right = parseFloat(right_bound);
+	var left = Number(left_bound);
+	if(isNaN(left))
+		throw new MCNPException(`${left_bound} is not a valid number to be start interpolation`);
+
+	var right = Number(right_bound);
+	if(isNaN(right))
+		throw new MCNPException(`${right_bound} is not a valid number to be end interpolation`);
 	
 	return Interpolate(left, right, num);	
 }
@@ -245,8 +250,16 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	if(num <= 0)	
 		return interp_array;
 
-	var left_log = Math.log10(parseFloat(left_bound));
-	var right_log = Math.log10(parseFloat(right_bound));
+	var left = Number(left_bound);
+	if(isNaN(left) || left <= 0)
+		throw new MCNPException(`${left_bound} is not a valid number to be start logarithmic interpolation`);
+
+	var right = Number(right_bound);
+	if(isNaN(right) || right <= 0)
+		throw new MCNPException(`${right_bound} is not a valid number to be end logarithmic interpolation`);
+	
+	var left_log = Math.log10(left);
+	var right_log = Math.log10(right);
 	
 	var log_interp =  Interpolate(left_log, right_log, num);
 
@@ -264,8 +277,13 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
 	if(factor_string == "")
 		throw new MCNPException('Must provide a number for multiplication shorthand');
 
-	var num = parseFloat(n_string);
-	var factor = parseFloat(factor_string);
+	var num = Number(n_string);
+	if(isNaN(num))
+		throw new MCNPException(`${n_string} is not a valid number to be multiplied`);
+
+	var factor = Number(factor_string);
+	if(isNaN(factor))
+		throw new MCNPException(`${factor_string} is not a valid number to multiply ${num} by`);
 
 	interp_array.push(num*factor);
 	return interp_array;
@@ -279,6 +297,9 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
 function DefaultShorthand(sequence_string: string): Array<number>
 {
 	var interp_array = Array<number>();
+
+	if(sequence_string == "")
+		sequence_string = '1';
 
 	var num = ParsePureInt(sequence_string);
 
