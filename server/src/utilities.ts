@@ -98,11 +98,17 @@ export function CaseInsensitiveCompare(a: string, b: string): boolean
  * @param throw_error [true] An MCNP exception will be thrown if set to true and the provided string is not a pure integer
  * @returns the pure integer value or NaN if the provided string is not a pure integer.
  */
-export function ParseOnlyInt(s: string, throw_error=true): number
+export function ParsePureInt(s: string, throw_error=true): number
 {
 	if(s.match('[\.e\+]'))
-		ThrowPureIntegerError(s);
-	return parseInt(s);
+	{
+		if(throw_error)
+			ThrowPureIntegerError(s);
+		else
+			return NaN;
+	}
+		
+	return Number(s);
 }
 
 /**
@@ -178,13 +184,16 @@ function RepeatShorthand(n_string: string, num_repeats_string: string): Array<nu
 	if(num_repeats_string == "")
 		num_repeats_string = "1";
 
-	var num_repeats = ParseOnlyInt(num_repeats_string);
+	var num_repeats = ParsePureInt(num_repeats_string);
 
 	// Any number <= 0 will not repeat the provided number
 	if(num_repeats < 0)	
 		num_repeats = 0;
 
-	var n = parseFloat(n_string);
+	var n = Number(n_string);
+
+	if(isNaN(n))
+		throw new MCNPException(`${n_string} is not a valid number to be repeated ${num_repeats} times`);
 
 	var repeat_array = Array<number>();
 	for (let i = 0; i < num_repeats; i++) 	
@@ -211,7 +220,7 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 	if(n_string == "")
 		n_string = "1";
 
-	var num = ParseOnlyInt(n_string);
+	var num = ParsePureInt(n_string);
 
 	// Any number <= 0 will result in nothing
 	if(num <= 0)	
@@ -230,7 +239,7 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	if(n_string == "")
 		n_string = "0";
 
-	var num = ParseOnlyInt(n_string);
+	var num = ParsePureInt(n_string);
 
 	// Any number <= 0 will result in nothing
 	if(num <= 0)	
@@ -271,7 +280,7 @@ function DefaultShorthand(sequence_string: string): Array<number>
 {
 	var interp_array = Array<number>();
 
-	var num = ParseOnlyInt(sequence_string);
+	var num = ParsePureInt(sequence_string);
 
 	if(num <= 0)
 		throw new MCNPException("Must provide a pure integer greater than zero","Ints less than or equal to 0 do not cause MCNP to crash but do produce unreliable results")

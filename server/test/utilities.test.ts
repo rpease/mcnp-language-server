@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import * as utilities from '../src/utilities';
 import { Particle } from '../src/enumerations';
 import { EPERM } from 'constants';
+import { MCNPException } from '../src/mcnp_exception';
 
 
 function CompareArrays(array1, array2): void
@@ -153,8 +154,14 @@ describe('Utilities', () =>
 	
 	it('ParseOnlyInt_Integers', () => 
 	{				
-		for (let index = -100; index < 100; index++) 		
-			expect(utilities.ParseOnlyInt(index.toString())).to.be.equal(index);	
+		for (let index = -100; index < 100; index++) 	
+		{
+			var pure_int_string = index.toString();
+
+			expect(utilities.ParsePureInt(pure_int_string, true)).to.be.equal(index);
+			expect(utilities.ParsePureInt(pure_int_string, false)).to.be.equal(index);
+		}	
+				
 	});
 
 	it('ParseOnlyInt_Doubles', () => 
@@ -165,7 +172,9 @@ describe('Utilities', () =>
 			{
 				let string_base = i.toString();
 				string_base += "." + j.toString();
-				expect(utilities.ParseOnlyInt(string_base)).to.be.NaN;
+
+				expect(() => utilities.ParsePureInt(string_base, true)).to.throw(MCNPException);
+				expect(utilities.ParsePureInt(string_base, false)).to.be.NaN;
 			} 	
 		}		
 	});
@@ -182,9 +191,22 @@ describe('Utilities', () =>
 					let string_base = i.toString();
 					string_base += "." + j.toString();
 					string_base += "E" + e.toString();					
-					expect(utilities.ParseOnlyInt(string_base)).to.be.NaN;
+					
+					expect(() => utilities.ParsePureInt(string_base, true)).to.throw(MCNPException);
+					expect(utilities.ParsePureInt(string_base, false)).to.be.NaN;
 				}				
 			} 	
 		}		
+	});
+
+	it('ParseOnlyInt_TrailingString', () => 
+	{				
+		for (let index = -100; index < 100; index++)
+		{
+			let bad_string = index.toString() + 'abcdefg';
+
+			expect(() => utilities.ParsePureInt(bad_string, true)).to.throw(MCNPException);
+			expect(utilities.ParsePureInt(bad_string, false)).to.be.NaN;
+		} 						
 	});
 });
