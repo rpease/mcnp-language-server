@@ -35,7 +35,7 @@ describe('ShorthandInput', () =>
 		});
 	});
 
-	it('ConvertShorthandFeature_Repeat_Space', () => 
+	it('ConvertShorthandFeature_Repeat_Nothing', () => 
 	{			
 		let expected = [5.5];
 
