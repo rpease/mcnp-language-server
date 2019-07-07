@@ -160,9 +160,9 @@ export function CreateErrorDiagnostic(arg: Argument, message: string, severity=D
  * @param preceding The contents of the argument directly before the shorthand
  * @param shorthand The string containing the shorthand (i.e. 6ilog)
  * @param post The contents of the argument directly after the shorthand. Only required for i and ilog
- * @returns The array of numbers that ONLY replace the shorthand. Does not include the preceding or post numbers.
+ * @returns The array of strings that ONLY replace the shorthand. Does not include the preceding or post numbers.
  */
-export function ConvertShorthandFeature(preceding: string, shorthand: string, post?: string ): Array<number>
+export function ConvertShorthandFeature(preceding: string, shorthand: string, post?: string ): Array<string>
 {
 	var shorthand_re = new RegExp("(\\S*?)(r|m|j|ilog|i)(\\S*)",'i');
 
@@ -186,12 +186,12 @@ export function ConvertShorthandFeature(preceding: string, shorthand: string, po
 	else if(mnemonic == 'm')	
 		return MultiplyShorthand(preceding, shorthand_arg);		
 	else if(mnemonic == 'j')	
-		return DefaultShorthand(shorthand_arg);
+		return DefaultShorthand(shorthand_arg);	
 
-	return new Array<number>();
+	return new Array<string>(shorthand);
 }
 
-function RepeatShorthand(n_string: string, num_repeats_string: string): Array<number>
+function RepeatShorthand(n_string: string, num_repeats_string: string): Array<string>
 {
 	if(num_repeats_string == "")
 		num_repeats_string = "1";
@@ -207,9 +207,9 @@ function RepeatShorthand(n_string: string, num_repeats_string: string): Array<nu
 	if(isNaN(n))
 		throw new MCNPException(`${n_string} is not a valid number to be repeated ${num_repeats} times`);
 
-	var repeat_array = Array<number>();
+	var repeat_array = Array<string>();
 	for (let i = 0; i < num_repeats; i++) 	
-		repeat_array.push(n);
+		repeat_array.push(n.toExponential());
 		
 	return repeat_array;
 }
@@ -225,9 +225,9 @@ function Interpolate(left: number, right:number, n:number): Array<number>
 	return interp_array;
 }
 
-function LinearInterpolateShorthand(n_string: string, left_bound: string, right_bound: string): Array<number>
+function LinearInterpolateShorthand(n_string: string, left_bound: string, right_bound: string): Array<string>
 {
-	var interp_array = Array<number>();
+	var interp_array = Array<string>();
 
 	if(n_string == "")
 		n_string = "1";
@@ -246,12 +246,15 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 	if(isNaN(right))
 		throw new MCNPException(`${right_bound} is not a valid number to be end interpolation`);
 	
-	return Interpolate(left, right, num);	
+	Interpolate(left, right, num).forEach(element => {
+		interp_array.push(element.toExponential());
+	});
+	return interp_array;
 }
 
-function LogInterpolateShorthand(n_string: string, left_bound: string, right_bound: string): Array<number>
+function LogInterpolateShorthand(n_string: string, left_bound: string, right_bound: string): Array<string>
 {
-	var interp_array = Array<number>();
+	var interp_array = Array<string>();
 
 	if(n_string == "")
 		n_string = "0";
@@ -273,18 +276,15 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	var left_log = Math.log10(left);
 	var right_log = Math.log10(right);
 	
-	var log_interp =  Interpolate(left_log, right_log, num);
-
-	log_interp.forEach(element => {
-		interp_array.push(Math.pow(10.0, element));
-	});
-
+	Interpolate(left_log, right_log, num).forEach(element => {
+		interp_array.push(Math.pow(10.0, element).toExponential());
+	});	
 	return interp_array;
 }
 
-function MultiplyShorthand(n_string: string, factor_string: string): Array<number>
+function MultiplyShorthand(n_string: string, factor_string: string): Array<string>
 {
-	var interp_array = Array<number>();
+	var interp_array = Array<string>();
 
 	if(factor_string == "")
 		throw new MCNPException('Must provide a number for multiplication shorthand');
@@ -297,7 +297,8 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
 	if(isNaN(factor))
 		throw new MCNPException(`${factor_string} is not a valid number to multiply ${num} by`);
 
-	interp_array.push(num*factor);
+	let new_num = num*factor;
+	interp_array.push(new_num.toExponential());
 	return interp_array;
 }
 
@@ -306,9 +307,9 @@ function MultiplyShorthand(n_string: string, factor_string: string): Array<numbe
  * Only the value used the 'j' is read to ensure it is at least a valid number.
  * @param sequence_string The number (i.e. '2' in '2j') of default values
  */
-function DefaultShorthand(sequence_string: string): Array<number>
+function DefaultShorthand(sequence_string: string): Array<string>
 {
-	var interp_array = Array<number>();
+	var interp_array = Array<string>();
 
 	if(sequence_string == "")
 		sequence_string = '1';
@@ -318,6 +319,9 @@ function DefaultShorthand(sequence_string: string): Array<number>
 	if(num <= 0)
 		throw new MCNPException("Must provide a pure integer greater than zero","Ints less than or equal to 0 do not cause MCNP to crash but do produce unreliable results")
 
+	for (let index = 0; index < num; index++)
+		interp_array.push('j');
+	
 	return interp_array;
 }
 

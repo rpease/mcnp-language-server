@@ -162,7 +162,7 @@ export class Statement
 				if(i != unconverted_args.length-1)
 					post_contents = unconverted_args[i+1].Contents
 
-				var conversion = Array<number>();
+				var conversion = Array<string>();
 				try 
 				{
 					conversion = ConvertShorthandFeature(
@@ -176,24 +176,21 @@ export class Statement
 						this.Errors.push(e.CreateArgumentException(arg).diagnostic);
 					else
 						throw e;				
-				}
 
-				// if the shorthand is converted to nothing or invalid
-				if(conversion.length == 0)
 					this.Arguments.push(arg);
-				else
-				{
-					// Add new arguments that will have the same file-position
-					// as the original shorthand argument
-					for (const num of conversion) 
-					{
-						let new_arg: Argument = {
-							Contents: num.toString(),
-							FilePosition: arg.FilePosition
-						}
-						this.Arguments.push(new_arg);
-					}
 				}
+				
+				// Add new arguments that will have the same file-position
+				// as the original shorthand argument
+				for (const num of conversion) 
+				{
+					let new_arg: Argument = {
+						Contents: num,
+						FilePosition: arg.FilePosition
+					}
+					this.Arguments.push(new_arg);
+				}
+				
 			} // end if shorthand
 			else
 				this.Arguments.push(arg);			

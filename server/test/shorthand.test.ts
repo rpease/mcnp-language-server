@@ -2,19 +2,23 @@ import { expect } from 'chai';
 import * as utilities from '../src/utilities';
 import { MCNPException } from '../src/mcnp_exception';
 
-function CompareArrays(array1, array2): void
+function CompareArrays(test, expected): void
 {
-	expect(array1.length).to.be.equal(array2.length);
+	expect(test.length).to.be.equal(expected.length);
 
-	for (let index = 0; index < array1.length; index++)
+	for (let index = 0; index < expected.length; index++)
 	{ 
-		var a = array1[index];
-		var b = array2[index];
+		var a = test[index];
+		var b = expected[index];
 
-		if(typeof a === "number")		
+		if(typeof b === "number")
+		{
+			if(typeof b === "string")
+				b = parseFloat(b);
 			expect(Math.abs(a-b)).to.be.lessThan(1e-4);
+		}			
 		else		
-			expect(array1[index]).to.be.equal(array2[index]);
+			expect(test[index]).to.be.equal(expected[index]);
 	}
 }
 
@@ -395,27 +399,27 @@ describe('ShorthandInput', () =>
 	it('ConvertShorthandFeature_Jump', () => 
 	{				
 		// ex.) 3 2J 1e-10 = 3 ? ? 1e-10
-		var expected = [];
+		var expected = ['j','j'];
 		var string_input = '3 2j 1e-10';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
-		var expected = [];
+		var expected = ['j'];
 		var string_input = '3 J 1e-10';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
-		var expected = [];
+		var expected = ['j'];
 		var string_input = '3 1J 1e-10';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
-		var expected = [];
+		var expected = ['j'];
 		var string_input = 'taco 1j 1e-10';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
 
-		var expected = [];
+		var expected = ['j'];
 		var string_input = '3 1J taco';
 		var array_input = string_input.split(' ');
 		expect(CompareArrays(utilities.ConvertShorthandFeature(array_input[0], array_input[1], array_input[2]),expected));
