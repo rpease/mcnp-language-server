@@ -239,4 +239,255 @@ describe('Statement_Shorthand_Replacement', () =>
 		expect(statement.Arguments.length).to.be.equal(3); // ['2r','4','5']
 		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
 	});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+	it('Linear_Normal', () =>
+	{		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['IMP:n','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+
+				for (let n = 0; n < 10; n++) 
+				{
+					let shorthand = n.toString() + 'i';
+
+					let line_string = pre + shorthand + " " + post;
+					let statement = StringToStatement(line_string, line_num);
+
+					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + n);
+					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
+				}
+			}			
+		}
+	});
+
+	it('Linear_Ignore', () =>
+	{		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+
+				for (let n = -10; n <= 0; n++) 
+				{
+					let shorthand = n.toString() + 'i';
+
+					let line_string = pre + shorthand + " " + post;
+					let statement = StringToStatement(line_string, line_num);
+
+					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 0);
+					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
+				}
+			}			
+		}
+	});
+
+	it('Linear_Nothing', () =>
+	{		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+				
+				let shorthand = 'i';
+
+				let line_string = pre + shorthand + " " + post;
+				let statement = StringToStatement(line_string, line_num);
+
+				expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+				ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
+				
+			}			
+		}
+	});
+
+	it('Linear_BadNum', () =>
+	{		
+		// Bad arguments for the number of numbers added
+		var bad_n = ["2.0","-2.0","2e0","2e+1","2e-1"];
+		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+
+				for (const bad of bad_n)
+				{
+					let shorthand = bad.toString() + 'i';
+
+					let line_string = pre + shorthand + " " + post;
+					let statement = StringToStatement(line_string, line_num);
+	
+					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
+				}				
+			}			
+		}
+	});	
+
+	it('Linear_BadPre', () =>
+	{
+		var bad_pre = ["a","+","imp:n"];
+
+		let line_num = 12;
+
+		for (const bad of bad_pre)
+		{	
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2', bad];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+				
+				let shorthand = '2i';
+
+				let line_string = pre + shorthand + " " + post;
+				let statement = StringToStatement(line_string, line_num);
+
+				expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+				ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);							
+			}
+		}
+	});
+
+	it('Linear_BadPost', () =>
+	{
+		var bad_post = ["a","+","imp:n"];
+
+		let line_num = 12;
+
+		for (const bad of bad_post)
+		{	
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2', j.toString()];
+				let post_string = [bad,'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+				
+				let shorthand = '2i';
+
+				let line_string = pre + shorthand + " " + post;
+				let statement = StringToStatement(line_string, line_num);
+
+				expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+				ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);							
+			}
+		}
+	});
+
+	it('Linear_BadPrePost', () =>
+	{
+		var bad_prepost = ["a","+","imp:n"];
+
+		let line_num = 12;
+
+		for (const bad_pre of bad_prepost)
+		{	
+			for (const bad_post of bad_prepost)
+			{	
+				for (let j = -10; j < 10; j++) 
+				{
+					let pre_string = ['E4','1','2', bad_pre];
+					let post_string = [bad_post,'5','9'];	
+					
+					let pre = ArrayToString(pre_string);
+					let post = ArrayToString(post_string);
+					
+					let shorthand = '2i';
+
+					let line_string = pre + shorthand + " " + post;
+					let statement = StringToStatement(line_string, line_num);
+
+					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);							
+				}
+			}
+		}
+	});
+
+	it('Linear_Empty', () =>
+	{
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Empty Pre
+		let line_num = 10;
+
+		let shorthand = '2i';
+		let post = '4 5'
+		let line = `${shorthand} ${post}`;
+
+		let statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(3); // ['2r','4','5']
+		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Empty Post
+		line_num = 10;
+
+		shorthand = '2i';
+		let pre = '4 5'
+		line = `${pre} ${shorthand}`;
+
+		statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(3); // ['4','5','2r']
+		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Empty Pre and Post
+
+		line_num = 10;
+
+		shorthand = '2i';
+		line = `${shorthand}`;
+
+		statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(1); // ['2r']
+		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
+	});
 });
