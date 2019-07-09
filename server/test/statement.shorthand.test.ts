@@ -475,7 +475,7 @@ describe('Statement_Shorthand_Replacement', () =>
 		statement = StringToStatement(line, line_num);
 
 		expect(statement.Arguments.length).to.be.equal(3); // ['4','5','2r']
-		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
+		ValidateArguments(pre.split(' '), shorthand, [], statement.Arguments);	
 
 		//////////////////////////////////////////////////////////////////////////////////////////////
 		// Empty Pre and Post
@@ -488,6 +488,6 @@ describe('Statement_Shorthand_Replacement', () =>
 		statement = StringToStatement(line, line_num);
 
 		expect(statement.Arguments.length).to.be.equal(1); // ['2r']
-		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
+		ValidateArguments([], shorthand, [], statement.Arguments);	
 	});
 });

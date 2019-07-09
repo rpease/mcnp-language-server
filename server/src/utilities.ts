@@ -241,9 +241,21 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 	if(num <= 0)	
 		return interp_array;
 
+	////////////////////////////////////
+	// Left bound checking and parsing
+	////////////////////////////////////
+	if(left_bound == '' || left_bound == null)
+		throw new MCNPException(`A number must precede the linear interpolation shorthand`);
+
 	var left = Number(left_bound);
 	if(isNaN(left))
 		throw new MCNPException(`${left_bound} is not a valid number to be start interpolation`);
+
+	////////////////////////////////////
+	// Right bound checking and parsing
+	////////////////////////////////////
+	if(right_bound == '' || right_bound == null)
+		throw new MCNPException(`A number must come directly come after the linear interpolation shorthand`);
 
 	var right = Number(right_bound);
 	if(isNaN(right))
@@ -268,9 +280,21 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	if(num <= 0)	
 		return interp_array;
 
+	////////////////////////////////////
+	// Left bound checking and parsing
+	////////////////////////////////////
+	if(left_bound == '' || left_bound == null)
+		throw new MCNPException(`A number must precede the logarithmic interpolation shorthand`);
+
 	var left = Number(left_bound);
 	if(isNaN(left) || left <= 0)
 		throw new MCNPException(`${left_bound} is not a valid number to be start logarithmic interpolation`);
+
+	////////////////////////////////////
+	// Right bound checking and parsing
+	////////////////////////////////////
+	if(right_bound == '' || right_bound == null)
+		throw new MCNPException(`A number must come directly come after the logarithmic interpolation shorthand`);
 
 	var right = Number(right_bound);
 	if(isNaN(right) || right <= 0)
