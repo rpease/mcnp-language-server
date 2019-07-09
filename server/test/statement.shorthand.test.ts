@@ -51,13 +51,18 @@ function ValidateArguments(pre_array: Array<string>, shorthand: string,
 	}	
 
 	try {
-		var expected_shorthand = ConvertShorthandFeature(pre_array[pre_array.length-1], shorthand, post_array[0]);
+
+		let pre = null;
+		if(pre_array.length > 0)
+			pre = pre_array[pre_array.length-1];
+
+		var expected_shorthand = ConvertShorthandFeature(pre, shorthand, post_array[0]);
 
 		for (const num of expected_shorthand) 
 		{
 			let arg = args[arg_index];
 
-			expect(num).to.be.equal(parseFloat(arg.Contents));
+			expect(parseFloat(num)).to.be.equal(parseFloat(arg.Contents));
 			expect(expected_position).to.be.equal(arg.FilePosition.character);
 
 			arg_index += 1;
@@ -196,7 +201,7 @@ describe('Statement_Shorthand_Replacement', () =>
 
 	it('Repeat_BadPre', () =>
 	{
-		var bad_pre = ["a","+","imp:n",""];
+		var bad_pre = ["a","+","imp:n"];
 
 		let post_arg = '0';
 		
@@ -216,8 +221,22 @@ describe('Statement_Shorthand_Replacement', () =>
 			let line_string = pre + " " + shorthand + " " + post;
 			let statement = StringToStatement(line_string, line_num);
 
-			expect(statement.Arguments.length).to.be.equal(1 + post_string.length + 1);
+			expect(statement.Arguments.length).to.be.equal(post_string.length + 2);
 			ValidateArguments([pre], shorthand, post_string, statement.Arguments);
 		}
+	});
+
+	it('Repeat_Empty', () =>
+	{
+		let line_num = 10;
+
+		let shorthand = '2r';
+		let post = '4 5'
+		let line = `${shorthand} ${post}`;
+
+		let statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(3); // ['2r','4','5']
+		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
 	});
 });

@@ -202,6 +202,9 @@ function RepeatShorthand(n_string: string, num_repeats_string: string): Array<st
 	if(num_repeats < 0)	
 		num_repeats = 0;
 
+	if(n_string == '' || n_string == null)
+		throw new MCNPException(`A number must precede the repeat shorthand`);
+	
 	var n = Number(n_string);
 
 	if(isNaN(n))
