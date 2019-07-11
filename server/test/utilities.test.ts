@@ -203,10 +203,20 @@ describe('Utilities', () =>
 	{				
 		for (let index = -100; index < 100; index++)
 		{
-			let bad_string = index.toString() + 'abcdefg';
+			let bad_string = index.toString() + 'abcfg';
 
 			expect(() => utilities.ParsePureInt(bad_string, true)).to.throw(MCNPException);
 			expect(utilities.ParsePureInt(bad_string, false)).to.be.NaN;
 		} 						
+	});
+
+	it('ParseOnlyInt_Nonsense', () => 
+	{				
+		let nonsense = ['a','-','+','$','c','@',')','?'];
+		for (const bad of nonsense) 
+		{
+			expect(() => utilities.ParsePureInt(bad, true)).to.throw(MCNPException);
+			expect(utilities.ParsePureInt(bad, false)).to.be.NaN;
+		}							
 	});
 });

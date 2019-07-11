@@ -100,7 +100,8 @@ export function CaseInsensitiveCompare(a: string, b: string): boolean
  */
 export function ParsePureInt(s: string, throw_error=true): number
 {
-	if(s.match('[\.e\+]'))
+	let int = Number(s);
+	if(s.match('[\.e\+]') || isNaN(int))
 	{
 		if(throw_error)
 			ThrowPureIntegerError(s);
@@ -249,7 +250,7 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 
 	var left = Number(left_bound);
 	if(isNaN(left))
-		throw new MCNPException(`${left_bound} is not a valid number to be start interpolation`);
+		throw new MCNPException(`${left_bound} is not a valid number to start interpolation`);
 
 	////////////////////////////////////
 	// Right bound checking and parsing
@@ -259,7 +260,7 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 
 	var right = Number(right_bound);
 	if(isNaN(right))
-		throw new MCNPException(`${right_bound} is not a valid number to be end interpolation`);
+		throw new MCNPException(`${right_bound} is not a valid number to be the end of interpolation`);
 	
 	Interpolate(left, right, num).forEach(element => {
 		interp_array.push(element.toExponential());
@@ -288,7 +289,7 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 
 	var left = Number(left_bound);
 	if(isNaN(left) || left <= 0)
-		throw new MCNPException(`${left_bound} is not a valid number to be start logarithmic interpolation`);
+		throw new MCNPException(`${left_bound} is not a valid number to start logarithmic interpolation`);
 
 	////////////////////////////////////
 	// Right bound checking and parsing
@@ -298,7 +299,7 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 
 	var right = Number(right_bound);
 	if(isNaN(right) || right <= 0)
-		throw new MCNPException(`${right_bound} is not a valid number to be end logarithmic interpolation`);
+		throw new MCNPException(`${right_bound} is not a valid number to be the end of logarithmic interpolation`);
 	
 	var left_log = Math.log10(left);
 	var right_log = Math.log10(right);
@@ -355,5 +356,8 @@ function DefaultShorthand(sequence_string: string): Array<string>
 export function ThrowPureIntegerError(bad_num: string)
 {
 	let num = parseFloat(bad_num);
-	throw new MCNPException(`Expected a pure integer but got a float: ${bad_num}`,`${num.toFixed()} would be acceptable` );
+	if(isNaN(num))
+		throw new MCNPException(`Expected a pure integer but got a string: ${bad_num}`);
+	else
+		throw new MCNPException(`Expected a pure integer but got a float: ${bad_num}`,`${num.toFixed()} might be acceptable` );
 }
