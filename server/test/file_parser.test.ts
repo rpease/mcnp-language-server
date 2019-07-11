@@ -21,6 +21,20 @@ function GetCommentSamples(): Array<string>
 	comments.push("c\r");
 	comments.push("c ");
 
+	// Tabs after C (from notepad++)
+	comments.push(" c	still a comment");
+	comments.push("  C	still a comment");
+	comments.push("   c	still a comment");
+	comments.push("    C	still a comment");
+	comments.push("    c	M83 1001.00c 1.0 ");
+
+	// Tab Characters after C
+	comments.push(" c\tstill a comment");
+	comments.push("  C\tstill a comment");
+	comments.push("   c\tstill a comment");
+	comments.push("    C\tstill a comment");
+	comments.push("    c\tM83 1001.00c 1.0 ");
+
 	return comments;
 }
 
@@ -29,14 +43,30 @@ function GetStatementSamples(): Array<string>
 	let statements = Array();
 	statements.push("16 14 -2.831e-3 (-32 -27 28) imp:n=200 imp:p=1  $ BF3 ");
 	statements.push("900 rpp -50 50 121.9 135 40 270");
-	statements.push("M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("This is the title line of the file.");
+	statements.push("M1 7014 78.084 8016 20.946 18000 0.46 ");	
 	statements.push(" M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("  M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("   M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("    M1 7014 78.084 8016 20.946 18000 0.46 ");
 	statements.push("    M1 7014 78.084 8016 20.946 18000 0.46 $ Comment");
 	statements.push("cThis is not a comment");
+
+	// Tabs after C (from notepad++)
+	statements.push("M1	7014 78.084 8016 20.946 18000 0.46 ");	
+	statements.push(" M1	7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("  M1	7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("   M1	7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("    M1	7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("    M1	7014 78.084 8016 20.946 18000 0.46 $ Comment");
+
+	// Tab Characters after C
+	statements.push("M1\t7014 78.084 8016 20.946 18000 0.46 ");	
+	statements.push(" M1\t7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("  M1\t7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("   M1\t7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("    M1\t7014 78.084 8016 20.946 18000 0.46 ");
+	statements.push("    M1\t7014 78.084 8016 20.946 18000 0.46 $ Comment");
 
 	return statements;
 }
@@ -51,6 +81,33 @@ function GetStatementExtensionSamples(): Array<string>
 	extensions.push("     cThis is not a comment");
 	extensions.push("     c This is also not a comment");
 	extensions.push("     0.25Y 0 0.75v2 0 0 0 0 0 0 0");
+
+	// Tabs Before (notepad++)
+	extensions.push("	u=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("	 u=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("	  u=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("	   u=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("	    cThis is not a comment");
+	extensions.push("	     c This is also not a comment");
+	extensions.push("		0.25Y 0 0.75v2 0 0 0 0 0 0 0");	
+
+	// Tab characters before
+	extensions.push("\tu=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("\tu=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("\tu=1 lat=1 erg=2.3 $ input parameters");
+	extensions.push("\tu=1 lat=1 erg=2.3 $ input parameters");
+
+	// Tabs after first argument (notepad++)
+	extensions.push("     u=1	lat=1 erg=2.3 $ input parameters");
+	extensions.push("      u=1	lat=1 erg=2.3 $ input parameters");
+	extensions.push("       u=1	lat=1 erg=2.3 $ input parameters");
+	extensions.push("        u=1	lat=1 erg=2.3 $ input parameters");
+
+	// Tab characters after first argument
+	extensions.push("     u=1\tlat=1 erg=2.3 $ input parameters");
+	extensions.push("      u=1\tlat=1 erg=2.3 $ input parameters");
+	extensions.push("       u=1\tlat=1 erg=2.3 $ input parameters");
+	extensions.push("        u=1\tlat=1 erg=2.3 $ input parameters");
 
 	return extensions;
 }

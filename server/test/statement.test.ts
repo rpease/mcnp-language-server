@@ -193,4 +193,26 @@ describe('Statement', () =>
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(79);
         expect(statement.GetDiagnostics().length).to.equal(0);
     });
+
+    it('IgnoreComments', () => 
+    {
+        let comments = []
+        comments.push("c	Water is cool");
+        comments.push("C	Water is tabs");
+        comments.push("c\tWater tab");
+        comments.push("c    Water has spaces");
+        comments.push("	c    Water has spaces");
+        comments.push(" c    Water has spaces");
+        comments.push("           c Water has spaces");
+
+        const line_number = 10;
+
+        for (const c of comments) 
+        {
+            var line = StringToMCNPLines(c, line_number);
+            var statement = new st.Statement(line,null);
+
+            expect(statement.Arguments.length).to.be.equal(0);
+        }          
+    });  
 });
