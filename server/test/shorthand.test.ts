@@ -182,7 +182,7 @@ describe('ShorthandInput', () =>
 	it('ConvertShorthandFeature_LinearInterp_BadPrePost', () => 
 	{		
 		// Bad arguments for the pre/post arguments
-		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"];
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog",""];
 
 		var preceding: string;
 		var post: string;
@@ -277,7 +277,7 @@ describe('ShorthandInput', () =>
 	it('ConvertShorthandFeature_LogInterp_BadPrePost', () => 
 	{	
 		// Bad arguments for the pre/post arguments
-		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog"];
+		var bad_pre_post = ["abc","#4","-","5r","5i","2j","3m","4ilog",""];
 
 		var preceding: string;
 		var post: string;
