@@ -36,11 +36,11 @@ export class Statement
 		this.StartLine = text[0].LineNumber;
 
 		var contains_shorthand = false;
-		text.forEach(line => 
+		for (const line of text)
 		{
 			this.RawText += line.Contents;
-			contains_shorthand = contains_shorthand || this.ConvertLineToArguments(line);
-		});
+			contains_shorthand = this.ConvertLineToArguments(line) || contains_shorthand;
+		}
 
 		if(contains_shorthand)
 			this.ConvertShorthand();
@@ -74,7 +74,7 @@ export class Statement
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
 		var mcnp_arg_re = new RegExp(ARGUMENT,'g');	
 		
-		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'g');
+		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'i');
 			
 		let line_too_long_start_index = -1;
 		let line_too_long_end_index = -1;

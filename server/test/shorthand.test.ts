@@ -241,7 +241,7 @@ describe('ShorthandInput', () =>
 		var string_input = '';
 		var array_input = [];
 
-		// 0.01 2 ilog 10 = 0.1 10
+		// 0.01 2 ilog 10 = 0.01 2 10
 		expected = [];
 		string_input = '2 ilog 10';
 		array_input = string_input.split(' ');
