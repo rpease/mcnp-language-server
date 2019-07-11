@@ -256,7 +256,9 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 	// Right bound checking and parsing
 	////////////////////////////////////
 	if(right_bound == '' || right_bound == null)
-		throw new MCNPException(`A number must come directly come after the linear interpolation shorthand`);
+		return interp_array;
+		// todo throw a warning
+		// throw new MCNPException(`A number must come directly after the linear interpolation shorthand`);
 
 	var right = Number(right_bound);
 	if(isNaN(right))
@@ -295,7 +297,9 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	// Right bound checking and parsing
 	////////////////////////////////////
 	if(right_bound == '' || right_bound == null)
-		throw new MCNPException(`A number must come directly come after the logarithmic interpolation shorthand`);
+		return interp_array;
+		// todo throw a warning
+		// throw new MCNPException(`A number must come directly after the logarithmic interpolation shorthand`);
 
 	var right = Number(right_bound);
 	if(isNaN(right) || right <= 0)
