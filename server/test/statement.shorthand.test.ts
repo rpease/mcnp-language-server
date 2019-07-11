@@ -592,9 +592,9 @@ describe('Statement_Shorthand_Replacement', () =>
 
 		///////////////////////////////////////////////////////		
 		
-		for (let i = -10; i < 10; i++) 
+		for (let i = 1; i < 20; i++) 
 		{
-			for (let j = -10; j < 10; j++) 
+			for (let j = 1; j < 20; j++) 
 			{
 				let pre_string = ['E4','1','2',i.toString()];
 				let post_string = [j.toString(),'5','9'];	
@@ -604,14 +604,14 @@ describe('Statement_Shorthand_Replacement', () =>
 
 				for (const bad of bad_n)
 				{
-					let shorthand = bad.toString() + 'ilog';
+					let shorthand = bad + 'iLoG';
 
 					let line_string = pre + shorthand + " " + post;
 					let statement = StringToStatement(line_string, line_num);
 
 					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
 					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
-				}				
+				}
 			}			
 		}
 	});	
@@ -734,6 +734,169 @@ describe('Statement_Shorthand_Replacement', () =>
 		line_num = 10;
 
 		shorthand = '2ilog';
+		line = `${shorthand}`;
+
+		statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(1); // ['2log']
+		ValidateArguments([], shorthand, [], statement.Arguments);	
+	});
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+	it('Multiply_Normal', () =>
+	{		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+
+				for (let n = -10.0; n < 10.0; n += 0.5) 
+				{
+					let shorthand = n.toString() + 'm';
+
+					let line_string = pre + shorthand + " " + post;
+					let statement = StringToStatement(line_string, line_num);
+
+					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
+				}
+			}			
+		}
+	});
+
+	it('Multiply_Nothing', () =>
+	{		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+				
+				let shorthand = 'm';
+
+				let line_string = pre + shorthand + " " + post;
+				let statement = StringToStatement(line_string, line_num);
+
+				expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+				ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);				
+			}			
+		}
+	});
+
+	it('Multiply_GoodNum', () =>
+	{		
+		// Bad arguments for the number of numbers added
+		var bad_n = ["2.1","-2.4","2e1","2.4e+1","2.7e-1"];
+		
+		let line_num = 10;
+
+		///////////////////////////////////////////////////////		
+		
+		for (let i = -10; i < 10; i++) 
+		{
+			for (let j = -10; j < 10; j++) 
+			{
+				let pre_string = ['E4','1','2',i.toString()];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+
+				for (const bad of bad_n)
+				{
+					let shorthand = bad.toString() + 'm';
+
+					let line_string = pre + shorthand + " " + post;
+					let statement = StringToStatement(line_string, line_num);
+
+					expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+					ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);
+				}				
+			}			
+		}
+	});	
+
+	it('Multiply_BadPre', () =>
+	{
+		var bad_pre = ["a","+","imp:n"];
+
+		let line_num = 12;
+
+		for (const bad of bad_pre)
+		{	
+			for (let j = -10; j < 20; j++) 
+			{
+				let pre_string = ['E4','1','2', bad];
+				let post_string = [j.toString(),'5','9'];	
+				
+				let pre = ArrayToString(pre_string);
+				let post = ArrayToString(post_string);
+				
+				let shorthand = '2m';
+
+				let line_string = pre + shorthand + " " + post;
+				let statement = StringToStatement(line_string, line_num);
+
+				expect(statement.Arguments.length).to.be.equal(pre_string.length + post_string.length + 1);
+				ValidateArguments(pre_string, shorthand, post_string, statement.Arguments);							
+			}
+		}
+	});
+
+	it('Multiply_Empty', () =>
+	{
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Empty Pre
+		let line_num = 10;
+
+		let shorthand = '2m';
+		let post = '4 5'
+		let line = `${shorthand} ${post}`;
+
+		let statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(3); // ['2ilog','4','5']
+		ValidateArguments([], shorthand, post.split(' '), statement.Arguments);	
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Empty Post
+		line_num = 10;
+
+		shorthand = '2m';
+		let pre = '4 5'
+		line = `${pre} ${shorthand}`;
+
+		statement = StringToStatement(line, line_num);
+
+		expect(statement.Arguments.length).to.be.equal(3); // ['4','5','2log']
+		ValidateArguments(pre.split(' '), shorthand, [], statement.Arguments);	
+
+		//////////////////////////////////////////////////////////////////////////////////////////////
+		// Empty Pre and Post
+
+		line_num = 10;
+
+		shorthand = '2m';
 		line = `${shorthand}`;
 
 		statement = StringToStatement(line, line_num);
