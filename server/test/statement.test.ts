@@ -1,17 +1,15 @@
 import { expect } from 'chai';
 import * as st from '../src/File/statement';
 import { stat } from 'fs';
+import { MCNPLine } from '../src/File/MCNPLines';
 
-function StringToMCNPLines(text:string,line_num:number=0):Array<st.MCNPLine>
+function StringToMCNPLines(text:string,line_num:number=0):Array<MCNPLine>
 {
-    var mcnp_lines = new Array<st.MCNPLine>();
+    var mcnp_lines = new Array<MCNPLine>();
 
     text.split('\n').forEach(line => 
     {
-        var mcnp_line = new st.MCNPLine();
-
-        mcnp_line.Contents = line;
-        mcnp_line.LineNumber = line_num;        
+        var mcnp_line = new MCNPLine(line, line_num);      
 
         line_num += 1;
 

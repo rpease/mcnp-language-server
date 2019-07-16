@@ -1,14 +1,14 @@
 import { MCNPFile } from './File/file';
 import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import {Diagnostic} from 'vscode-languageserver';
-import * as regex from './regexpressions';
-import { MCNPLine, Statement } from './File/statement';
+import { Statement } from './File/statement';
 import { IBlock } from './Block/block';
 import { utils } from 'mocha';
 import { GetCommentText, ReplaceTabsInLine } from './utilities';
 import { CellBlock } from './Block/CellBlock';
 import { SurfaceBlock } from './Block/SurfaceBlock';
 import { DataBlock } from './Block/DataBlock';
+import { LineType, MCNPLine } from './File/MCNPLines';
 
 export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 {
@@ -28,14 +28,10 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 	for (let l = 0; l < lines.length; l++) 
 	{
 		// Create MCNPLine
-		let newLine = 
-		{
-			Contents: lines[l].replace('\r',''),
-			LineNumber: l
-		}
+		let newLine = new MCNPLine(lines[l].replace('\r',''), l);
 		
 		// Determine what type of line this is
-		var lineType = GetLineType(newLine.Contents);
+		var lineType = newLine.Type;
 
 		if(lineType == LineType.BlockBreak
 			|| lineType == LineType.StatementStart)
@@ -80,7 +76,7 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 			else
 			{
 				if(l == 0)				
-					mcnp_data.Title = newLine.Contents;	
+					mcnp_data.Title = newLine.RawContents;	
 				else					
 					current_statement.push(newLine);		
 			}			
@@ -90,55 +86,13 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 		else if(lineType == LineType.Comment)	
 		{
 			last_comment = newLine;
-			last_comment.Contents = GetCommentText(last_comment.Contents);
+			last_comment.RawContents = GetCommentText(last_comment.RawContents);
 
-			if(last_comment.Contents == "")
+			if(last_comment.RawContents == "")
 				last_comment = null;
 		}
 	}
 
 	// todo throw error for not having enough blocks
 	return [mcnp_data,diagnostics];
-}
-
-export enum LineType
-{
-	StatementStart,
-	StatementExtension,
-	Comment,
-	BlockBreak
-}
-
-export function GetLineType(line: string): LineType
-{
-	if(line.match(regex.FULL_LINE_COMMENT_MATCH) != null)
-	{
-		return LineType.Comment;
-	}
-	else if(line.match(regex.STATEMENT_EXTENSION_MATCH) != null)
-	{
-		return LineType.StatementExtension;
-	}
-	else if(line.match(regex.BLOCK_BREAK_MATCH) != null)
-	{
-		return LineType.BlockBreak;
-	}
-	else
-	{
-		return LineType.StatementStart;
-	}
-}
-
-export function GetLines(file: string):Array<MCNPLine>
-{
-	let lines = Array<MCNPLine>();
-	let pattern = /^(.*)\\n/g;
-	let m: RegExpExecArray | null;
-
-	while (m = pattern.exec(file))
-	{
-		var newLine = new MCNPLine();
-	}	
-
-	return lines;
 }

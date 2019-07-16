@@ -2,18 +2,16 @@ import { expect } from 'chai';
 import * as st from '../src/File/statement';
 import { Argument } from '../src/File/argument';
 import { ConvertShorthandFeature } from '../src/utilities';
+import { MCNPLine } from '../src/File/MCNPLines';
 
 function StringToStatement(text:string,line_num:number=0):st.Statement
 {
-    var mcnp_lines = new Array<st.MCNPLine>();
+    var mcnp_lines = new Array<MCNPLine>();
 
     text.split('\n').forEach(line => 
     {
-        var mcnp_line = new st.MCNPLine();
-
-        mcnp_line.Contents = line;
-        mcnp_line.LineNumber = line_num;        
-
+        var mcnp_line = new MCNPLine(line, line_num);
+        
         line_num += 1;
 
         mcnp_lines.push(mcnp_line);

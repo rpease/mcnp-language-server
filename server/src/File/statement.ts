@@ -3,12 +3,7 @@ import { ARGUMENT, SHORTHAND_ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
 import { ReplaceTabsInLine, ConvertShorthandFeature } from '../utilities';
 import { MCNPException } from '../mcnp_exception';
-
-export class MCNPLine
-{
-	LineNumber: number;
-	Contents: string;
-}
+import { MCNPLine } from './MCNPLines';
 
 export class Statement
 {
@@ -38,7 +33,7 @@ export class Statement
 		var contains_shorthand = false;
 		for (const line of text)
 		{
-			this.RawText += line.Contents;
+			this.RawText += line.RawContents;
 			contains_shorthand = this.ConvertLineToArguments(line) || contains_shorthand;
 		}
 
@@ -56,20 +51,8 @@ export class Statement
 	{
 		var contains_shorthand = false;
 
-		var comment_split = line.Contents.split("$");
-		
-		if(comment_split.length > 1)		
-			this.InlineComments.push(comment_split[1].trim());
-
 		// Replace all '=' with a space since they are equivalent
-		var vs_code_interp = comment_split[0].replace('=',' ');	
-
-		// MCNP always considers tabs to go to stops every 8 spaces.
-		// VS Code allows users to control what they actually see and use when working, however.
-		// Because of this the VS code interpretation and MCNP interpretation must both be considered
-		var mcnp_interp = vs_code_interp;
-		if(vs_code_interp.includes('\t'))		
-			mcnp_interp = ReplaceTabsInLine(vs_code_interp);
+		var vs_code_interp = line.RawContents.replace('=',' ');	
 
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
 		var mcnp_arg_re = new RegExp(ARGUMENT,'g');	
@@ -85,7 +68,7 @@ export class Statement
 		do
 		{
 			v = vs_arg_re.exec(vs_code_interp);
-			m = mcnp_arg_re.exec(mcnp_interp);
+			m = mcnp_arg_re.exec(line.MCNPInterpretation);
 
 			if (m == null)
 				break;
