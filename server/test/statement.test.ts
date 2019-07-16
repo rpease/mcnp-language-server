@@ -202,9 +202,8 @@ describe('Statement', () =>
             console.log(c);
 
             var line = StringToMCNPLines(c, line_number);
-            var statement = new st.Statement(line,null);
 
-            expect(statement.Arguments.length).to.be.equal(0);
+            expect(() => new st.Statement(line,null), "Should have thrown and error.").to.throw(Error);
         }          
     });  
 });
