@@ -25,6 +25,8 @@ export class MCNPLine
 		var comment_split = text.split("$");		
 		if(comment_split.length > 1)		
 			this.Comment = comment_split[1].trim();
+		else
+			this.Comment = null;
 
 		// Replace all '=' with a space since they are equivalent to MCNP
 		this.MCNPInterpretation = comment_split[0].replace('=',' ');	

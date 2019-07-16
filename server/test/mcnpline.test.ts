@@ -2,7 +2,7 @@ import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { expect } from 'chai';
 import { MCNPLine, LineType } from '../src/File/MCNPLines';
 
-function GetCommentSamples(): Array<string>
+export function GetCommentSamples(): Array<string>
 {
 	let comments = Array();
 	comments.push("c ----------------- Cell Cards -----------------");

@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import * as st from '../src/File/statement';
 import { stat } from 'fs';
 import { MCNPLine } from '../src/File/MCNPLines';
+import { GetCommentSamples } from './mcnpline.test';
 
 function StringToMCNPLines(text:string,line_num:number=0):Array<MCNPLine>
 {
@@ -194,19 +195,12 @@ describe('Statement', () =>
 
     it('IgnoreComments', () => 
     {
-        let comments = []
-        comments.push("c	Water is cool");
-        comments.push("C	Water is tabs");
-        comments.push("c\tWater tab");
-        comments.push("c    Water has spaces");
-        comments.push("	c    Water has spaces");
-        comments.push(" c    Water has spaces");
-        comments.push("           c Water has spaces");
-
         const line_number = 10;
 
-        for (const c of comments) 
+        for (const c of GetCommentSamples()) 
         {
+            console.log(c);
+
             var line = StringToMCNPLines(c, line_number);
             var statement = new st.Statement(line,null);
 

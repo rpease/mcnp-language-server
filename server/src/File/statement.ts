@@ -3,7 +3,8 @@ import { ARGUMENT, SHORTHAND_ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
 import { ReplaceTabsInLine, ConvertShorthandFeature } from '../utilities';
 import { MCNPException } from '../mcnp_exception';
-import { MCNPLine } from './MCNPLines';
+import { MCNPLine, LineType } from './MCNPLines';
+import { isNull } from 'util';
 
 export class Statement
 {
@@ -34,7 +35,9 @@ export class Statement
 		for (const line of text)
 		{
 			this.RawText += line.RawContents;
-			contains_shorthand = this.ConvertLineToArguments(line) || contains_shorthand;
+
+			if(line.Type != LineType.Comment)
+				contains_shorthand = this.ConvertLineToArguments(line) || contains_shorthand;
 		}
 
 		if(contains_shorthand)
@@ -50,6 +53,9 @@ export class Statement
 	private ConvertLineToArguments(line: MCNPLine): boolean
 	{
 		var contains_shorthand = false;
+
+		if(!isNull(line.Comment))
+			this.InlineComments.push(line.Comment);
 
 		// Replace all '=' with a space since they are equivalent
 		var vs_code_interp = line.RawContents.replace('=',' ');	
