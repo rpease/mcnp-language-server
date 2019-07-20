@@ -189,19 +189,22 @@ describe('ShorthandInput', () =>
 		var shorthand = "2i";
 
 		for (let i = 0; i <= bad_pre_post.length; i++) 
-		{
+		{			
 			if(i==0)
 				preceding = "2"; // Good pre
 			else
 				preceding = bad_pre_post[i];
+			console.log(preceding);
 
 			for (let j = 0; j <= bad_pre_post.length; j++) 
 			{
+				
 				if(j==0)
 					post = "10"; // Good post
 				else
 					post = bad_pre_post[j];
-
+				
+				console.log('\t'+post);
 				if(i==0 && j==0)
 					utilities.ConvertShorthandFeature(preceding, shorthand, post);
 				else				

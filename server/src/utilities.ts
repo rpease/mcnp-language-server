@@ -119,7 +119,7 @@ export function ParsePureInt(s: string, throw_error=true): number
  * @param severity The severity type of the diagnostic
  * @param additional_message Additional information that will be displayed only during hover-over
  */
-export function CreateErrorDiagnostic(arg: Argument, message: string, severity=DiagnosticSeverity.Error, additional_message?: string): Diagnostic
+export function CreateErrorDiagnostic(arg: Argument, message: string, severity: DiagnosticSeverity, additional_message?: string): Diagnostic
 {
 	let diagnostic: Diagnostic = {
 		severity: severity,
@@ -138,7 +138,7 @@ export function CreateErrorDiagnostic(arg: Argument, message: string, severity=D
 	};
 
 	// Additional Information
-	if(additional_message != undefined)
+	if(additional_message != undefined && additional_message != "")
 	{
 		diagnostic.relatedInformation = [
 			{
@@ -256,9 +256,7 @@ function LinearInterpolateShorthand(n_string: string, left_bound: string, right_
 	// Right bound checking and parsing
 	////////////////////////////////////
 	if(right_bound == '' || right_bound == null)
-		return interp_array;
-		// todo throw a warning
-		// throw new MCNPException(`A number must come directly after the linear interpolation shorthand`);
+		throw new MCNPException(`Shorthand being ignored because it requires a number to come after`, "", DiagnosticSeverity.Warning);
 
 	var right = Number(right_bound);
 	if(isNaN(right))
@@ -297,9 +295,7 @@ function LogInterpolateShorthand(n_string: string, left_bound: string, right_bou
 	// Right bound checking and parsing
 	////////////////////////////////////
 	if(right_bound == '' || right_bound == null)
-		return interp_array;
-		// todo throw a warning
-		// throw new MCNPException(`A number must come directly after the logarithmic interpolation shorthand`);
+		throw new MCNPException(`Shorthand being ignored because it requires a number to come after`, "", DiagnosticSeverity.Warning);
 
 	var right = Number(right_bound);
 	if(isNaN(right) || right <= 0)

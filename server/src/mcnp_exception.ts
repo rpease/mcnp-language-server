@@ -7,10 +7,14 @@ export class MCNPArgumentException extends Error
 	diagnostic: Diagnostic;
 	stack?: string;
 
-	constructor(arg: Argument, message: string, additional_message?: string)
+	constructor(arg: Argument, message: string, additional_message?: string, severity?: DiagnosticSeverity)
 	{
 		super();
-		this.diagnostic = CreateErrorDiagnostic(arg, message, DiagnosticSeverity.Error, additional_message);
+
+		if(!severity)
+			severity = DiagnosticSeverity.Error;
+			
+		this.diagnostic = CreateErrorDiagnostic(arg, message, severity, additional_message);
 	}
 }
 
@@ -18,16 +22,21 @@ export class MCNPException extends Error
 {
 	stack: string;
 	additional_message: string;
+	severity = DiagnosticSeverity.Error;
 
-	constructor(message: string, additional_message?: string)
+	constructor(message: string, additional_message?: string, severity?: DiagnosticSeverity)
 	{
 		super();
+
+		if(!severity)
+			severity = DiagnosticSeverity.Error;
+
 		this.stack = message;
 		this.additional_message = additional_message;
 	}
 
 	CreateArgumentException(arg: Argument): MCNPArgumentException
 	{
-		return new MCNPArgumentException(arg, this.stack, this.additional_message);
+		return new MCNPArgumentException(arg, this.stack, this.additional_message, this.severity);
 	}
 }
