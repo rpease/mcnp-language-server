@@ -86,7 +86,7 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 		else if(lineType == LineType.Comment)	
 		{
 			last_comment = newLine;
-			last_comment.RawContents = GetCommentText(last_comment.RawContents);
+			last_comment.RawContents = GetCommentText(last_comment.MCNPInterpretation);
 
 			if(last_comment.RawContents == "")
 				last_comment = null;
