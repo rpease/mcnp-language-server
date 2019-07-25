@@ -76,4 +76,49 @@ describe('GetStatementsFromInput', () =>
 		expect(blocks[0].length).to.be.equal(1);
 		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
 	});	
+
+	it('&_Simple', () => 
+	{	
+		let text =`This is the title card
+2 2 5.0		-2 3 100 & $ Half-Sphere
+imp:n=2 &
+imp:p=1
+666 0 #1 #2 #100 imp:n=0 $Graveyard`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(2);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+		expect(blocks[0][1].Arguments[0].Contents).to.be.equal('666');
+
+		// & are replaced by empty strings
+		// remember = are also replaced by empty strings
+		expect(blocks[0][0].Arguments.length).to.be.equal(10);
+		expect(blocks[0][0].Arguments[9].Contents).to.be.equal('1');
+	});
+
+	it('&_Complex', () => 
+	{	
+		let text =`This is the title card
+2 2 5.0		-2 3 100 && $ Half-Sphere
+imp:n=2 &
+    C This is a comment
+  imp:p=1 & 1 2 3 4 5 6 7 8 9 $ All this should be ignored after the &
+           vol=5
+666 0 #1 #2 #100 imp:n=0 $Graveyard`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(2);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+		expect(blocks[0][1].Arguments[0].Contents).to.be.equal('666');
+
+		// & are replaced by empty strings
+		// remember = are also replaced by empty strings
+		expect(blocks[0][0].Arguments.length).to.be.equal(12);
+
+		expect(blocks[0][0].Arguments[11].Contents).to.be.equal('5');
+	});
 });
