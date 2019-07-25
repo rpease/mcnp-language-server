@@ -9,6 +9,7 @@ import { CellBlock } from './Block/CellBlock';
 import { SurfaceBlock } from './Block/SurfaceBlock';
 import { DataBlock } from './Block/DataBlock';
 import { LineType, MCNPLine } from './File/MCNPLines';
+import { FileBlock } from './enumerations';
 
 export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 {
@@ -18,19 +19,59 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 	// Split up entire file into sepearte lines
 	let lines = file.getText().split('\n');
 
-	let block: IBlock;
+	let contents: Array<Array<Statement>>;
+	contents = GetStatementsFromInput(file.getText());
 
-	// First block is always Cells
-	block = new CellBlock();
+	let block: IBlock;
+	let block_type = FileBlock.Cells;
+	for(const statements of contents)
+	{
+		if(block_type == FileBlock.Cells)
+			block = new CellBlock();
+		else if(block_type == FileBlock.Surfaces)
+			block = new SurfaceBlock();
+		else if(block_type == FileBlock.Data)
+			block = new DataBlock();
+
+		for (const statement of statements)
+		{
+			diagnostics = diagnostics.concat(statement.GetDiagnostics());
+			block.ParseStatement(statement)
+		}			
+
+		if(block instanceof CellBlock)
+			mcnp_data.CellBlock = block;
+		else if(block instanceof SurfaceBlock)
+			mcnp_data.SurfaceBlock = block;
+		else if(block instanceof DataBlock)
+			mcnp_data.DataBlock = block;	
+			
+		block_type += 1;
+	}
+
+	// todo throw error for not having enough blocks
+	return [mcnp_data,diagnostics];
+}
+
+export function GetStatementsFromInput(input_file: string): Array<Array<Statement>>
+{
+	let input_statements = new Array<Array<Statement>>();
 
 	let last_comment: MCNPLine;
 	let current_statement = Array<MCNPLine>();
+
+	let current_block = FileBlock.Cells;
+
+	// Split up entire file into sepearte lines
+	let lines = input_file.split('\n');
+
+	input_statements.push(new Array<Statement>());
+
 	for (let l = 0; l < lines.length; l++) 
 	{
 		// Create MCNPLine
 		let newLine = new MCNPLine(lines[l].replace('\r',''), l);
 		
-		// Determine what type of line this is
 		var lineType = newLine.Type;
 
 		if(lineType == LineType.BlockBreak
@@ -38,12 +79,9 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 		{
 			if(current_statement.length > 0)
 			{
-				let new_statement = new Statement(current_statement,last_comment)
+				let new_statement = new Statement(current_statement,last_comment)			
 
-				diagnostics = diagnostics.concat(new_statement.GetDiagnostics());
-
-				// Add to current block
-				block.ParseStatement(new_statement);
+				input_statements[current_block].push(new_statement);
 
 				// Erase previous comment header
 				last_comment = null;
@@ -54,30 +92,19 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 
 			if(lineType == LineType.BlockBreak)
 			{
-				if(block instanceof CellBlock)
-				{
-					mcnp_data.CellBlock = block;
-					block = new SurfaceBlock();
-				}
-				else if(block instanceof SurfaceBlock)
-				{
-					mcnp_data.SurfaceBlock = block;
-					block = new DataBlock();
-				}
-				else if(block instanceof DataBlock)
-				{
-					mcnp_data.DataBlock = block;
+				current_block += 1;				
 
-					// todo have warnings for all lines past this point
-
-					return [mcnp_data,diagnostics];
-				}				
-			} // end if BlockBreak
+				// All blocks MCNP cares about has been read.
+				// All text after is completely unused
+				if(current_block == FileBlock.NA)
+					return input_statements		
+					
+				input_statements.push(new Array<Statement>());
+			}
 			else
 			{
-				if(l == 0)				
-					mcnp_data.Title = newLine.RawContents;	
-				else					
+				// Ignore the title card
+				if(l != 0)	
 					current_statement.push(newLine);		
 			}			
 		}		
@@ -93,6 +120,5 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 		}
 	}
 
-	// todo throw error for not having enough blocks
-	return [mcnp_data,diagnostics];
+	return input_statements;
 }
