@@ -143,7 +143,7 @@ export class Statement
 			var shorthand = shorthand_re.exec(arg.Contents)
 
 			// Does this argument contain shorthand?
-			if(shorthand != null)
+			if(shorthand != null && !isNaN(Number(shorthand[1])))
 			{
 				var pre_contents = null;
 				if(i != 0)
