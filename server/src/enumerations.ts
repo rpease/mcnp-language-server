@@ -2,7 +2,8 @@ export enum FileBlock
 {
 	Cells,
 	Surfaces,
-	Data
+	Data,
+	NA
 }
 
 export enum Particle

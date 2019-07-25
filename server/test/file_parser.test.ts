@@ -26,3 +26,54 @@ describe('FileParser', () =>
 		fp.ParseFile(getTextDocument("test\\test.i"));
 	});	
 });
+
+describe('GetStatementsFromInput', () => 
+{
+	it('EmptyTitleCard', () => 
+	{	
+		let text =`		
+1 1 -10.0  -1 100 imp:n=1
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(2);
+	});		
+
+	it('IgnoreTitleCard_CellCard', () => 
+	{	
+		let text =`1 -10.0  -1 100 imp:n=1
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(1);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+	});	
+
+	it('IgnoreTitleCard_Comment', () => 
+	{	
+		let text =`C This is a comment bro
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(1);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+	});	
+
+	it('IgnoreTitleCard_StatementExtension', () => 
+	{	
+		let text =`        IINTS=40 EINTS= 4 5 5 $ comment bro
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(1);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+	});	
+});
