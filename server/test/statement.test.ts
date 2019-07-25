@@ -106,9 +106,48 @@ describe('Statement', () =>
         expect(statement.Arguments[6].FilePosition.line).to.equal(12);        	
     });	
 
-    it('GetLineType_EqualSign', () => 
+    it('EqualSign_Replacement', () => 
     {
         const text_equal = "2  2 5.0  -2 3 100   imp:n= 2 $ Half-Sphere"
+        const text =       "2  2 5.0  -2 3 100   imp:n  2 $ Half-Sphere"
+
+        const line_number = 10;
+        var line = StringToMCNPLines(text_equal,line_number);
+
+        var statement = new st.Statement(line,null);
+
+        expect(statement.Arguments.length).to.equal(8);
+        expect(statement.InlineComments.length).to.equal(1);
+        expect(statement.RawText).to.equal(text_equal);
+        
+        expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.mcnp_character).to.equal(21);
+        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);		
+
+        var line = StringToMCNPLines(text,line_number);
+
+        var statement = new st.Statement(line,null);
+
+        expect(statement.Arguments.length).to.equal(8);
+        expect(statement.InlineComments.length).to.equal(1);
+        expect(statement.RawText).to.equal(text);
+        
+        expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
+        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.mcnp_character).to.equal(21);
+        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
+        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);
+    });
+    
+    it('&_Replacement', () => 
+    {
+        const text_equal = `2  2 5.0  -2 & 
+        3 & 5 4 6 7 
+        100   imp:n= 2 $ Half-Sphere`
         const text =       "2  2 5.0  -2 3 100   imp:n  2 $ Half-Sphere"
 
         const line_number = 10;
