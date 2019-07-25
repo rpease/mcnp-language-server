@@ -151,35 +151,18 @@ describe('Statement', () =>
         const text =       "2  2 5.0  -2 3 100   imp:n  2 $ Half-Sphere"
 
         const line_number = 10;
-        var line = StringToMCNPLines(text_equal,line_number);
+        var line = StringToMCNPLines(text_equal, line_number);
+        var amp_statement = new st.Statement(line,null);
 
+        line = StringToMCNPLines(text, line_number);
         var statement = new st.Statement(line,null);
 
-        expect(statement.Arguments.length).to.equal(8);
-        expect(statement.InlineComments.length).to.equal(1);
-        expect(statement.RawText).to.equal(text_equal);
+        expect(amp_statement.Arguments.length).to.equal(statement.Arguments.length);
         
-        expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.mcnp_character).to.equal(21);
-        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);		
-
-        var line = StringToMCNPLines(text,line_number);
-
-        var statement = new st.Statement(line,null);
-
-        expect(statement.Arguments.length).to.equal(8);
-        expect(statement.InlineComments.length).to.equal(1);
-        expect(statement.RawText).to.equal(text);
+        // All arguments should be equivalent
+        for (let i = 0; i < amp_statement.Arguments.length; i++)         
+            expect(amp_statement.Arguments[i].Contents).to.be.equal(statement.Arguments[i].Contents);
         
-        expect(statement.Arguments[statement.Arguments.length-2].Contents).to.equal("imp:n");
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.character).to.equal(21);
-        expect(statement.Arguments[statement.Arguments.length-2].FilePosition.mcnp_character).to.equal(21);
-        expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
-        expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);
     });
 
     it('Tabs', () =>

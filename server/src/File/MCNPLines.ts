@@ -20,20 +20,9 @@ export class MCNPLine
 	constructor(text: string, line_num: number)
 	{
 		this.RawContents = text;
-		this.LineNumber = line_num; 
-
-		var comment_split = text.split("$");		
-		if(comment_split.length > 1)		
-			this.Comment = comment_split[1].trim();
-		else
-			this.Comment = null;
-
-		// Replace all '=' with a space since they are equivalent to MCNP
-		this.MCNPInterpretation = comment_split[0].replace('=',' ');	
-
-		// MCNP always considers tabs to go to stops every 8 spaces.
-		if(this.MCNPInterpretation.includes('\t'))		
-			this.MCNPInterpretation = ReplaceTabsInLine(this.MCNPInterpretation);
+		this.LineNumber = line_num;
+			
+		this.MCNPInterpretation = this.ConvertToMCNP(text);
 
 		this.Type = this.GetLineType(this.MCNPInterpretation);
 	}
@@ -54,5 +43,30 @@ export class MCNPLine
 			return LineType.BlockBreak;		
 		else		
 			return LineType.StatementStart;		
+	}
+
+	private ConvertToMCNP(text: string): string
+	{
+		// Remove Inline Comment
+		var comment_split = text.split("$");		
+		if(comment_split.length > 1)		
+			this.Comment = comment_split[1].trim();
+		else
+			this.Comment = null;
+		text = comment_split[0];		
+
+		// Remove continutation ampersand
+		var continuation_split = text.split("&");
+		text = continuation_split[0];
+
+		// Replace = signs with a space
+		text = text.replace('=',' ');
+
+		// Replace tabs
+		// MCNP always considers tabs to go to stops every 8 spaces.
+		if(text.includes('\t'))
+			text = ReplaceTabsInLine(text);
+
+		return text;
 	}
 }
