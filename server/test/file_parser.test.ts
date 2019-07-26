@@ -121,4 +121,144 @@ imp:n=2 &
 
 		expect(blocks[0][0].Arguments[11].Contents).to.be.equal('5');
 	});
+
+	it('NormalExtension', () => 
+	{	
+		let text =`This is the title card
+FMESH4:n geom=xyz
+	  EINTS= 0 1 2
+	  IINTS= 1
+	  IMESH= 6
+	  imp:n=4
+EC4 5 6 7 8
+FC4 This is the fmesh comment card`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(3);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH:n');
+		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
+	});
+
+	it('NormalExtension_WithComments', () => 
+	{	
+		let text =`This is the title card
+FMESH4:n geom=xyz
+	  EINTS= 0 1 2 $ Energy bins
+	  IINTS= 1
+	  IMESH= 6
+  C Below is the neutron importance
+	  imp:n=4
+EC4 5 6 7 8
+FC4 This is the fmesh comment card`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(3);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH:n');
+		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
+	});
+
+	it('BlockRecognition', () => 
+	{	
+		let text =`This is the title card
+c Cell Cards
+1 -1 imp:n=1
+666 1 imp:n=0
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1
+c Random comment
+fc4 tally of dreams
+sdef pos=0 0 0 erg=5 par=1
+
+`
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(3);
+
+		// Cell Block
+		expect(blocks[0].length).to.be.equal(2);
+		
+		// Surface Block
+		expect(blocks[1].length).to.be.equal(1);
+
+		// Surface Block
+		expect(blocks[2].length).to.be.equal(4);
+	});
+
+	it('BlockRecognition_IgnorePostData', () => 
+	{	
+		let text =`This is the title card
+c Cell Cards
+1 -1 imp:n=1
+666 1 imp:n=0
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1
+c Random comment
+fc4 tally of dreams
+sdef pos=0 0 0 erg=5 par=1
+
+C Fake block
+5 1 rpp 1 2  1 2  0 500 $ who knows
+M5 1001.80c 2.0
+       8016.00c 1.0
+
+`
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(3);
+
+		// Cell Block
+		expect(blocks[0].length).to.be.equal(2);
+		
+		// Surface Block
+		expect(blocks[1].length).to.be.equal(1);
+
+		// Surface Block
+		expect(blocks[2].length).to.be.equal(4);
+	});
+
+	it('BlockRecognition_NumEmptyLines', () => 
+	{	
+		let text =`This is the title card
+c Cell Cards
+1 -1 imp:n=1
+666 1 imp:n=0
+
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1
+c Random comment
+fc4 tally of dreams
+sdef pos=0 0 0 erg=5 par=1
+
+C Fake block
+5 1 rpp 1 2  1 2  0 500 $ who knows
+M5 1001.80c 2.0
+       8016.00c 1.0
+
+`
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+
+		// Cell Block
+		expect(blocks[0].length).to.be.equal(2);
+	});
 });
