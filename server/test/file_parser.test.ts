@@ -131,13 +131,33 @@ FMESH4:n geom=xyz
 	  IMESH= 6
 	  imp:n=4
 EC4 5 6 7 8
+FC4 This is the fmesh comment card
+`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(3);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH4:n');
+		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
+	});
+
+	it('NormalExtension_NoLastLine', () => 
+	{	
+		let text =`This is the title card
+FMESH4:n geom=xyz
+	  EINTS= 0 1 2
+	  IINTS= 1
+	  IMESH= 6
+	  imp:n=4
+EC4 5 6 7 8
 FC4 This is the fmesh comment card`
 
 		let blocks = fp.GetStatementsFromInput(text);
 
 		expect(blocks.length).to.be.equal(1);
 		expect(blocks[0].length).to.be.equal(3);
-		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH:n');
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH4:n');
 		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
 	});
 
@@ -157,7 +177,7 @@ FC4 This is the fmesh comment card`
 
 		expect(blocks.length).to.be.equal(1);
 		expect(blocks[0].length).to.be.equal(3);
-		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH:n');
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH4:n');
 		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
 	});
 

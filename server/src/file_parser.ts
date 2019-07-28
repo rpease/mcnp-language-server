@@ -81,7 +81,7 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 		{
 			if(current_statement.length > 0)
 			{
-				let new_statement = new Statement(current_statement,last_comment)			
+				let new_statement = new Statement(current_statement,last_comment);			
 
 				input_statements[current_block].push(new_statement);
 
@@ -130,6 +130,18 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 
 		previous_line_type = lineType;
 	}
+
+	// If there is no extra-line at the end of the file,
+	// we need to deal with the last statement we were building
+	if(current_statement.length > 0)
+	{
+		let new_statement = new Statement(current_statement,last_comment);
+		input_statements[current_block].push(new_statement);
+	}
+
+	// If last block is empty, just throw it away.
+	if(input_statements[current_block].length == 0)
+		input_statements.pop();
 
 	return input_statements;
 }
