@@ -67,6 +67,8 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 
 	input_statements.push(new Array<Statement>());
 
+	let previous_line_type: LineType;
+
 	for (let l = 0; l < lines.length; l++) 
 	{
 		// Create MCNPLine
@@ -92,6 +94,13 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 
 			if(lineType == LineType.BlockBreak)
 			{
+				// Two block breaks in a row signal the end of the input file
+				if(previous_line_type == LineType.BlockBreak)
+				{
+					input_statements.pop();
+					return input_statements;
+				}					
+
 				current_block += 1;				
 
 				// All blocks MCNP cares about has been read.
@@ -118,6 +127,8 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 			if(last_comment.RawContents == "")
 				last_comment = null;
 		}
+
+		previous_line_type = lineType;
 	}
 
 	return input_statements;

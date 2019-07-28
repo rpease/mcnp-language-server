@@ -230,7 +230,7 @@ M5 1001.80c 2.0
 		expect(blocks[2].length).to.be.equal(4);
 	});
 
-	it('BlockRecognition_NumEmptyLines', () => 
+	it('BlockRecognition_DoubleEmptyLines', () => 
 	{	
 		let text =`This is the title card
 c Cell Cards
