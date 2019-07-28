@@ -122,6 +122,39 @@ imp:n=2 &
 		expect(blocks[0][0].Arguments[11].Contents).to.be.equal('5');
 	});
 
+	it('&_BeforeBlockBreak', () => 
+	{	
+		let text =`This is the title card
+2 2 5.0		-2 3 100 & $ Half-Sphere
+imp:n=2
+666 0 #1 #2 #100 imp:n=0 & $Graveyard
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(3);
+
+		expect(blocks[0].length).to.be.equal(2);
+		expect(blocks[1].length).to.be.equal(1);
+		expect(blocks[2].length).to.be.equal(2);
+
+		expect(blocks[0][1].Arguments[0].Contents).to.be.equal('666');
+		expect(blocks[0][1].Arguments.length).to.be.equal(7);
+		expect(blocks[1][0].Arguments[0].Contents).to.be.equal('1');
+
+		// & are replaced by empty strings
+		// remember = are also replaced by empty strings
+		expect(blocks[0][0].Arguments.length).to.be.equal(12);
+
+		expect(blocks[0][0].Arguments[11].Contents).to.be.equal('5');
+	});
+
 	it('NormalExtension', () => 
 	{	
 		let text =`This is the title card

@@ -68,17 +68,34 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 	input_statements.push(new Array<Statement>());
 
 	let previous_line_type: LineType;
+	let auto_statement_extension = false;
 
 	for (let l = 0; l < lines.length; l++) 
 	{
+		// Ignore the first line (Title Card)
+		if(l == 0)
+			continue;
+
 		// Create MCNPLine
 		let newLine = new MCNPLine(lines[l].replace('\r',''), l);
 		
+		// If previous line had a '&'
+		if(auto_statement_extension)
+		{
+			newLine.Type = LineType.StatementExtension;
+			auto_statement_extension = false;
+		}
+
 		var lineType = newLine.Type;
 
 		if(lineType == LineType.BlockBreak
 			|| lineType == LineType.StatementStart)
 		{
+			// If the line has a '&' the next line is automatically an extension of the current
+			// statement
+			if(newLine.RawContents.indexOf('&') != -1)
+				auto_statement_extension = true;
+
 			if(current_statement.length > 0)
 			{
 				let new_statement = new Statement(current_statement,last_comment);			
@@ -110,15 +127,20 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 					
 				input_statements.push(new Array<Statement>());
 			}
-			else
-			{
-				// Ignore the title card
-				if(l != 0)	
-					current_statement.push(newLine);		
-			}			
+			else				
+				current_statement.push(newLine);		
+						
 		}		
-		else if(lineType == LineType.StatementExtension)		
-			current_statement.push(newLine);		
+		else if(lineType == LineType.StatementExtension)
+		{
+			current_statement.push(newLine);
+
+			// If the line has a '&' the next line is automatically an extension of the current
+			// statement
+			if(newLine.RawContents.indexOf('&') != -1)
+				auto_statement_extension = true;
+		}		
+					
 		else if(lineType == LineType.Comment)	
 		{
 			last_comment = newLine;
