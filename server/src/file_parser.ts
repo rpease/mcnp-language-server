@@ -80,7 +80,9 @@ export function GetStatementsFromInput(input_file: string): Array<Array<Statemen
 		let newLine = new MCNPLine(lines[l].replace('\r',''), l);
 		
 		// If previous line had a '&'
-		if(auto_statement_extension)
+		if(auto_statement_extension 
+			&& newLine.Type != LineType.Comment
+			&& newLine.Type != LineType.BlockBreak)
 		{
 			newLine.Type = LineType.StatementExtension;
 			auto_statement_extension = false;

@@ -150,9 +150,9 @@ f4:n 1`
 
 		// & are replaced by empty strings
 		// remember = are also replaced by empty strings
-		expect(blocks[0][0].Arguments.length).to.be.equal(12);
+		expect(blocks[0][0].Arguments.length).to.be.equal(8);
 
-		expect(blocks[0][0].Arguments[11].Contents).to.be.equal('5');
+		expect(blocks[0][0].Arguments[7].Contents).to.be.equal('2');
 	});
 
 	it('NormalExtension', () => 
