@@ -42,7 +42,16 @@ export enum SurfaceType
 	Torus_X,
 	Torus_Y,
 	Torus_Z,
-	Points
+	Points,
+	Box,
+	RectangularParallelepiped,
+	RightCircularCylinder,
+	HexagonalPrism,
+	RightEllipitcalCylinder,
+	TruncatedCone,
+	Ellipsoid,
+	Wedge,
+	Polyhedron
 }
 
 export enum SurfaceModifier
