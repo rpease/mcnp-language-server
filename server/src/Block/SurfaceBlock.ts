@@ -23,73 +23,15 @@ export class SurfaceBlock implements IBlock
 	// Parses the MCNP Statement, creates the proper surface, and adds it to the Block
 	ParseStatement(statement: Statement)
 	{
-		const args = statement.Arguments;
-
-		// Get modifier, if any
-		let modifier = this.GetModifierType(args);
-		let has_modifier = false;
-		if(modifier != null)
-			has_modifier = true;
-
 		// Get Transform, if any
 		let transform = null;
 		let has_transform = false;
 		if(transform != null)
 			has_transform = true;
 
-		// Get Surface ID
-		let id = this.GetIDNumber(args, has_modifier, has_transform);		
-
 		// Get mnemonic
-		let code = this.GetSurfaceType(args, has_transform)
-
-		// Get parameters
-		let parameters = this.GetParameters(args, has_modifier)	
-	}
-
-	/**
-	 * Returns the surface modifier type, either reflective or
-	 * a whiteboundary, if there is indeed a modifier on the given surface.
-	 * 
-	 * @param args The arguments that define the surface
-	 * @returns The surface modifier, or null if none exists
-	 */
-	private GetModifierType(args: Array<Argument>): SurfaceModifier
-	{
-		const first_char = args[0].Contents.charAt(0);
-
-		if(first_char == '*')
-			return SurfaceModifier.Reflective;
-		if(first_char == '+')
-			return SurfaceModifier.WhiteBoundary;			
-		return null;
-	}
-
-	/**
-	 * Parses the integer ID number associated with the surface.
-	 * 
-	 * @param args The arguments that define the surface
-	 * @param modfier True if the given surface has a modifier character
-	 * @param transform True if the given surface has a transformation
-	 * @returns The unique integer ID number of the provided surface
-	 */
-	private GetIDNumber(args: Array<Argument>, modfier: boolean, transform: boolean): number
-	{
-		var id_string = args[0].Contents;
-		if(modfier)		
-			id_string = args[0].Contents.substring(1)
-
-		let id = ParsePureInt(id_string);
-		
-		var max_num = 99999;
-		if(transform)
-			max_num = 999;
-
-		if(id < 0 || id > max_num)		
-			throw new MCNPArgumentException(args[0], `Surface ID must be greater than 0 but less than ${max_num}`)		
-
-		return id;		
-	}
+		let code = this.GetSurfaceType(statement.Arguments, has_transform)
+	}	
 
 	/**
 	 * Returns the surface type of the provided surface. If the equation mnemonic
@@ -192,27 +134,7 @@ export class SurfaceBlock implements IBlock
 			return SurfaceType.Polyhedron;
 
 		throw new MCNPArgumentException(equation_arg, `Surfrace mnemonic ${equation_mnemonic} is not recognized`);
-	}
-
-	/**
-	 * Isolates only the arguments associated with the surface specific parameters
-	 * 
-	 * @param args The arguments that define the surface
-	 * @param transform True if the given surface has a transformation
-	 * @returns The list of ordered arguments the represent the surface parameters
-	 */
-	private GetParameters(args: Array<Argument>, transform: boolean): Array<Argument>
-	{
-		var parameter_index = 2;
-		if(transform)		
-			parameter_index = 3;
-
-		let parameters = new Array<Argument>();
-		for (let p = parameter_index; p < args.length; p++)
-			parameters.push(args[p]);
-		
-		return parameters;
-	}
+	}	
 
 	GetDiagnostics(): Diagnostic[]
 	{
