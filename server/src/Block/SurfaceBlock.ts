@@ -195,30 +195,22 @@ export class SurfaceBlock implements IBlock
 	}
 
 	/**
-	 * Parses the surface parameters into useable numbers that are used
-	 * to actually define the surface.
+	 * Isolates only the arguments associated with the surface specific parameters
 	 * 
 	 * @param args The arguments that define the surface
 	 * @param transform True if the given surface has a transformation
-	 * @returns The list of ordered numbers that define the surface shape
+	 * @returns The list of ordered arguments the represent the surface parameters
 	 */
-	private GetParameters(args: Array<Argument>, transform: boolean): Array<number>
+	private GetParameters(args: Array<Argument>, transform: boolean): Array<Argument>
 	{
 		var parameter_index = 2;
 		if(transform)		
 			parameter_index = 3;
 
-		let parameters = new Array<number>();
-		for (let p = parameter_index; p < args.length; p++) 
-		{
-			let param = Number(args[p].Contents)
-
-			if(isNaN(param))
-				throw new MCNPArgumentException(args[p], `Surface parameter ${args[p].Contents} is not a valid number`)
-
-			parameters.push(param);
-		}
-
+		let parameters = new Array<Argument>();
+		for (let p = parameter_index; p < args.length; p++)
+			parameters.push(args[p]);
+		
 		return parameters;
 	}
 
