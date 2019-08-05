@@ -92,6 +92,9 @@ export class Surface extends Card
 	 */
 	private SetParameters(args: Array<Argument>, transform: boolean)
 	{
+		this.Parameters = new Array<Argument>();
+		this.ParameterValues = new Array<number>();
+
 		var parameter_index = 2;
 		if(transform)		
 			parameter_index = 3;
@@ -100,7 +103,7 @@ export class Surface extends Card
 		for (let p = parameter_index; p < args.length; p++)
 		{
 			this.Parameters.push(args[p]);
-			this.ParameterValues.push(this.ParseParameter(p));
+			this.ParameterValues.push(this.ParseParameter(p-parameter_index));
 		}
 			
 	}
