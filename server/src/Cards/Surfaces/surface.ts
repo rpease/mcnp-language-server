@@ -27,17 +27,14 @@ export class Surface extends Card
 		if(this.Modifier != null)
 			has_modifier = true;
 
-		// Get Transform, if any
-		let transform = null;
-		let has_transform = false;
-		if(transform != null)
-			has_transform = true;
+		// Set Transform ID if any	
+		let has_transform = this.SetTransformation(this.Statement.Arguments);
 
 		// Get Surface ID
 		this.SetIDNumber(this.Statement.Arguments, has_modifier, has_transform);		
 
 		// Get parameters
-		this.SetParameters(this.Statement.Arguments, has_modifier);
+		this.SetParameters(this.Statement.Arguments, has_transform);
 	}
 
 	/**
@@ -57,6 +54,29 @@ export class Surface extends Card
 			mod = SurfaceModifier.WhiteBoundary;	
 		
 		this.Modifier = mod;				
+	}
+
+	private SetTransformation(args: Array<Argument>): boolean
+	{
+		let float_parse = Number(args[1].Contents);
+
+		// Second argument is a number, which means a transformation card is being applied
+		if(!isNaN(float_parse))
+		{
+			let int_parse = parseInt(args[1].Contents);
+
+			// Transformation number needs to be an integer value
+			// but need not be a "pure integer" from a string perspective
+			if(int_parse != float_parse)
+				throw new MCNPArgumentException(args[0], `Transformation ID ${float_parse} is not an integer value`);
+
+			if(int_parse == 0)
+				throw new MCNPArgumentException(args[0], `Transformation ID can not be zero`);
+
+			this.Transform = int_parse;
+			return true;
+		}	
+		return false;
 	}
 
 	/**

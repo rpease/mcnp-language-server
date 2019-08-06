@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { MCNPLine } from '../src/File/MCNPLines';
 import { Statement } from '../src/File/statement';
 import { Surface } from '../src/Cards/Surfaces/surface';
-import { MCNPException } from '../src/mcnp_exception';
+import { MCNPException, MCNPArgumentException } from '../src/mcnp_exception';
 import { SurfaceModifier } from '../src/enumerations';
 
 function StringToStatement(text:string): Statement
@@ -63,7 +63,7 @@ describe('Surface', () =>
 			let surface_string = `${code} ${parameters} $ Magic spider on the wind`;
 			let surf_statement = StringToStatement(surface_string);
 
-			expect(() => new Surface(surf_statement),"Should have thrown and error.").to.throw(MCNPException);
+			expect(() => new Surface(surf_statement),"Should have thrown and error.").to.throw(MCNPArgumentException);
 		}
 	});	
 
@@ -83,7 +83,7 @@ describe('Surface', () =>
 						let surface_string = `${id} ${tr} ${x} ${code} ${parameters} $ Try not to die!!!`;
 						let surf_statement = StringToStatement(surface_string);
 
-						expect(() => new Surface(surf_statement),"Should have thrown and error.").to.throw(MCNPException);
+						expect(() => new Surface(surf_statement),"Should have thrown and error.").to.throw(MCNPArgumentException);
 					}		
 				}				
 			}					
@@ -95,7 +95,7 @@ describe('Surface', () =>
 		let surface_codes = ['rpp', 'px', 'taco', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
 
-		let num_formats = ['','.0','e0','E0',,'e+0'];
+		let num_formats = ['','.0','e0','E0','e+0'];
 
 		let parameter_split = parameters.split(' ');
 		for (let id = 1; id < 20; id++) 
@@ -110,6 +110,7 @@ describe('Surface', () =>
 					for (const code of surface_codes) 
 					{
 						let surface_string = `${id} ${tr}${f} ${code} ${parameters} $ But does it Djent?`;
+						console.log(surface_string);
 						let surf = StringToSurface(surface_string);
 		
 						expect(surf.ID).to.be.equal(id);
@@ -141,7 +142,7 @@ describe('Surface', () =>
 					let surface_string = `${id} ${bad_tr} ${code} ${parameters} $ But does it Djent?`;
 					let surf_statement = StringToStatement(surface_string);
 	
-					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPException);					
+					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);					
 				}
 			}									
 		}
@@ -198,7 +199,7 @@ describe('Surface', () =>
 					console.log(surface_string);
 					let surf_statement = StringToStatement(surface_string);
 
-					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPException);
+					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);
 				}									
 			}					
 		}
@@ -209,7 +210,7 @@ describe('Surface', () =>
 		let surface_codes = ['rpp', 'px', 'c/x', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
 		let modifiers = ['', '*', '+'];
-		let num_formats = ['','.0','e0','E0',,'e+0'];
+		let num_formats = ['','.0','e0','E0','e+0'];
 
 		let parameter_split = parameters.split(' ');
 		
@@ -266,7 +267,7 @@ describe('Surface', () =>
 				let surf: Surface;
 				// Invalid Number
 				if(id <= 0 || id >99999)
-					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPException);
+					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);
 				// valid number
 				else
 					surf = new Surface(surf_statement);			
@@ -279,7 +280,7 @@ describe('Surface', () =>
 		let surface_codes = ['rpp', 'px', 'taco', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
 
-		let num_formats = ['','.0','e0','E0',,'e+0'];
+		let num_formats = ['','.0','e0','E0','e+0'];
 
 		let ids = [-1,0,1,999,1000]
 
@@ -301,7 +302,7 @@ describe('Surface', () =>
 						let surf: Surface;
 						// Invalid Number
 						if(id <= 0 || id >999)
-							expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPException);
+							expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);
 						// valid number
 						else
 							surf = new Surface(surf_statement);						
