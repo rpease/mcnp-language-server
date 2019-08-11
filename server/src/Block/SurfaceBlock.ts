@@ -36,17 +36,9 @@ export class SurfaceBlock implements IBlock
 	 */
 	private CreateSpecificSurface(surf_statement: Statement)
 	{
-		let generic_surface: Surface;
-		try 
-		{
-			generic_surface = new Surface(surf_statement);
-		} catch (e) 
-		{
-			if(e instanceof MCNPArgumentException)					
-				this.Errors.push(e.diagnostic);
-			else
-				throw e;
-		}	
+		let generic_surface = new Surface(surf_statement);			
+
+		this.Errors = this.Errors.concat(generic_surface.GetDiagnostics());
 
 		/*if(equation_mnemonic == 'p')
 			return SurfaceType.Plane;

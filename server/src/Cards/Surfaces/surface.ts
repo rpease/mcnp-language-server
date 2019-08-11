@@ -3,8 +3,8 @@ import { SurfaceType, SurfaceModifier } from '../../enumerations';
 import { Argument } from '../../File/argument';
 import { MCNPArgumentException, MCNPException } from '../../mcnp_exception';
 import { Statement } from '../../File/statement';
-import { ParsePureInt } from '../../utilities';
-import { isNull } from 'util';
+import { ParsePureInt, CreateErrorDiagnostic } from '../../utilities';
+import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver';
 
 export class Surface extends Card
 {
@@ -15,6 +15,7 @@ export class Surface extends Card
 	
 	protected ParameterValues: Array<number> = [];
 	protected DefaultValues: Array<number> = [];
+	protected Errors: Diagnostic[] = [];
 
 	constructor(statement: Statement)
 	{
@@ -57,7 +58,8 @@ export class Surface extends Card
 		{
 			let first_char_number = Number(first_char);
 			if(isNaN(first_char_number))
-				throw new MCNPArgumentException(args[0],`${first_char} is not a valid surface modifier`);
+				this.Errors.push(
+					CreateErrorDiagnostic(args[0], `${first_char} is not a valid surface modifier`, DiagnosticSeverity.Error,'Only a * or + are valid'));
 		}
 		
 		this.Modifier = mod;				
@@ -75,10 +77,12 @@ export class Surface extends Card
 			// Transformation number needs to be an integer value
 			// but need not be a "pure integer" from a string perspective
 			if(int_parse != float_parse)
-				throw new MCNPArgumentException(args[0], `Transformation ID ${float_parse} is not an integer value`);
+				this.Errors.push(
+					CreateErrorDiagnostic(args[1], `Transformation ID ${float_parse} is not an integer value`, DiagnosticSeverity.Error));
 
 			if(int_parse == 0)
-				throw new MCNPArgumentException(args[0], `Transformation ID can not be zero`);
+				this.Errors.push(
+					CreateErrorDiagnostic(args[1], `Transformation ID can not be zero`, DiagnosticSeverity.Error));
 
 			this.Transform = int_parse;
 			return true;
@@ -106,19 +110,20 @@ export class Surface extends Card
 		}
 		catch (e) 
 		{
-			if(e instanceof MCNPException)					
-				throw e.CreateArgumentException(args[0]);
+			if(e instanceof MCNPException)
+				this.Errors.push(
+					CreateErrorDiagnostic(args[0], e.message, DiagnosticSeverity.Error));					
 			else
 				throw e;				
-		}
-		
+		}		
 		
 		var max_num = 99999;
 		if(transform)
 			max_num = 999;
 
-		if(id <= 0 || id > max_num)		
-			throw new MCNPArgumentException(args[0], `Surface ID must be greater than 0 but less than ${max_num}`)		
+		if(id <= 0 || id > max_num)
+			this.Errors.push(
+				CreateErrorDiagnostic(args[0], `Surface ID must be greater than 0 but less than ${max_num}`, DiagnosticSeverity.Error));			
 
 		this.ID = id;		
 	}
@@ -154,17 +159,25 @@ export class Surface extends Card
 		let param_value;
 		if(param_string == 'j')
 		{
+			/*
 			if(p >= this.DefaultValues.length)			
 				throw new MCNPArgumentException(this.Parameters[p], `No default value for surface parameter ${param_string}`);
 			
 			param_value = this.DefaultValues[p];
+			*/
 		}			
 		else
 			param_value = Number(param_string);
 
 		if(isNaN(param_value))
-			throw new MCNPArgumentException(this.Parameters[p], `Surface parameter ${param_string} is not a valid number`)
+			this.Errors.push(
+				CreateErrorDiagnostic(this.Parameters[p], `Surface parameter ${param_string} is not a valid number`, DiagnosticSeverity.Error));
 
 		return param_value;		
+	}
+
+	public GetDiagnostics(): Diagnostic[]
+	{
+		return this.Errors;
 	}
 }
