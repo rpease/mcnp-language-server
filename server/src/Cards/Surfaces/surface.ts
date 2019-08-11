@@ -4,6 +4,7 @@ import { Argument } from '../../File/argument';
 import { MCNPArgumentException, MCNPException } from '../../mcnp_exception';
 import { Statement } from '../../File/statement';
 import { ParsePureInt } from '../../utilities';
+import { isNull } from 'util';
 
 export class Surface extends Card
 {
@@ -50,8 +51,16 @@ export class Surface extends Card
 		let mod = null;
 		if(first_char == '*')
 			mod = SurfaceModifier.Reflective;
-		if(first_char == '+')
-			mod = SurfaceModifier.WhiteBoundary;	
+		else if(first_char == '+')
+			mod = SurfaceModifier.WhiteBoundary;
+		else // check to see if user used another invalid character
+		{
+			let first_char_number = Number(first_char);
+			if(isNaN(first_char_number))
+				throw new MCNPArgumentException(args[0],`${first_char} is not a valid surface modifier`);
+		}	
+
+		
 		
 		this.Modifier = mod;				
 	}
