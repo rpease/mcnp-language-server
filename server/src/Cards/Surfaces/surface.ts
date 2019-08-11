@@ -1,7 +1,7 @@
 import { Card } from '../card';
 import { SurfaceType, SurfaceModifier } from '../../enumerations';
 import { Argument } from '../../File/argument';
-import { MCNPArgumentException } from '../../mcnp_exception';
+import { MCNPArgumentException, MCNPException } from '../../mcnp_exception';
 import { Statement } from '../../File/statement';
 import { ParsePureInt } from '../../utilities';
 
@@ -92,7 +92,19 @@ export class Surface extends Card
 		if(modfier)		
 			id_string = args[0].Contents.substring(1)
 
-		let id = ParsePureInt(id_string);
+		let id=-1
+		try 
+		{
+			id = ParsePureInt(id_string);
+		}
+		catch (e) 
+		{
+			if(e instanceof MCNPException)					
+				throw e.CreateArgumentException(args[0]);
+			else
+				throw e;				
+		}
+		
 		
 		var max_num = 99999;
 		if(transform)
