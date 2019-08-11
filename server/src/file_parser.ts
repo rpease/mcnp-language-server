@@ -45,9 +45,13 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 			mcnp_data.SurfaceBlock = block;
 		else if(block instanceof DataBlock)
 			mcnp_data.DataBlock = block;	
+
+		diagnostics = diagnostics.concat(block.GetDiagnostics());
 			
 		block_type += 1;
 	}
+
+	// Gather diagnostic information from the various blocks
 
 	// todo throw error for not having enough blocks
 	return [mcnp_data,diagnostics];

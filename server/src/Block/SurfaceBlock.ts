@@ -17,20 +17,13 @@ let SURFACE_MAPPING = new Map([
 
 export class SurfaceBlock implements IBlock
 {
-	Errors: Diagnostic[];
+	Errors: Diagnostic[] = [];
 	Cards = Array<Surface>();
 	
 	// Parses the MCNP Statement, creates the proper surface, and adds it to the Block
 	ParseStatement(statement: Statement)
 	{
-		// Get Transform, if any
-		let transform = null;
-		let has_transform = false;
-		if(transform != null)
-			has_transform = true;
-
-		// Get mnemonic
-		let code = this.GetSurfaceType(statement.Arguments, has_transform)
+		this.CreateSpecificSurface(statement);
 	}	
 
 	/**
@@ -41,15 +34,21 @@ export class SurfaceBlock implements IBlock
 	 * @param transform True if the given surface has a transformation
 	 * @returns The SurfaceType associated with the provided surface
 	 */
-	private GetSurfaceType(args: Array<Argument>, transform: boolean): SurfaceType
+	private CreateSpecificSurface(surf_statement: Statement)
 	{
-		let equation_arg = args[1];
-		if(transform)
-			equation_arg = args[2];
+		let generic_surface: Surface;
+		try 
+		{
+			generic_surface = new Surface(surf_statement);
+		} catch (e) 
+		{
+			if(e instanceof MCNPArgumentException)					
+				this.Errors.push(e.diagnostic);
+			else
+				throw e;
+		}	
 
-		let equation_mnemonic = equation_arg.Contents.toLowerCase();
-
-		if(equation_mnemonic == 'p')
+		/*if(equation_mnemonic == 'p')
 			return SurfaceType.Plane;
 		if(equation_mnemonic == 'px')
 			return SurfaceType.Plane_X;
@@ -132,8 +131,10 @@ export class SurfaceBlock implements IBlock
 			return SurfaceType.Wedge;
 		if(equation_mnemonic == 'arb')
 			return SurfaceType.Polyhedron;
+		
 
 		throw new MCNPArgumentException(equation_arg, `Surfrace mnemonic ${equation_mnemonic} is not recognized`);
+		*/
 	}	
 
 	GetDiagnostics(): Diagnostic[]

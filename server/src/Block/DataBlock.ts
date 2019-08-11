@@ -5,7 +5,7 @@ import { Diagnostic } from 'vscode-languageserver';
 
 export class DataBlock implements IBlock
 {
-	Errors: Diagnostic[];
+	Errors: Diagnostic[] = [];
 	Cards = Array<Card>();
 	
 	ParseStatement(statement: Statement)
