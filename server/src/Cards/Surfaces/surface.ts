@@ -165,6 +165,10 @@ export class Surface extends Card
 			
 			param_value = this.DefaultValues[p];
 			*/
+
+			param_value = 0.0;
+			this.Errors.push(
+				CreateErrorDiagnostic(this.Parameters[p],'Default shorthand j should be avoided when defining surfaces',DiagnosticSeverity.Warning));
 		}			
 		else
 			param_value = Number(param_string);
