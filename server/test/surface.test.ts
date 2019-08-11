@@ -186,7 +186,7 @@ describe('Surface', () =>
 	{	
 		let surface_codes = ['rpp', 'px', 'c/x', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
-		let bad_modifiers = ['\\', '-', '!', 'c', '$', '#', '@'];
+		let bad_modifiers = ['\\', '-', '!', 'c', '#', '@'];
 		
 		let parameter_split = parameters.split(' ');
 		for (let id = 1; id < 20; id++) 
@@ -264,6 +264,8 @@ describe('Surface', () =>
 				let surface_string = `${id} ${code} ${parameters} $ Magic spider on the wind`;
 				let surf_statement = StringToStatement(surface_string);
 
+				console.log(id);
+
 				let surf: Surface;
 				// Invalid Number
 				if(id <= 0 || id >99999)
@@ -298,6 +300,8 @@ describe('Surface', () =>
 					{
 						let surface_string = `${id} ${tr}${f} ${code} ${parameters} $ But does it Djent?`;
 						let surf_statement = StringToStatement(surface_string);
+
+						console.log(id);
 
 						let surf: Surface;
 						// Invalid Number

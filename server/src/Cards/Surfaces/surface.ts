@@ -110,7 +110,7 @@ export class Surface extends Card
 		if(transform)
 			max_num = 999;
 
-		if(id < 0 || id > max_num)		
+		if(id <= 0 || id > max_num)		
 			throw new MCNPArgumentException(args[0], `Surface ID must be greater than 0 but less than ${max_num}`)		
 
 		this.ID = id;		
