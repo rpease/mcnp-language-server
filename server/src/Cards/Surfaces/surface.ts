@@ -13,8 +13,8 @@ export class Surface extends Card
 	Parameters: Array<Argument>;
 	Modifier: SurfaceModifier;
 	
-	protected ParameterValues: Array<number>;
-	protected DefaultValues: Array<number>;
+	protected ParameterValues: Array<number> = [];
+	protected DefaultValues: Array<number> = [];
 
 	constructor(statement: Statement)
 	{
@@ -58,9 +58,7 @@ export class Surface extends Card
 			let first_char_number = Number(first_char);
 			if(isNaN(first_char_number))
 				throw new MCNPArgumentException(args[0],`${first_char} is not a valid surface modifier`);
-		}	
-
-		
+		}
 		
 		this.Modifier = mod;				
 	}
