@@ -3,58 +3,6 @@ import * as fp from '../src/file_parser';
 import { TextDocument, Range, Position } from 'vscode-languageserver-types';
 import { readSync, readFileSync } from 'fs';
 
-function GetCommentSamples(): Array<string>
-{
-	let comments = Array();
-	comments.push("c ----------------- Cell Cards -----------------");
-	comments.push("C ----------------- Cell Cards -----------------");
-	comments.push(" c still a comment");
-	comments.push("  C still a comment");
-	comments.push("   c still a comment");
-	comments.push("    C still a comment");
-	comments.push("    c M83 1001.00c 1.0 ");
-	comments.push("    C ");
-	comments.push("   c");
-	comments.push("  C  ");
-	comments.push(" c");
-	comments.push("c");
-	comments.push("c\r");
-	comments.push("c ");
-
-	return comments;
-}
-
-function GetStatementSamples(): Array<string>
-{
-	let statements = Array();
-	statements.push("16 14 -2.831e-3 (-32 -27 28) imp:n=200 imp:p=1  $ BF3 ");
-	statements.push("900 rpp -50 50 121.9 135 40 270");
-	statements.push("M1 7014 78.084 8016 20.946 18000 0.46 ");
-	statements.push("This is the title line of the file.");
-	statements.push(" M1 7014 78.084 8016 20.946 18000 0.46 ");
-	statements.push("  M1 7014 78.084 8016 20.946 18000 0.46 ");
-	statements.push("   M1 7014 78.084 8016 20.946 18000 0.46 ");
-	statements.push("    M1 7014 78.084 8016 20.946 18000 0.46 ");
-	statements.push("    M1 7014 78.084 8016 20.946 18000 0.46 $ Comment");
-	statements.push("cThis is not a comment");
-
-	return statements;
-}
-
-function GetStatementExtensionSamples(): Array<string>
-{
-	let extensions = Array();
-	extensions.push("     u=1 lat=1 erg=2.3 $ input parameters");
-	extensions.push("      u=1 lat=1 erg=2.3 $ input parameters");
-	extensions.push("       u=1 lat=1 erg=2.3 $ input parameters");
-	extensions.push("        u=1 lat=1 erg=2.3 $ input parameters");
-	extensions.push("     cThis is not a comment");
-	extensions.push("     c This is also not a comment");
-	extensions.push("     0.25Y 0 0.75v2 0 0 0 0 0 0 0");
-
-	return extensions;
-}
-
 // This is an alternate way to declare a function
 const getTextDocument = (file_path: string): TextDocument => {
 
@@ -71,59 +19,299 @@ const getTextDocument = (file_path: string): TextDocument => {
 	);
 };
 
-function GetBlockSamples(): Array<string>
-{
-	let blocks = Array();
-	blocks.push("");
-	blocks.push(" ");
-	blocks.push("  ");
-	blocks.push("   ");
-	blocks.push("    ");
-	blocks.push("     ");
-	blocks.push("      ");
-	blocks.push("       ");
-	blocks.push("        ");
-	blocks.push("         ");
-
-	return blocks;
-}
-
 describe('FileParser', () => 
 {
-	it('GetLineType_FullLineComment', () => 
-	{
-		GetCommentSamples().forEach(element => {
-			console.log(element);
-			expect(fp.GetLineType(element)).to.equal(fp.LineType.Comment)
-		});		
-	});	
-
-	it('GetLineType_Statement', () => 
-	{	
-		GetStatementSamples().forEach(element => {
-			console.log(element);
-			expect(fp.GetLineType(element)).to.equal(fp.LineType.StatementStart)
-		});		
-	});	
-
-	it('GetLineType_StatementExtension', () => 
-	{	
-		GetStatementExtensionSamples().forEach(element => {
-			console.log(element);
-			expect(fp.GetLineType(element)).to.equal(fp.LineType.StatementExtension)
-		});		
-	});	
-
-	it('GetLineType_Block', () => 
-	{	
-		GetBlockSamples().forEach(element => {
-			console.log(element);
-			expect(fp.GetLineType(element)).to.equal(fp.LineType.BlockBreak)
-		});		
-	});	
-
 	it('ParseFile', () => 
 	{	
 		fp.ParseFile(getTextDocument("test\\test.i"));
 	});	
+});
+
+describe('GetStatementsFromInput', () => 
+{
+	it('EmptyTitleCard', () => 
+	{	
+		let text =`		
+1 1 -10.0  -1 100 imp:n=1
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(2);
+	});		
+
+	it('IgnoreTitleCard_CellCard', () => 
+	{	
+		let text =`1 -10.0  -1 100 imp:n=1
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(1);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+	});	
+
+	it('IgnoreTitleCard_Comment', () => 
+	{	
+		let text =`C This is a comment bro
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(1);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+	});	
+
+	it('IgnoreTitleCard_StatementExtension', () => 
+	{	
+		let text =`        IINTS=40 EINTS= 4 5 5 $ comment bro
+2 2 5.0		-2 3 100 imp:n=2 $ Half-Sphere`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(1);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+	});	
+
+	it('&_Simple', () => 
+	{	
+		let text =`This is the title card
+2 2 5.0		-2 3 100 & $ Half-Sphere
+imp:n=2 &
+imp:p=1
+666 0 #1 #2 #100 imp:n=0 $Graveyard`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(2);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+		expect(blocks[0][1].Arguments[0].Contents).to.be.equal('666');
+
+		// & are replaced by empty strings
+		// remember = are also replaced by empty strings
+		expect(blocks[0][0].Arguments.length).to.be.equal(10);
+		expect(blocks[0][0].Arguments[9].Contents).to.be.equal('1');
+	});
+
+	it('&_Complex', () => 
+	{	
+		let text =`This is the title card
+2 2 5.0		-2 3 100 && $ Half-Sphere
+imp:n=2 &
+    C This is a comment
+  imp:p=1 & 1 2 3 4 5 6 7 8 9 $ All this should be ignored after the &
+           vol=5
+666 0 #1 #2 #100 imp:n=0 $Graveyard`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(2);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('2');
+		expect(blocks[0][1].Arguments[0].Contents).to.be.equal('666');
+
+		// & are replaced by empty strings
+		// remember = are also replaced by empty strings
+		expect(blocks[0][0].Arguments.length).to.be.equal(12);
+
+		expect(blocks[0][0].Arguments[11].Contents).to.be.equal('5');
+	});
+
+	it('&_BeforeBlockBreak', () => 
+	{	
+		let text =`This is the title card
+2 2 5.0		-2 3 100 & $ Half-Sphere
+imp:n=2
+666 0 #1 #2 #100 imp:n=0 & $Graveyard
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(3);
+
+		expect(blocks[0].length).to.be.equal(2);
+		expect(blocks[1].length).to.be.equal(1);
+		expect(blocks[2].length).to.be.equal(2);
+
+		expect(blocks[0][1].Arguments[0].Contents).to.be.equal('666');
+		expect(blocks[0][1].Arguments.length).to.be.equal(7);
+		expect(blocks[1][0].Arguments[0].Contents).to.be.equal('1');
+
+		// & are replaced by empty strings
+		// remember = are also replaced by empty strings
+		expect(blocks[0][0].Arguments.length).to.be.equal(8);
+
+		expect(blocks[0][0].Arguments[7].Contents).to.be.equal('2');
+	});
+
+	it('NormalExtension', () => 
+	{	
+		let text =`This is the title card
+FMESH4:n geom=xyz
+	  EINTS= 0 1 2
+	  IINTS= 1
+	  IMESH= 6
+	  imp:n=4
+EC4 5 6 7 8
+FC4 This is the fmesh comment card
+`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(3);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH4:n');
+		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
+	});
+
+	it('NormalExtension_NoLastLine', () => 
+	{	
+		let text =`This is the title card
+FMESH4:n geom=xyz
+	  EINTS= 0 1 2
+	  IINTS= 1
+	  IMESH= 6
+	  imp:n=4
+EC4 5 6 7 8
+FC4 This is the fmesh comment card`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(3);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH4:n');
+		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
+	});
+
+	it('NormalExtension_WithComments', () => 
+	{	
+		let text =`This is the title card
+FMESH4:n geom=xyz
+	  EINTS= 0 1 2 $ Energy bins
+	  IINTS= 1
+	  IMESH= 6
+  C Below is the neutron importance
+	  imp:n=4
+EC4 5 6 7 8
+FC4 This is the fmesh comment card`
+
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+		expect(blocks[0].length).to.be.equal(3);
+		expect(blocks[0][0].Arguments[0].Contents).to.be.equal('FMESH4:n');
+		expect(blocks[0][2].Arguments[0].Contents).to.be.equal('FC4');
+	});
+
+	it('BlockRecognition', () => 
+	{	
+		let text =`This is the title card
+c Cell Cards
+1 -1 imp:n=1
+666 1 imp:n=0
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1
+c Random comment
+fc4 tally of dreams
+sdef pos=0 0 0 erg=5 par=1
+
+`
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(3);
+
+		// Cell Block
+		expect(blocks[0].length).to.be.equal(2);
+		
+		// Surface Block
+		expect(blocks[1].length).to.be.equal(1);
+
+		// Surface Block
+		expect(blocks[2].length).to.be.equal(4);
+	});
+
+	it('BlockRecognition_IgnorePostData', () => 
+	{	
+		let text =`This is the title card
+c Cell Cards
+1 -1 imp:n=1
+666 1 imp:n=0
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1
+c Random comment
+fc4 tally of dreams
+sdef pos=0 0 0 erg=5 par=1
+
+C Fake block
+5 1 rpp 1 2  1 2  0 500 $ who knows
+M5 1001.80c 2.0
+       8016.00c 1.0
+
+`
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(3);
+
+		// Cell Block
+		expect(blocks[0].length).to.be.equal(2);
+		
+		// Surface Block
+		expect(blocks[1].length).to.be.equal(1);
+
+		// Surface Block
+		expect(blocks[2].length).to.be.equal(4);
+	});
+
+	it('BlockRecognition_DoubleEmptyLines', () => 
+	{	
+		let text =`This is the title card
+c Cell Cards
+1 -1 imp:n=1
+666 1 imp:n=0
+
+
+c Surface Cards
+1 RPP -5 -1m  -1m -1m  -1m -1m
+
+c Data Cards
+nps 1e6
+f4:n 1
+c Random comment
+fc4 tally of dreams
+sdef pos=0 0 0 erg=5 par=1
+
+C Fake block
+5 1 rpp 1 2  1 2  0 500 $ who knows
+M5 1001.80c 2.0
+       8016.00c 1.0
+
+`
+		let blocks = fp.GetStatementsFromInput(text);
+
+		expect(blocks.length).to.be.equal(1);
+
+		// Cell Block
+		expect(blocks[0].length).to.be.equal(2);
+	});
 });

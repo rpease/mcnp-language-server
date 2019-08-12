@@ -1,14 +1,24 @@
 import { expect } from 'chai';
 import * as utilities from '../src/utilities';
 import { Particle } from '../src/enumerations';
+import { EPERM } from 'constants';
+import { MCNPException } from '../src/mcnp_exception';
 
 
 function CompareArrays(array1, array2): void
 {
-	expect(array1.length).to.be.equal(array2.length)
+	expect(array1.length).to.be.equal(array2.length);
 
-	for (let index = 0; index < array1.length; index++) 	
-		expect(array1[index]).to.be.equal(array2[index])
+	for (let index = 0; index < array1.length; index++)
+	{ 
+		var a = array1[index];
+		var b = array2[index];
+
+		if(typeof a === "number")		
+			expect(Math.abs(a-b)).to.be.lessThan(1e-4);
+		else		
+			expect(array1[index]).to.be.equal(array2[index]);
+	}
 }
 
 describe('Utilities', () => 
@@ -101,16 +111,16 @@ describe('Utilities', () =>
 
 	it('ReplaceTabs_Basic', () => 
 	{		
-		const tab_break = 8
+		const tab_break = 8;
 		for (let i = 0; i <= 17; i++) 
 		{
-			console.log(i)
+			console.log(i);
 			let line = '';
 			for (let j = 0; j < i; j++)
 				line += " ";				
 			line += "\t";
 
-			let expected_length = Math.ceil((i+1)/tab_break)*tab_break
+			let expected_length = Math.ceil((i+1)/tab_break)*tab_break;
 			
 			expect(utilities.ReplaceTabsInLine(line, tab_break).length).to.be.equal(expected_length);
 		}		
@@ -124,9 +134,89 @@ describe('Utilities', () =>
 		let length_81_3 = "1 RPP 1 2  -10 							                8";
 		
 		let new_line = utilities.ReplaceTabsInLine(length_81_1);
-
+		
 		expect(utilities.ReplaceTabsInLine(length_81_1).length).to.equal(81);
 		expect(utilities.ReplaceTabsInLine(length_81_2).length).to.equal(81);
 		expect(utilities.ReplaceTabsInLine(length_81_3).length).to.equal(81);
 	});  
+
+	it('CaseInsensitiveCompare', () => 
+	{				
+		let original = "1RpP";
+		expect(utilities.CaseInsensitiveCompare(original,"1rpp")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1Rpp")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1rpP")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1rPp")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,original)).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1RPP")).to.be.true;
+		expect(utilities.CaseInsensitiveCompare(original,"1Rppp")).to.be.false;
+	}); 
+	
+	it('ParseOnlyInt_Integers', () => 
+	{				
+		for (let index = -100; index < 100; index++) 	
+		{
+			var pure_int_string = index.toString();
+
+			expect(utilities.ParsePureInt(pure_int_string, true)).to.be.equal(index);
+			expect(utilities.ParsePureInt(pure_int_string, false)).to.be.equal(index);
+		}	
+				
+	});
+
+	it('ParseOnlyInt_Doubles', () => 
+	{				
+		for (let i = -100; i < 100; i++)
+		{			
+			for (let j = 0; j < 10; j++)
+			{
+				let string_base = i.toString();
+				string_base += "." + j.toString();
+
+				expect(() => utilities.ParsePureInt(string_base, true)).to.throw(MCNPException);
+				expect(utilities.ParsePureInt(string_base, false)).to.be.NaN;
+			} 	
+		}		
+	});
+	
+	it('ParseOnlyInt_Scientific', () => 
+	{				
+		for (let i = -100; i < 100; i++)
+		{
+			let string_base = i.toString();
+			for (let j = 0; j < 10; j++)
+			{
+				for (let e = -2; e < 3; e++)
+				{
+					let string_base = i.toString();
+					string_base += "." + j.toString();
+					string_base += "E" + e.toString();					
+					
+					expect(() => utilities.ParsePureInt(string_base, true)).to.throw(MCNPException);
+					expect(utilities.ParsePureInt(string_base, false)).to.be.NaN;
+				}				
+			} 	
+		}		
+	});
+
+	it('ParseOnlyInt_TrailingString', () => 
+	{				
+		for (let index = -100; index < 100; index++)
+		{
+			let bad_string = index.toString() + 'abcfg';
+
+			expect(() => utilities.ParsePureInt(bad_string, true)).to.throw(MCNPException);
+			expect(utilities.ParsePureInt(bad_string, false)).to.be.NaN;
+		} 						
+	});
+
+	it('ParseOnlyInt_Nonsense', () => 
+	{				
+		let nonsense = ['a','-','+','$','c','@',')','?'];
+		for (const bad of nonsense) 
+		{
+			expect(() => utilities.ParsePureInt(bad, true)).to.throw(MCNPException);
+			expect(utilities.ParsePureInt(bad, false)).to.be.NaN;
+		}							
+	});
 });

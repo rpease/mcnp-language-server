@@ -1,3 +1,13 @@
+# [0.0.9] (2019-8-11)
+
+## Features
+- **Shorthand Validation** Shorthand (i.e. 'j','i','ilog','m', and 'r') is now checked to ensure it's value
+- **General Surface Validation** General Surface card input is now tested to ensure it is valid. This includes ID number, transformation number, equation parameters, etc.
+
+## Bug Fixes
+- **Card Definition** The '&' character is now handled correctly and full-line comments can be placed in the middle of a card definition without causing it to start a new card.
+- **Grammar Updates** Minor coloring and fixes for some cards
+
 # [0.0.7] (2019-6-19)
 
 ## Features

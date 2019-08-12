@@ -1,17 +1,16 @@
 import { expect } from 'chai';
 import * as st from '../src/File/statement';
 import { stat } from 'fs';
+import { MCNPLine } from '../src/File/MCNPLines';
+import { GetCommentSamples } from './mcnpline.test';
 
-function StringToMCNPLines(text:string,line_num:number=0):Array<st.MCNPLine>
+function StringToMCNPLines(text:string,line_num:number=0):Array<MCNPLine>
 {
-    var mcnp_lines = new Array<st.MCNPLine>();
+    var mcnp_lines = new Array<MCNPLine>();
 
     text.split('\n').forEach(line => 
     {
-        var mcnp_line = new st.MCNPLine();
-
-        mcnp_line.Contents = line;
-        mcnp_line.LineNumber = line_num;        
+        var mcnp_line = new MCNPLine(line, line_num);      
 
         line_num += 1;
 
@@ -107,7 +106,7 @@ describe('Statement', () =>
         expect(statement.Arguments[6].FilePosition.line).to.equal(12);        	
     });	
 
-    it('GetLineType_EqualSign', () => 
+    it('EqualSign_Replacement', () => 
     {
         const text_equal = "2  2 5.0  -2 3 100   imp:n= 2 $ Half-Sphere"
         const text =       "2  2 5.0  -2 3 100   imp:n  2 $ Half-Sphere"
@@ -142,6 +141,28 @@ describe('Statement', () =>
         expect(statement.Arguments[statement.Arguments.length-1].Contents).to.equal("2");
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition.character).to.equal(28);
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(28);
+    });
+    
+    it('&_Replacement', () => 
+    {
+        const text_equal = `2  2 5.0  -2 & 
+        3 & 5 4 6 7 
+        100   imp:n= 2 $ Half-Sphere`
+        const text =       "2  2 5.0  -2 3 100   imp:n  2 $ Half-Sphere"
+
+        const line_number = 10;
+        var line = StringToMCNPLines(text_equal, line_number);
+        var amp_statement = new st.Statement(line,null);
+
+        line = StringToMCNPLines(text, line_number);
+        var statement = new st.Statement(line,null);
+
+        expect(amp_statement.Arguments.length).to.equal(statement.Arguments.length);
+        
+        // All arguments should be equivalent
+        for (let i = 0; i < amp_statement.Arguments.length; i++)         
+            expect(amp_statement.Arguments[i].Contents).to.be.equal(statement.Arguments[i].Contents);
+        
     });
 
     it('Tabs', () =>
@@ -193,4 +214,18 @@ describe('Statement', () =>
         expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(79);
         expect(statement.GetDiagnostics().length).to.equal(0);
     });
+
+    it('IgnoreComments', () => 
+    {
+        const line_number = 10;
+
+        for (const c of GetCommentSamples()) 
+        {
+            console.log(c);
+
+            var line = StringToMCNPLines(c, line_number);
+
+            expect(() => new st.Statement(line,null), "Should have thrown and error.").to.throw(Error);
+        }          
+    });  
 });

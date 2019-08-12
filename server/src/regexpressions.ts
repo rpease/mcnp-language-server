@@ -9,3 +9,9 @@ export const STATEMENT_EXTENSION_MATCH = "^[ ]{5,}(\\S+)";
 export const BLOCK_BREAK_MATCH = "^\\s*$";
 
 export const ARGUMENT = "\\S+";
+
+export const NUMBER = "\d+(\.\d+)"
+
+export const ALPHABET = "[a-zA-Z]"
+
+export const SHORTHAND_ARGUMENT = "(\\S*)(r|m|j|i|ilog)$"

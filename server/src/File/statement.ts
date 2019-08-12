@@ -1,13 +1,10 @@
 import { Argument } from './argument';
-import { ARGUMENT } from '../regexpressions';
+import { ARGUMENT, SHORTHAND_ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
-import { ReplaceTabsInLine } from '../utilities';
-
-export class MCNPLine
-{
-	LineNumber: number;
-	Contents: string;
-}
+import { ReplaceTabsInLine, ConvertShorthandFeature } from '../utilities';
+import { MCNPException } from '../mcnp_exception';
+import { MCNPLine, LineType } from './MCNPLines';
+import { isNull } from 'util';
 
 export class Statement
 {
@@ -34,32 +31,41 @@ export class Statement
 		this.HeaderComment = header;
 		this.StartLine = text[0].LineNumber;
 
-		text.forEach(line => 
+		var contains_shorthand = false;
+		for (const line of text)
 		{
-			this.RawText += line.Contents;
-			this.AppendArguments(line)
-		});
+			this.RawText += line.RawContents;
+
+			if(line.Type == LineType.Comment)
+				throw Error("A Full-Line Comment can not be a part of an MCNP Statement.")
+				
+			contains_shorthand = this.ConvertLineToArguments(line) || contains_shorthand;
+		}
+
+		if(contains_shorthand)
+			this.ConvertShorthand();
 	}
 	
-	private AppendArguments(line: MCNPLine)
+	/**
+	 * Converts an MCNP Line to the arguments that make-up that line and adds them to the current Statement's
+	 * list of arguments. Order is maintained.
+	 * Returns true if the line contains any shorthand (i.e. r, m, j, i, ilog)
+	 * @param line The line to convert to arguments.
+	 */
+	private ConvertLineToArguments(line: MCNPLine): boolean
 	{
-		var comment_split = line.Contents.split("$");
-		
-		if(comment_split.length > 1)		
-			this.InlineComments.push(comment_split[1].trim());
+		var contains_shorthand = false;
+
+		if(!isNull(line.Comment))
+			this.InlineComments.push(line.Comment);
 
 		// Replace all '=' with a space since they are equivalent
-		var vs_code_interp = comment_split[0].replace('=',' ');	
-
-		// MCNP always considers tabs to go to stops every 8 spaces.
-		// VS Code allows users to control what they actually see and use when working, however.
-		// Because of this the VS code interpretation and MCNP interpretation must both be considered
-		var mcnp_interp = vs_code_interp;
-		if(vs_code_interp.includes('\t'))		
-			mcnp_interp = ReplaceTabsInLine(vs_code_interp);
+		var vs_code_interp = line.RawContents.replace('=',' ');	
 
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
-		var mcnp_arg_re = new RegExp(ARGUMENT,'g');		
+		var mcnp_arg_re = new RegExp(ARGUMENT,'g');	
+		
+		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'i');
 			
 		let line_too_long_start_index = -1;
 		let line_too_long_end_index = -1;
@@ -70,10 +76,14 @@ export class Statement
 		do
 		{
 			v = vs_arg_re.exec(vs_code_interp);
-			m = mcnp_arg_re.exec(mcnp_interp);
+			m = mcnp_arg_re.exec(line.MCNPInterpretation);
 
 			if (m == null)
 				break;
+
+			// Does the contents of this argument contain any shorthand?
+			if(!contains_shorthand && shorthand_re.exec(v[0]) != null)
+				contains_shorthand = true;
 
 			var arg = new Argument();
 			arg.Contents = v[0];
@@ -112,6 +122,70 @@ export class Statement
 				line_too_long_start_index, 
 				line_too_long_end_index, 
 				line_too_long_end_verbose_index);	
+
+		return contains_shorthand;
+	}
+
+	/**
+	 * Converts all shorthand (i.e. r, m, j, i, ilog) arguments to multiple arguments and maintains the 
+	 * correct ordering of the all Arguments in this statement.
+	 */
+	private ConvertShorthand()
+	{
+		var unconverted_args = this.Arguments;
+
+		this.Arguments = new Array<Argument>();
+		var shorthand_re = new RegExp(SHORTHAND_ARGUMENT,'i');		
+		for (let i = 0; i < unconverted_args.length; i++) 
+		{
+			const arg = unconverted_args[i];
+
+			var shorthand = shorthand_re.exec(arg.Contents)
+
+			// Does this argument contain shorthand?
+			if(shorthand != null && !isNaN(Number(shorthand[1])))
+			{
+				var pre_contents = null;
+				if(i != 0)
+					pre_contents = unconverted_args[i-1].Contents;
+
+				var post_contents = null;
+				if(i != unconverted_args.length-1)
+					post_contents = unconverted_args[i+1].Contents
+
+				var conversion = Array<string>();
+				try 
+				{
+					conversion = ConvertShorthandFeature(
+						pre_contents,
+						arg.Contents,
+						post_contents);
+				} 
+				catch (e) 
+				{
+					if(e instanceof MCNPException)					
+						this.Errors.push(e.CreateArgumentException(arg).diagnostic);
+					else
+						throw e;				
+
+					this.Arguments.push(arg);
+				}
+				
+				// Add new arguments that will have the same file-position
+				// as the original shorthand argument
+				for (const num of conversion) 
+				{
+					let new_arg: Argument = {
+						Contents: num,
+						FilePosition: arg.FilePosition
+					}
+					this.Arguments.push(new_arg);
+				}
+				
+			} // end if shorthand
+			else
+				this.Arguments.push(arg);			
+		}		
 	}
 
 	private CreateLineTooLongError(line_num:number, start: number, end: number, verbose_end: number)

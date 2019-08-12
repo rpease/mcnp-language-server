@@ -65,7 +65,7 @@
 			"patterns": 
 			[
                 {	
-					"begin": "^ {0,4}[*]?(\\d+)\\s+(\\d+\\s+)?([[:alpha:]]\\S+)",
+					"begin": "^ {0,4}[*+]?(\\d+)\\s+(\\d+\\s+)?([[:alpha:]]\\S*)",
 					"end": "\n",							
 					"contentName": "entity.line.surface.mcnp",					
 					"captures":
@@ -400,7 +400,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "\\$(.*)",
+					"match": "\\$|&(.*)",
 					"contentName": "comment.inline.mcnp"								
 				}          
             ]
