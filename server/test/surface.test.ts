@@ -4,6 +4,7 @@ import { Statement } from '../src/File/statement';
 import { Surface } from '../src/Cards/Surfaces/surface';
 import { MCNPException, MCNPArgumentException } from '../src/mcnp_exception';
 import { SurfaceModifier } from '../src/enumerations';
+import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver';
 
 function StringToStatement(text:string): Statement
 {
@@ -48,7 +49,9 @@ describe('Surface', () =>
 				expect(surf.Transform).to.be.null;
 				expect(surf.Parameters.length).to.equal(parameter_split.length);
 				for (let p = 0; p < surf.Parameters.length; p++)				
-					expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);						
+					expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);	
+					
+				expect(surf.GetDiagnostics().length).to.be.equal(0);
 			}			
 		}
 	});	
@@ -61,9 +64,12 @@ describe('Surface', () =>
 		for (const code of surface_codes) 
 		{
 			let surface_string = `${code} ${parameters} $ Magic spider on the wind`;
-			let surf_statement = StringToStatement(surface_string);
+			let surf = StringToSurface(surface_string);
 
-			expect(() => new Surface(surf_statement),"Should have thrown and error.").to.throw(MCNPArgumentException);
+			let d = surf.GetDiagnostics();
+
+			expect(d.length).to.be.greaterThan(0);
+			expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
 		}
 	});	
 
@@ -81,9 +87,12 @@ describe('Surface', () =>
 					for (const code of surface_codes) 
 					{
 						let surface_string = `${id} ${tr} ${x} ${code} ${parameters} $ Try not to die!!!`;
-						let surf_statement = StringToStatement(surface_string);
+						let surf = StringToSurface(surface_string);
 
-						expect(() => new Surface(surf_statement),"Should have thrown and error.").to.throw(MCNPArgumentException);
+						let d = surf.GetDiagnostics();
+
+						expect(d.length).to.be.greaterThan(0);
+						expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
 					}		
 				}				
 			}					
@@ -118,7 +127,9 @@ describe('Surface', () =>
 						expect(surf.Transform).to.be.equal(tr);
 						expect(surf.Parameters.length).to.equal(parameter_split.length);
 						for (let p = 0; p < surf.Parameters.length; p++)				
-							expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);						
+							expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);	
+							
+						expect(surf.GetDiagnostics().length).to.be.equal(0);
 					}	
 				}				
 			}					
@@ -140,9 +151,12 @@ describe('Surface', () =>
 				for (const code of surface_codes) 
 				{
 					let surface_string = `${id} ${bad_tr} ${code} ${parameters} $ But does it Djent?`;
-					let surf_statement = StringToStatement(surface_string);
-	
-					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);					
+					let surf = StringToSurface(surface_string);
+
+					let d = surf.GetDiagnostics();
+
+					expect(d.length).to.be.greaterThan(0);
+					expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);				
 				}
 			}									
 		}
@@ -176,7 +190,9 @@ describe('Surface', () =>
 					expect(surf.Transform).to.be.null;
 					expect(surf.Parameters.length).to.equal(parameter_split.length);
 					for (let p = 0; p < surf.Parameters.length; p++)				
-						expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);						
+						expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);		
+						
+					expect(surf.GetDiagnostics().length).to.be.equal(0);
 				}									
 			}					
 		}
@@ -197,9 +213,12 @@ describe('Surface', () =>
 				{
 					let surface_string = `${mod}${id} ${code} ${parameters} $ Thall`;					
 					console.log(surface_string);
-					let surf_statement = StringToStatement(surface_string);
+					let surf = StringToSurface(surface_string);
 
-					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);
+					let d = surf.GetDiagnostics();
+
+					expect(d.length).to.be.greaterThan(0);
+					expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
 				}									
 			}					
 		}
@@ -241,7 +260,9 @@ describe('Surface', () =>
 							expect(surf.Transform).to.be.equal(tr);
 							expect(surf.Parameters.length).to.equal(parameter_split.length);
 							for (let p = 0; p < surf.Parameters.length; p++)				
-								expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);						
+								expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);		
+								
+							expect(surf.GetDiagnostics().length).to.be.equal(0);
 						}	
 					}				
 				}					
@@ -262,17 +283,20 @@ describe('Surface', () =>
 			for (const code of surface_codes) 
 			{
 				let surface_string = `${id} ${code} ${parameters} $ Magic spider on the wind`;
-				let surf_statement = StringToStatement(surface_string);
+				let surf = StringToSurface(surface_string);
 
-				console.log(id);
-
-				let surf: Surface;
+				let d = surf.GetDiagnostics();
+			
 				// Invalid Number
 				if(id <= 0 || id >99999)
-					expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);
+				{
+					expect(d.length).to.be.greaterThan(0);
+					expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
+				}					
 				// valid number
-				else
-					surf = new Surface(surf_statement);			
+				else				
+					expect(d.length).to.be.equal(0);				
+							
 			}			
 		}
 	});
@@ -299,17 +323,19 @@ describe('Surface', () =>
 					for (const code of surface_codes) 
 					{
 						let surface_string = `${id} ${tr}${f} ${code} ${parameters} $ But does it Djent?`;
-						let surf_statement = StringToStatement(surface_string);
+						let surf = StringToSurface(surface_string);
 
-						console.log(id);
+						let d = surf.GetDiagnostics();
 
-						let surf: Surface;
 						// Invalid Number
 						if(id <= 0 || id >999)
-							expect(() => new Surface(surf_statement), "Should have thrown and error.").to.throw(MCNPArgumentException);
+						{
+							expect(d.length).to.be.greaterThan(0);
+							expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
+						}
 						// valid number
 						else
-							surf = new Surface(surf_statement);						
+							expect(d.length).to.be.equal(0);						
 					}	
 				}				
 			}					
