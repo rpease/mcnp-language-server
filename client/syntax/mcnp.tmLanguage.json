@@ -310,7 +310,7 @@
 			"patterns": 
 			[
 				{	
-					"begin": "^ {0,4}(?i)(mode|cut|elpt|notrn|nps|ctme)",
+					"begin": "^ {0,4}(?i)(mode|cut|elpt|notrn|nps|ctme|stop)",
 					"end": "\n",							
 					"contentName": "entity.line.problem.data_card.mcnp",					
 					
@@ -400,7 +400,7 @@
 			[
                 {					
 					"name": "comment.line.double-slash.mcnp",
-					"match": "\\$|&(.*)",
+					"match": "(\\$|&)(.*)",
 					"contentName": "comment.inline.mcnp"								
 				}          
             ]

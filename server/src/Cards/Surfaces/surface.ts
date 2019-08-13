@@ -17,6 +17,12 @@ export class Surface extends Card
 	protected DefaultValues: Array<number> = [];
 	protected Errors: Diagnostic[] = [];
 
+	/**
+	 * Creates a generic surface given the provided Statement. All MCNP related errors and 
+	 * warnings can be access with GetDiagnostics().
+	 * 
+	 * @param statement The Statment that define the surface
+	 */
 	constructor(statement: Statement)
 	{
 		super();
@@ -33,7 +39,7 @@ export class Surface extends Card
 		let has_transform = this.SetTransformation(this.Statement.Arguments);
 
 		// Get Surface ID
-		this.SetIDNumber(this.Statement.Arguments, has_modifier, has_transform);		
+		this.SetIDNumber(this.Statement.Arguments, has_modifier, false);		
 
 		// Get parameters
 		this.SetParameters(this.Statement.Arguments, has_transform);
@@ -65,6 +71,12 @@ export class Surface extends Card
 		this.Modifier = mod;				
 	}
 
+	/**
+	 * Sets the transformation number if valid.
+	 * 
+	 * @param args The arguments that define the surface
+	 * @returns boolean, True if the surface is being transformed by a TR card
+	 */
 	private SetTransformation(args: Array<Argument>): boolean
 	{
 		let float_parse = Number(args[1].Contents);
@@ -80,9 +92,9 @@ export class Surface extends Card
 				this.Errors.push(
 					CreateErrorDiagnostic(args[1], `Transformation ID ${float_parse} is not an integer value`, DiagnosticSeverity.Error));
 
-			if(int_parse == 0)
+			if(int_parse == 0 || int_parse > 999)
 				this.Errors.push(
-					CreateErrorDiagnostic(args[1], `Transformation ID can not be zero`, DiagnosticSeverity.Error));
+					CreateErrorDiagnostic(args[1], `Transformation ID for surfaces cards must be in range 0 < n < 1000`, DiagnosticSeverity.Error));			
 
 			this.Transform = int_parse;
 			return true;
@@ -95,7 +107,7 @@ export class Surface extends Card
 	 * 
 	 * @param args The arguments that define the surface
 	 * @param modfier True if the given surface has a modifier character
-	 * @param transform True if the given surface has a transformation
+	 * @param transform True if the given surface is transformed in a CELL definition
 	 */
 	private SetIDNumber(args: Array<Argument>, modfier: boolean, transform: boolean)
 	{
@@ -152,6 +164,14 @@ export class Surface extends Card
 			
 	}
 	
+	/**
+	 * Parses the particular parameter of the provided index and returns it. If the contents
+	 * of the parameter argument are not a number, an error is logged. Additionally, 
+	 * if a default parameter 'j' is passed, a zero is correctly replaced.
+	 * 
+	 * @param p The index of the parameter in the Surface definition.
+	 * @returns The parsed number of the parameter
+	 */
 	private ParseParameter(p: number): number
 	{		
 		let param_string = this.Parameters[p].Contents;
@@ -180,6 +200,10 @@ export class Surface extends Card
 		return param_value;		
 	}
 
+	/**
+	 * 
+	 * @returns Returns the diagnostics, if any, of the general surface
+	 */
 	public GetDiagnostics(): Diagnostic[]
 	{
 		return this.Errors;

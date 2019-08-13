@@ -1,3 +1,11 @@
+# [0.0.10] (2019-8-12)
+
+## Features
+
+## Bug Fixes
+- **Inline Comments** Inline comments, with $, are now correctly colored again
+- **Surface TR # Check** Fixed mistake that was incorrectly checking to see if Surface ID was <= 999 when TR ID should have been
+
 # [0.0.9] (2019-8-11)
 
 ## Features
