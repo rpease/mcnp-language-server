@@ -59,3 +59,9 @@ export enum SurfaceModifier
 	Reflective,
 	WhiteBoundary
 }
+
+export enum DensityType
+{
+	Atomic,
+	Mass
+}
