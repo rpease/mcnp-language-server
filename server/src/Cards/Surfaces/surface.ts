@@ -33,7 +33,7 @@ export class Surface extends Card
 		let has_transform = this.SetTransformation(this.Statement.Arguments);
 
 		// Get Surface ID
-		this.SetIDNumber(this.Statement.Arguments, has_modifier, has_transform);		
+		this.SetIDNumber(this.Statement.Arguments, has_modifier, false);		
 
 		// Get parameters
 		this.SetParameters(this.Statement.Arguments, has_transform);
@@ -80,9 +80,9 @@ export class Surface extends Card
 				this.Errors.push(
 					CreateErrorDiagnostic(args[1], `Transformation ID ${float_parse} is not an integer value`, DiagnosticSeverity.Error));
 
-			if(int_parse == 0)
+			if(int_parse == 0 || int_parse > 999)
 				this.Errors.push(
-					CreateErrorDiagnostic(args[1], `Transformation ID can not be zero`, DiagnosticSeverity.Error));
+					CreateErrorDiagnostic(args[1], `Transformation ID for surfaces cards must be in range 0 < n < 1000`, DiagnosticSeverity.Error));			
 
 			this.Transform = int_parse;
 			return true;
@@ -95,7 +95,7 @@ export class Surface extends Card
 	 * 
 	 * @param args The arguments that define the surface
 	 * @param modfier True if the given surface has a modifier character
-	 * @param transform True if the given surface has a transformation
+	 * @param transform True if the given surface is transformed in a CELL definition
 	 */
 	private SetIDNumber(args: Array<Argument>, modfier: boolean, transform: boolean)
 	{
