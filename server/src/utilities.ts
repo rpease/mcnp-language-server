@@ -361,3 +361,8 @@ export function ThrowPureIntegerError(bad_num: string)
 	else
 		throw new MCNPException(`Expected a pure integer but got a float: ${bad_num}`,`${num.toFixed()} might be acceptable` );
 }
+
+export function ExtractKeyValueParameters(card_arguments: Array<Argument>, starting_index: number): Map<
+{
+
+}
