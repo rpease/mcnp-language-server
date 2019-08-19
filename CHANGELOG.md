@@ -1,3 +1,11 @@
+# [0.0.11] (2019-8-18)
+
+## Features
+
+## Bug Fixes
+- **Adjacent Shorthand** Valid adjacent shorthand combinations are now not considered errors
+- **Max Surface ID** Updated maximum surface ID # from mcnp5 standard to mcnp6 standard
+
 # [0.0.10] (2019-8-12)
 
 ## Features
