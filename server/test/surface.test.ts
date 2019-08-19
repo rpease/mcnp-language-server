@@ -141,7 +141,7 @@ describe('Surface', () =>
 		let surface_codes = ['rpp', 'px', 'taco', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
 
-		let bad_tr = ['0', '-1.1', '2.4', '1e-1']
+		let bad_tr = ['0', '-1.1', '2.4', '1e-1', '1000']
 
 		let parameter_split = parameters.split(' ');
 		for (let id = 1; id < 20; id++) 
@@ -270,12 +270,12 @@ describe('Surface', () =>
 		}
 	});
 	
-	it('BadIDNumbers_AlwaysWrong', () => 
+	it('BadIDNumbers', () => 
 	{	
 		// surface ID must be: 1 <= n <= 99999
 		let surface_codes = ['rpp', 'px', 'taco', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
-		let ids = [-1,0,1,99999,100000]
+		let ids = [-1,0,1,99999999,100000000]
 
 		let parameter_split = parameters.split(' ');
 		for (const id of ids) 
@@ -288,7 +288,7 @@ describe('Surface', () =>
 				let d = surf.GetDiagnostics();
 			
 				// Invalid Number
-				if(id <= 0 || id >99999)
+				if(id <= 0 || id >99999999)
 				{
 					expect(d.length).to.be.greaterThan(0);
 					expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
@@ -298,47 +298,6 @@ describe('Surface', () =>
 					expect(d.length).to.be.equal(0);				
 							
 			}			
-		}
-	});
-
-	it('BadIDNumbers_Transformation', () => 
-	{	
-		let surface_codes = ['rpp', 'px', 'taco', 'doesntmatter'];
-		let parameters = '-4 5.4 3.7e2 1 10';
-
-		let num_formats = ['','.0','e0','E0','e+0'];
-
-		let ids = [-1,0,1,999,1000]
-
-		let parameter_split = parameters.split(' ');
-		for (const id of ids) 
-		{
-			for (let tr = -10; tr < 10; tr++) 
-			{
-				if(tr == 0)
-					continue;
-
-				for (const f of num_formats) 
-				{
-					for (const code of surface_codes) 
-					{
-						let surface_string = `${id} ${tr}${f} ${code} ${parameters} $ But does it Djent?`;
-						let surf = StringToSurface(surface_string);
-
-						let d = surf.GetDiagnostics();
-
-						// Invalid Number
-						if(id <= 0 || id >999)
-						{
-							expect(d.length).to.be.greaterThan(0);
-							expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);
-						}
-						// valid number
-						else
-							expect(d.length).to.be.equal(0);						
-					}	
-				}				
-			}					
 		}
 	});
 });

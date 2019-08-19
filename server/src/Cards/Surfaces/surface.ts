@@ -129,7 +129,7 @@ export class Surface extends Card
 				throw e;				
 		}		
 		
-		var max_num = 99999;
+		var max_num = 99999999;
 		if(transform)
 			max_num = 999;
 
