@@ -903,4 +903,93 @@ describe('Statement_Shorthand_Replacement', () =>
 		ValidateArguments([], shorthand, [], statement.Arguments);	
 	});
 
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+	it('Adjacent_Shorthand', () =>
+	{		
+		let line_num = 10;
+
+		// Examples from the MCNP5 Volumne II Manual
+		let manual_examples = [];
+		let expected_results = [];
+		
+		manual_examples.push('1 3M 2R');
+		expected_results.push(['1','3','3','3']);
+
+		manual_examples.push('1 3M I 4');
+		expected_results.push(['1','3','3.5','4']);
+
+		manual_examples.push('1 3M 3M');
+		expected_results.push(['1','3','9']);
+		
+		manual_examples.push('1 2R 2I 2.5');
+		expected_results.push(['1','1','1','1.5','2','2.5']);
+
+		manual_examples.push('1 R 2M');
+		expected_results.push(['1','1','2']);
+
+		manual_examples.push('1 R R');
+		expected_results.push(['1','1','1']);
+
+		manual_examples.push('1 2I 4 3M');
+		expected_results.push(['1','2','3','4','12']);
+
+		manual_examples.push('1 2I 4 2I 10');
+		expected_results.push(['1','2','3','4','6','8','10']);
+
+		for (let i = 0; i < manual_examples.length; i++) 
+		{
+			let input_string = manual_examples[i];
+			let expected = expected_results[i];
+
+			console.log(input_string);
+			let statement = StringToStatement(input_string, line_num);
+			
+			expect(statement.Arguments.length).to.be.equal(expected.length);
+
+			for (let a = 0; a < expected.length; a++)
+				expect(Number(expected[a])).to.be.equal(Number(statement.Arguments[a].Contents));
+				
+			// No errors or warnings should be thrown
+			expect(statement.GetDiagnostics().length).to.be.equal(0);
+		}
+	});
+
+	it('Adjacent_Shorthand_Bad', () =>
+	{		
+		let line_num = 10;
+
+		// Examples from the MCNP5 Volumne II Manual
+		let manual_examples = [];
+		let expected_results = [];
+		
+		manual_examples.push('3J 4R');
+		expected_results.push(['j','j','j','4R']);
+
+		manual_examples.push('1 4I 3M');
+		expected_results.push(['1','4I','3M']);
+
+		manual_examples.push('1 4I J');
+		expected_results.push(['1','4I','j']);
+
+		for (let i = 0; i < manual_examples.length; i++) 
+		{
+			let input_string = manual_examples[i];
+			let expected = expected_results[i];
+
+			console.log(input_string);
+			let statement = StringToStatement(input_string, line_num);
+			
+			expect(statement.Arguments.length).to.be.equal(expected.length);
+
+			for (let a = 0; a < expected.length; a++)
+				expect(expected[a]).to.be.equal(statement.Arguments[a].Contents);
+				
+			// More than one warning should be thrown
+			expect(statement.GetDiagnostics().length).to.be.greaterThan(0);
+		}
+	});
+
 });
