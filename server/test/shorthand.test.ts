@@ -440,22 +440,7 @@ describe('ShorthandInput', () =>
 			expect(() => utilities.ConvertShorthandFeature(preceding, element),"Should have thrown and error.").to.throw(MCNPException);
 		});	
 	});
-
-	it('ConvertShorthandFeature_Combinations', () => 
-	{				
-		// ex.) 1 3m 2r = 1 3 3 3
-		// ex.) 1 3m i 5 = 1 3 4 5
-		expect(true).to.be.false;
-	});
-
-	it('ConvertShorthandFeature_BadCombinations', () => 
-	{				
-		// ex.) 3j 4r
-		// ex.) 1 4i 3m
-		// ex.) 1 3i j
-		expect(true).to.be.false;
-	});
-
+	
 	it('ConvertShorthandFeature_Bad_Mnemonics', () => 
 	{			
 		let pre = '100';

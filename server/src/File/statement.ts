@@ -147,7 +147,7 @@ export class Statement
 			{
 				var pre_contents = null;
 				if(i != 0)
-					pre_contents = unconverted_args[i-1].Contents;
+					pre_contents = this.Arguments[this.Arguments.length-1].Contents;
 
 				var post_contents = null;
 				if(i != unconverted_args.length-1)
