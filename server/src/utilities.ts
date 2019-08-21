@@ -3,6 +3,9 @@ import { ParameterInformation, Diagnostic, DiagnosticSeverity } from "vscode-lan
 import { FULL_LINE_COMMENT_MATCH } from './regexpressions';
 import { Argument } from './File/argument';
 import { MCNPException } from './mcnp_exception';
+import { CardParameter } from './Cards/card_parameter';
+import { isNotificationMessage } from 'vscode-jsonrpc/lib/messages';
+import { isNull, isUndefined } from 'util';
 
 export function SplitStringNumberCombo(text: String): [string, number, string]
 {
@@ -362,7 +365,33 @@ export function ThrowPureIntegerError(bad_num: string)
 		throw new MCNPException(`Expected a pure integer but got a float: ${bad_num}`,`${num.toFixed()} might be acceptable` );
 }
 
-export function ExtractKeyValueParameters(card_arguments: Array<Argument>, starting_index: number): Map<
+export function ExtractKeyValueParameters(card_arguments: Array<Argument>, starting_index = 0): Array<CardParameter>
 {
+	let results = Array<CardParameter>();
 
+	var digit_re = new RegExp("\\d",'i');
+
+	let current_parameter;	
+	for (let i = starting_index; i < card_arguments.length; i++) 
+	{
+		var digit_match = digit_re.exec(card_arguments[i].Contents);
+
+		// Is this a key (string)
+		if(digit_match == null)		
+		{
+			if(!isUndefined(current_parameter))
+				results.push(current_parameter);
+
+			current_parameter = new CardParameter();
+			current_parameter.Keyword = card_arguments[i];
+		}
+		else
+			if(!isUndefined(current_parameter))
+				current_parameter.Values.push(card_arguments[i]);		
+	}
+
+	if(!isUndefined(current_parameter))
+		results.push(current_parameter);
+
+	return results;
 }

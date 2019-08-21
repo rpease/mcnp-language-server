@@ -3,6 +3,8 @@ import * as utilities from '../src/utilities';
 import { Particle } from '../src/enumerations';
 import { EPERM } from 'constants';
 import { MCNPException } from '../src/mcnp_exception';
+import { Statement } from '../src/File/statement';
+import { MCNPLine } from '../src/File/MCNPLines';
 
 
 function CompareArrays(array1, array2): void
@@ -19,6 +21,23 @@ function CompareArrays(array1, array2): void
 		else		
 			expect(array1[index]).to.be.equal(array2[index]);
 	}
+}
+
+function StringToStatement(text:string): Statement
+{
+    var mcnp_lines = new Array<MCNPLine>();
+
+	let line_num = 1;
+    text.split('\n').forEach(line => 
+    {
+        var mcnp_line = new MCNPLine(line, line_num);      
+
+        line_num += 1;
+
+        mcnp_lines.push(mcnp_line);
+    });	
+
+	return new Statement(mcnp_lines, null);
 }
 
 describe('Utilities', () => 
@@ -218,5 +237,32 @@ describe('Utilities', () =>
 			expect(() => utilities.ParsePureInt(bad, true)).to.throw(MCNPException);
 			expect(utilities.ParsePureInt(bad, false)).to.be.NaN;
 		}							
+	});
+
+	it('ExtractKeyValueParameters', () => 
+	{				
+		let examples = [];
+		let expected = [];
+
+		examples.push('2 9 -1.0 (#4:-5): -10 imp:n=6 Vol = 3 imp:p 5 10');
+		expected.push(new Map([["imp:n",["6"]], ["vol",["3"]], ["imp:p",["5","10"]]]));
+
+		for (let i = 0; i < examples.length; i++) 
+		{
+			let state = StringToStatement(examples[i]);
+
+			let results = utilities.ExtractKeyValueParameters(state.Arguments);
+
+			let expected_result = expected[i];
+
+			expect(expected_result.size).to.be.equal(results.length);
+			for (const kv_pair of results) 
+			{
+				let key = kv_pair.Keyword.Contents;
+
+				for (let v = 0; v < kv_pair.Values.length; v++) 				
+					expect(kv_pair.Values[v].Contents).to.be.equal(expected_result[key][v]);
+			}					
+		}
 	});
 });
