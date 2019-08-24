@@ -1,4 +1,4 @@
-import { ReplaceTabsInLine } from '../utilities';
+import { ReplaceTabsInLine, StringReplaceAll } from '../utilities';
 import { FULL_LINE_COMMENT_MATCH, STATEMENT_EXTENSION_MATCH, BLOCK_BREAK_MATCH } from '../regexpressions';
 
 export enum LineType
@@ -60,7 +60,7 @@ export class MCNPLine
 		text = continuation_split[0];
 
 		// Replace = signs with a space
-		text = text.replace('=',' ');
+		text = StringReplaceAll(text, '=', ' ');
 
 		// Replace tabs
 		// MCNP always considers tabs to go to stops every 8 spaces.

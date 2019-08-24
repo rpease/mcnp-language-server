@@ -1,7 +1,7 @@
 import { Argument } from './argument';
 import { ARGUMENT, SHORTHAND_ARGUMENT } from '../regexpressions';
 import { Diagnostic, ErrorMessageTracker, DiagnosticSeverity } from 'vscode-languageserver';
-import { ReplaceTabsInLine, ConvertShorthandFeature } from '../utilities';
+import { ReplaceTabsInLine, ConvertShorthandFeature, StringReplaceAll } from '../utilities';
 import { MCNPException } from '../mcnp_exception';
 import { MCNPLine, LineType } from './MCNPLines';
 import { isNull } from 'util';
@@ -58,9 +58,9 @@ export class Statement
 
 		if(!isNull(line.Comment))
 			this.InlineComments.push(line.Comment);
-
+		
 		// Replace all '=' with a space since they are equivalent
-		var vs_code_interp = line.RawContents.replace('=',' ');	
+		var vs_code_interp = StringReplaceAll(line.RawContents, '=', ' ');
 
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
 		var mcnp_arg_re = new RegExp(ARGUMENT,'g');	
@@ -86,7 +86,7 @@ export class Statement
 				contains_shorthand = true;
 
 			var arg = new Argument();
-			arg.Contents = v[0];
+			arg.Contents = m[0];
 			arg.FilePosition = 
 			{
 				line: line.LineNumber,

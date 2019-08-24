@@ -181,5 +181,25 @@ describe('MCNPLine', () =>
 			}
 		}	
 	});	
+
+	it('EqualSignReplacement', () => 
+	{	
+		let text = [];
+		let expected = [];
+		
+		text.push(    '2 9 -1.0 (#4:-5): -10 imp:n=6 Vol = 3 imp:p 5 10');
+		expected.push('2 9 -1.0 (#4:-5): -10 imp:n 6 Vol   3 imp:p 5 10');
+
+		text.push(    '2 9 -1.0 (#4:-5): -10 imp:n==6 Vol= = 3 imp:p= =5 10');
+		expected.push('2 9 -1.0 (#4:-5): -10 imp:n  6 Vol    3 imp:p   5 10');
+
+		for (let i = 0; i < text.length; i++) 
+		{
+			var line = new MCNPLine(text[i], 1);
+
+			expect(line.RawContents).to.be.equal(text[i]);
+			expect(line.MCNPInterpretation).to.be.equal(expected[i]);			
+		}
+	});	
 });
 

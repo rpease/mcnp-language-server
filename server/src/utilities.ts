@@ -395,3 +395,8 @@ export function ExtractKeyValueParameters(card_arguments: Array<Argument>, start
 
 	return results;
 }
+
+export function StringReplaceAll(text: string, search: string, replace: string): string
+{
+	return text.replace(new RegExp(search, 'g'), replace);
+}
