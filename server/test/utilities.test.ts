@@ -244,11 +244,17 @@ describe('Utilities', () =>
 		let examples = [];
 		let expected = [];
 
-		examples.push('2 9 -1.0 (#4:-5): -10 imp:n=6 Vol = 3 imp:p 5 10');
-		expected.push(new Map([["imp:n",["6"]], ["vol",["3"]], ["imp:p",["5","10"]]]));
+		examples.push('2 9 -1.0 (#4:-5): -10 imp:n=6 Vol = 3 iMp:p 5 10');
+		expected.push(new Map([["imp:n",["6"]], ["Vol",["3"]], ["iMp:p",["5","10"]]]));
+
+		examples.push(`2 9 -1.0 (#4:-5): -10 imp:n=
+			  6 Vol = 3 iMp:p 5
+			  10`);
+		expected.push(new Map([["imp:n",["6"]], ["Vol",["3"]], ["iMp:p",["5","10"]]]));
 
 		for (let i = 0; i < examples.length; i++) 
 		{
+			console.log(examples[i]);
 			let state = StringToStatement(examples[i]);
 
 			let results = utilities.ExtractKeyValueParameters(state.Arguments);
@@ -261,8 +267,36 @@ describe('Utilities', () =>
 				let key = kv_pair.Keyword.Contents;
 
 				for (let v = 0; v < kv_pair.Values.length; v++) 				
-					expect(kv_pair.Values[v].Contents).to.be.equal(expected_result[key][v]);
+					expect(kv_pair.Values[v].Contents).to.be.equal(expected_result.get(key)[v]);
 			}					
 		}
 	});
+
+	it('ExtractKeyValueParameters_IgnoreKeywords', () => 
+	{				
+		let examples = [];
+		let expected = [];
+
+		examples.push('2 like 1 but trcl = (2 0 0)');
+		expected.push(new Map([["trcl",["(2", "0", "0)"]]]));
+
+		for (let i = 0; i < examples.length; i++) 
+		{
+			console.log(examples[i]);
+			let state = StringToStatement(examples[i]);
+
+			let results = utilities.ExtractKeyValueParameters(state.Arguments);
+
+			let expected_result = expected[i];
+
+			expect(expected_result.size).to.be.equal(results.length);
+			for (const kv_pair of results) 
+			{
+				let key = kv_pair.Keyword.Contents;
+
+				for (let v = 0; v < kv_pair.Values.length; v++) 				
+					expect(kv_pair.Values[v].Contents).to.be.equal(expected_result.get(key)[v]);
+			}					
+		}
+	});	
 });
