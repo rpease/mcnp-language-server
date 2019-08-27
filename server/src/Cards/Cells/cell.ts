@@ -9,7 +9,7 @@ export class Cell extends Card
 	Density: number;
 	DensityUnits: DensityType;
 
-	BasicGeometry: Array<number>;
+	UsedSurfaces: Array<number>;
 	DataParameters: Map<string, string>;
 
 	protected Errors: Diagnostic[] = [];

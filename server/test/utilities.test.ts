@@ -272,7 +272,7 @@ describe('Utilities', () =>
 		}
 	});
 
-	it('ExtractKeyValueParameters_IgnoreKeywords', () => 
+	it('ExtractKeyValueParameters_StartingIndex', () => 
 	{				
 		let examples = [];
 		let expected = [];
@@ -285,7 +285,7 @@ describe('Utilities', () =>
 			console.log(examples[i]);
 			let state = StringToStatement(examples[i]);
 
-			let results = utilities.ExtractKeyValueParameters(state.Arguments);
+			let results = utilities.ExtractKeyValueParameters(state.Arguments, 4);
 
 			let expected_result = expected[i];
 
