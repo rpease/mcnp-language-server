@@ -252,6 +252,9 @@ describe('Utilities', () =>
 			  10`);
 		expected.push(new Map([["imp:n",["6"]], ["Vol",["3"]], ["iMp:p",["5","10"]]]));
 
+		examples.push('10 16 -4.2 1 -2 3 IMP:N=4 IMP:P = 8 EXT:N=-.4X');
+		expected.push(new Map([["IMP:N",["4"]], ["IMP:P",["8"]], ["EXT:N",["-.4X"]]]));
+
 		for (let i = 0; i < examples.length; i++) 
 		{
 			console.log(examples[i]);
