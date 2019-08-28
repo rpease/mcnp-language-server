@@ -63,5 +63,6 @@ export enum SurfaceModifier
 export enum DensityType
 {
 	Atomic,
-	Mass
+	Mass,
+	Void
 }

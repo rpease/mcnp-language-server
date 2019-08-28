@@ -1,9 +1,9 @@
 import { expect } from 'chai';
 import { MCNPLine } from '../src/File/MCNPLines';
 import { Statement } from '../src/File/statement';
-import { Surface } from '../src/Cards/Surfaces/surface';
+import { Cell } from '../src/Cards/Cells/cell';
 import { MCNPException, MCNPArgumentException } from '../src/mcnp_exception';
-import { SurfaceModifier } from '../src/enumerations';
+import { SurfaceModifier, DensityType } from '../src/enumerations';
 import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver';
 
 function StringToStatement(text:string): Statement
@@ -23,47 +23,67 @@ function StringToStatement(text:string): Statement
 	return new Statement(mcnp_lines, null);
 }
 
-function StringToSurface(text: string): Surface
+function StringToCell(text: string): Cell
 {
 	let statement = StringToStatement(text);
-	return new Surface(statement);
+	return new Cell(statement);
 }
 
 describe('Cell', () => 
 {
 	it('SimpleCell', () => 
 	{
-		let cell_ids = ['1','2','3','99999'];
-		let materials = ['1','2','3','4','999'];
-		let densities = ['-1.0','-2.0','-3','1.0','2.0','3.0'];
-		let surfaces = ['2 3 4 -10','3:4.2:-8','(-10:8):(5.3 3 -3) -666']
+		let cell_ids = [1, 2, 3, 99999];
+		let materials = [1, 2, 3, 4, 999];
+		let densities = [-1.0, -2.0, -3, 1.0, 2.0, 3.0];
+		let surfaces = ['2 3 4 -10','3:4.2: -8','(-10:8):(5.3 3 -3 8) -666']
 
-		/*let parameter_split = parameters.split(' ');
-		for (let id = 1; id < 20; id++) 
+		let expected_surfaces = [[2, 3, 4, -10],
+								[3, 4, 2, -8],
+								[-10, 8, 5.3, 3, -3, -666]];
+
+		for (const id of cell_ids) 
 		{
-			for (const code of surface_codes) 
+			for (const mat of materials) 
 			{
-				let surface_string = `${id} ${code} ${parameters} $ Magic spider on the wind`;
-				let surf = StringToSurface(surface_string);
+				for (const d of densities) 
+				{
+					for(let s = 0; s < surfaces.length; s++) 
+					{
+						let cell_string = `${id} ${mat} ${d} ${surfaces[s]}`;
+						let cell = StringToCell(cell_string);
 
-				expect(surf.ID).to.be.equal(id);
-				expect(surf.Modifier).to.be.null;
-				expect(surf.Transform).to.be.null;
-				expect(surf.Parameters.length).to.equal(parameter_split.length);
-				for (let p = 0; p < surf.Parameters.length; p++)				
-					expect(surf.Parameters[p].Contents).to.be.equal(parameter_split[p]);	
-					
-				expect(surf.GetDiagnostics().length).to.be.equal(0);
-			}			
-		}*/
-		expect(true).to.be.false;
+						expect(cell.ID).to.be.equal(id);
+
+						expect(cell.MaterialID).to.be.equal(mat);
+
+						if(d < 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
+						else if(d > 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
+						else
+							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+
+						expect(cell.Density).to.be.equal(d);
+
+						expect(cell.UsedSurfaces.length).to.be.equal(expected_surfaces[s].length);
+						for (let e = 0; e < cell.UsedSurfaces.length; e++) 													
+							expect(expected_surfaces[s].includes(cell.UsedSurfaces[e])).to.be.true;												
+					}
+				}
+			}
+		}
 	});		
 
 	it('VoidCell', () => 
 	{
-		let cell_ids = ['1','2','3','99999'];
-		let materials = ['0'];
-		let surfaces = ['2 3 4 -10','3:4:-8','(-10:8):(5 3 -3) -666']
+		let cell_ids = [1,2,3,99999];
+		let materials = [0];
+		let surfaces = ['2 3 4 -10','3:4.2: -8','(-10:8):(5.3 3 -3 8) -666']
+
+		let expected_surfaces = [[2, 3, 4, -10],
+								[3, 4, 2, -8],
+								[-10, 8, 5.3, 3, -3, -666]];
 
 		expect(true).to.be.false;
 	});
@@ -73,7 +93,7 @@ describe('Cell', () =>
 		let cell_ids = ['1','2','3','99999'];
 		let materials = ['1','2','3','4','999'];
 		let densities = ['-1.0','-2.0','-3','1.0','2.0','3.0'];
-		let surfaces = ['-666 #4','3:4.2:#8','(-10:8):(5.3 #3 -3) -666'];
+		let surfaces = ['-666 #4','3:4.2:#8','(-10:8):(5.3 #3 -3) -666','-10 8 #(5 6 -2) -666'];
 		expect(true).to.be.false;		
 	});
 
