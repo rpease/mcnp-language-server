@@ -123,8 +123,7 @@ export class Surface extends Card
 		catch (e) 
 		{
 			if(e instanceof MCNPException)
-				this.Errors.push(
-					CreateErrorDiagnostic(args[0], e.message, DiagnosticSeverity.Error));					
+				this.Errors.push(e.CreateArgumentException(args[0]).diagnostic);					
 			else
 				throw e;				
 		}		
