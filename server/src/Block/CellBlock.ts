@@ -1,7 +1,7 @@
 import { IBlock } from './block';
 import { Card } from '../Cards/card';
 import { Statement } from '../File/statement';
-import { stat } from 'fs';
+import { Cell } from '../Cards/Cells/cell';
 import { Diagnostic } from 'vscode-languageserver';
 
 export class CellBlock implements IBlock
@@ -9,14 +9,12 @@ export class CellBlock implements IBlock
 	Errors: Diagnostic[] = [];
 	Cards = Array<Card>();
 	
-	ParseStatement(statment: Statement)
+	ParseStatement(statement: Statement)
 	{
-		let card: Card;
-
-		card = new Card();
-		card.Statement = statment;
-
+		let card = new Cell(statement);
 		this.Cards.push(card);
+
+		this.Errors = this.Errors.concat(card.GetDiagnostics());
 	}
 
 	GetDiagnostics(): Diagnostic[]
