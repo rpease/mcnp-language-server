@@ -60,6 +60,7 @@ export class Statement
 			this.InlineComments.push(line.Comment);
 		
 		// Replace all '=' with a space since they are equivalent
+		// Need to do this because the MCNP interpretation has already replaced equal signs.
 		var vs_code_interp = StringReplaceAll(line.RawContents, '=', ' ');
 
 		var vs_arg_re = new RegExp(ARGUMENT,'g');
@@ -85,45 +86,69 @@ export class Statement
 			if(!contains_shorthand && shorthand_re.exec(v[0]) != null)
 				contains_shorthand = true;
 
-			var arg = new Argument();
-			arg.Contents = m[0];
-			arg.FilePosition = 
-			{
-				line: line.LineNumber,
-				character: v.index,
-				mcnp_character: m.index
-			}
+			let sub_arguments = this.GenerateArguments(m[0], v.index, m.index, line.LineNumber);
 
-			this.Arguments.push(arg);
-
-			if(m.index+arg.Contents.length > this.LINE_TOO_LONG_LIMIT)
+			for (const sub_arg of sub_arguments) 
 			{
-				if(line_too_long_start_index == -1)
+				this.Arguments.push(sub_arg);
+
+				if(m.index+sub_arg.Contents.length > this.LINE_TOO_LONG_LIMIT)
 				{
-					line_too_long_start_index = arg.FilePosition.character;
-					let i = arg.FilePosition.mcnp_character;
-					for(var char of arg.Contents)
+					if(line_too_long_start_index == -1)
 					{
-						if(i >= this.LINE_TOO_LONG_LIMIT)
-							break
-						
-						line_too_long_start_index += 1;
-						i += 1;
+						line_too_long_start_index = sub_arg.FilePosition.character;
+						let i = sub_arg.FilePosition.mcnp_character;
+						for(var char of sub_arg.Contents)
+						{
+							if(i >= this.LINE_TOO_LONG_LIMIT)
+								break
+							
+							line_too_long_start_index += 1;
+							i += 1;
+						}
 					}
+					line_too_long_end_index = sub_arg.FilePosition.character + sub_arg.Contents.length; 	
+					line_too_long_end_verbose_index = sub_arg.FilePosition.mcnp_character + sub_arg.Contents.length;		
 				}
-				line_too_long_end_index = arg.FilePosition.character + arg.Contents.length; 	
-				line_too_long_end_verbose_index = arg.FilePosition.mcnp_character + arg.Contents.length;		
-			}			
-
+			}
 		} while (v);
 
 		if(line_too_long_start_index != -1)
-			this.CreateLineTooLongError(arg.FilePosition.line, 
+			this.CreateLineTooLongError(line.LineNumber, 
 				line_too_long_start_index, 
 				line_too_long_end_index, 
 				line_too_long_end_verbose_index);	
 
 		return contains_shorthand;
+	}
+
+	private GenerateArguments(text: string, vs_code_index: number, mcnp_index:number, line_num: number): Array<Argument>
+	{
+		let args = [];
+
+		// Split string by Parentheses
+		let parenth_split = text.split(new RegExp('(\\(|\\))','g'));
+
+		// Split strings by ONLY cell colons
+		for (const sub_arg of parenth_split) 
+		{
+			let colon_split = sub_arg.split(new RegExp('(:)','g'));
+
+			for (const a of colon_split) 
+			{
+				var arg = new Argument();
+				arg.Contents = a;
+				arg.FilePosition = 
+				{
+					line: line_num,
+					character: vs_code_index,
+					mcnp_character: mcnp_index
+				}
+
+				args.push(arg);
+			}
+		}
+		return args;
 	}
 
 	/**
