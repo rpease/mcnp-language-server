@@ -137,6 +137,87 @@ describe('Statement', () =>
             expect(statement.Arguments[statement.Arguments.length-1].FilePosition.mcnp_character).to.equal(29);
         }
     });
+
+    it('Parentheses_Separation', () => 
+    {
+        let equivalent_text = [];
+        equivalent_text.push("10 7 -5.4 (10 6(7 1 -2)3)vol  10.3 $ Cell-Card");
+        equivalent_text.push("10 7 -5.4 ( 10 6(7 1 -2)3)vol  10.3 $ Cell-Card");
+        equivalent_text.push("10 7 -5.4 ( 10 6 (7 1 -2)3)vol  10.3 $ Cell-Card");
+        equivalent_text.push("10 7 -5.4 ( 10 6 (7 1 -2 )3)vol  10.3 $ Cell-Card");        
+        equivalent_text.push("10 7 -5.4 ( 10 6 ( 7 1 -2 ) 3 ) vol  10.3 $ Cell-Card");
+
+        let expected_arg_contents = ['10', '7', '-5.4', '(', '10', '6', '(' , '7', '1', '-2', ')', '3', ')', 'vol', '10.3']
+
+        const line_number = 10;
+        for (const text of equivalent_text)
+        {
+            console.log(text);
+            var line = StringToMCNPLines(text, line_number);
+
+            var statement = new st.Statement(line,null);
+
+            expect(statement.Arguments.length).to.equal(expected_arg_contents.length);
+            expect(statement.InlineComments.length).to.equal(1);
+            expect(statement.RawText).to.equal(text);
+            
+            for (let a = 0; a < expected_arg_contents.length; a++)             
+                expect(expected_arg_contents[a]).to.be.equal(statement.Arguments[a]);            
+        }
+    });
+
+    it('Colon_Separation', () => 
+    {
+        let equivalent_text = [];
+        equivalent_text.push("10 7 -5.4 #6:-10:666 vol  10.3 $ Cell-Card");
+        equivalent_text.push("10 7 -5.4 #6 :-10:666 vol  10.3 $ Cell-Card");
+        equivalent_text.push("10 7 -5.4 #6 : -10:666 vol  10.3 $ Cell-Card");
+        equivalent_text.push("10 7 -5.4 #6 : -10 :666 vol  10.3 $ Cell-Card");        
+        equivalent_text.push("10 7 -5.4 #6 : -10 : 666 vol  10.3 $ Cell-Card");
+
+        let expected_arg_contents = ['10', '7', '-5.4', '#6', ':', '-10', ':' , '666', 'vol', '10.3']
+
+        const line_number = 10;
+        for (const text of equivalent_text)
+        {
+            console.log(text);
+            var line = StringToMCNPLines(text, line_number);
+
+            var statement = new st.Statement(line,null);
+
+            expect(statement.Arguments.length).to.equal(expected_arg_contents.length);
+            expect(statement.InlineComments.length).to.equal(1);
+            expect(statement.RawText).to.equal(text);
+            
+            for (let a = 0; a < expected_arg_contents.length; a++)             
+                expect(expected_arg_contents[a]).to.be.equal(statement.Arguments[a]);            
+        }
+    });
+
+    it('Colon_Separation_Ignore', () => 
+    {
+        let cell_card = '10 7 -5.4 #6:-10:666 vol  10.3 ';
+
+        let cards = ['ImP:n', 'fmesh34:p', 'taco45:n,p,e', 'dxc0:p4', 'F5a:e'];
+        let rand_vals = ['=3',' 3',' = 3'];
+
+        for (const c of cards) 
+        {
+            for (const v of rand_vals) 
+            {
+                let text = cell_card + c + v + ' $ Defensive Posture';
+
+                console.log(text);
+                var line = StringToMCNPLines(text, 2);
+
+                var statement = new st.Statement(line,null);
+
+                expect(statement.Arguments.length).to.be.equal(12);
+                expect(statement.Arguments[statement.Arguments.length-1]).to.be.equal('3');
+                expect(statement.Arguments[statement.Arguments.length-2]).to.be.equal(c);
+            }            
+        }
+    });
     
     it('&_Replacement', () => 
     {

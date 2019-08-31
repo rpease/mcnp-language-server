@@ -13,6 +13,7 @@ export class Cell extends Card
 	Density: number;
 	DensityUnits: DensityType;
 
+	UsedCells: Array<number>;
 	UsedSurfaces: Array<number>;
 	DataParameters: Map<string, string>;
 
