@@ -162,7 +162,7 @@ describe('Statement', () =>
             expect(statement.RawText).to.equal(text);
             
             for (let a = 0; a < expected_arg_contents.length; a++)             
-                expect(expected_arg_contents[a]).to.be.equal(statement.Arguments[a]);            
+                expect(expected_arg_contents[a]).to.be.equal(statement.Arguments[a].Contents);            
         }
     });
 
@@ -190,7 +190,7 @@ describe('Statement', () =>
             expect(statement.RawText).to.equal(text);
             
             for (let a = 0; a < expected_arg_contents.length; a++)             
-                expect(expected_arg_contents[a]).to.be.equal(statement.Arguments[a]);            
+                expect(expected_arg_contents[a]).to.be.equal(statement.Arguments[a].Contents);            
         }
     });
 
@@ -213,8 +213,8 @@ describe('Statement', () =>
                 var statement = new st.Statement(line,null);
 
                 expect(statement.Arguments.length).to.be.equal(12);
-                expect(statement.Arguments[statement.Arguments.length-1]).to.be.equal('3');
-                expect(statement.Arguments[statement.Arguments.length-2]).to.be.equal(c);
+                expect(statement.Arguments[statement.Arguments.length-1].Contents).to.be.equal('3');
+                expect(statement.Arguments[statement.Arguments.length-2].Contents).to.be.equal(c);
             }            
         }
     });

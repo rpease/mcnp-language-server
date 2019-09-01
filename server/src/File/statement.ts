@@ -132,12 +132,17 @@ export class Statement
 		// Split strings by ONLY cell colons
 		for (const sub_arg of parenth_split) 
 		{
+			// parentheses is first character of the argument
+			if(sub_arg == '')
+				continue;
+
 			let colon_split = sub_arg.split(new RegExp('(:)','g'));
 
-			for (const a of colon_split) 
+			// Is the colon being used for particle type differentiation?
+			if(isNaN(Number(colon_split[0])) && colon_split[0][0] != '#')
 			{
 				var arg = new Argument();
-				arg.Contents = a;
+				arg.Contents = sub_arg;
 				arg.FilePosition = 
 				{
 					line: line_num,
@@ -147,6 +152,26 @@ export class Statement
 
 				args.push(arg);
 			}
+			else
+			{
+				for (const a of colon_split) 
+				{
+					// colon is first character of the argument
+					if(a == '')
+						continue;
+
+					var arg = new Argument();
+					arg.Contents = a;
+					arg.FilePosition = 
+					{
+						line: line_num,
+						character: vs_code_index,
+						mcnp_character: mcnp_index
+					}
+	
+					args.push(arg);
+				}
+			}			
 		}
 		return args;
 	}
