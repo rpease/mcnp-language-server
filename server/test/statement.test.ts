@@ -219,6 +219,31 @@ describe('Statement', () =>
         }
     });
     
+    it('Character_Separation_FilePosition', () => 
+    {
+        //               First char is a tab
+        let cell_card = '	10 7 -5.4 (#6:-10 : 666) vol  10.3 imp:n=5 $ Bonesaw is ready';
+        let line_num = 4;
+
+        let expected_args = ['10','7','-5.4','(','#6',':','-10',':','666',')','vol','10.3','imp:n','5'];
+        let expected_index = [1,   4 ,  6   , 11, 12 , 14,  15,  19, 21  , 24, 26  , 31   , 36    , 42];
+
+        var line = StringToMCNPLines(cell_card, line_num);
+        var statement = new st.Statement(line,null);
+
+        expect(statement.Arguments.length).to.be.equal(expected_args.length);
+
+        for (let a = 0; a < expected_args.length; a++) 
+        {
+            let actual_arg = statement.Arguments[a];
+
+            expect(actual_arg.Contents).to.be.equal(expected_args[a]);
+            expect(actual_arg.FilePosition.line).to.be.equal(line_num);
+            expect(actual_arg.FilePosition.character).to.be.equal(expected_index[a]);
+            expect(actual_arg.FilePosition.mcnp_character).to.be.equal(expected_index[a] + 7);            
+        }            
+    });
+    
     it('&_Replacement', () => 
     {
         const text_equal = `2  2 5.0  -2 & 

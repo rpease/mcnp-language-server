@@ -750,9 +750,9 @@ describe('Statement_Shorthand_Replacement', () =>
 
 		///////////////////////////////////////////////////////		
 		
-		for (let i = -10; i < 10; i++) 
+		for (let i = -5; i < 5; i++) 
 		{
-			for (let j = -10; j < 10; j++) 
+			for (let j = -5; j < 5; j++) 
 			{
 				let pre_string = ['E4','1','2',i.toString()];
 				let post_string = [j.toString(),'5','9'];	
