@@ -151,6 +151,9 @@ export class Statement
 				}
 
 				args.push(arg);
+
+				vs_code_index += sub_arg.length;
+				mcnp_index += sub_arg.length;
 			}
 			else
 			{
@@ -170,6 +173,9 @@ export class Statement
 					}
 	
 					args.push(arg);
+
+					vs_code_index += a.length;
+					mcnp_index += a.length;
 				}
 			}			
 		}

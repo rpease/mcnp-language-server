@@ -237,6 +237,8 @@ describe('Statement', () =>
         {
             let actual_arg = statement.Arguments[a];
 
+            console.log(actual_arg);
+
             expect(actual_arg.Contents).to.be.equal(expected_args[a]);
             expect(actual_arg.FilePosition.line).to.be.equal(line_num);
             expect(actual_arg.FilePosition.character).to.be.equal(expected_index[a]);
