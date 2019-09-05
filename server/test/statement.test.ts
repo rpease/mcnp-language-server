@@ -85,6 +85,7 @@ describe('Statement', () =>
         expect(statement.Arguments.length).to.equal(8);
         expect(statement.InlineComments.length).to.equal(2);
         expect(statement.RawText).to.equal(text_single);
+        expect(statement.GetDiagnostics().length).equal(0);
         
         // First-Line
         // rpp
@@ -104,6 +105,90 @@ describe('Statement', () =>
         expect(statement.Arguments[6].FilePosition.character).to.equal(8);
         expect(statement.Arguments[6].FilePosition.mcnp_character).to.equal(8);
         expect(statement.Arguments[6].FilePosition.line).to.equal(12);        	
+    });	
+
+    it('Multiline_InlineCommentBreak', () => 
+    {
+        const cell_card = `666 0
+		#1
+		#2
+		$ comment
+        #100 imp:n=0 $ Graveyard`;
+
+        const line_number = 10;
+        var line = StringToMCNPLines(cell_card, line_number);
+
+        var statement = new st.Statement(line,null);
+
+        expect(statement.Arguments.length).to.equal(7);
+        expect(statement.InlineComments.length).to.equal(2);
+        expect(statement.GetDiagnostics().length).equal(0);
+
+        // First-Line
+        expect(statement.Arguments[0].Contents).to.equal("666");
+        expect(statement.Arguments[0].FilePosition.character).to.equal(0);
+        expect(statement.Arguments[0].FilePosition.mcnp_character).to.equal(0);
+        expect(statement.Arguments[0].FilePosition.line).to.equal(10);
+
+        // Second-Line
+        expect(statement.Arguments[2].Contents).to.equal("#1");
+        expect(statement.Arguments[2].FilePosition.character).to.equal(2);
+        expect(statement.Arguments[2].FilePosition.mcnp_character).to.equal(16);
+        expect(statement.Arguments[2].FilePosition.line).to.equal(11);
+
+        // Third-Line
+        expect(statement.Arguments[3].Contents).to.equal("#2");
+        expect(statement.Arguments[3].FilePosition.character).to.equal(2);
+        expect(statement.Arguments[3].FilePosition.mcnp_character).to.equal(16);
+        expect(statement.Arguments[3].FilePosition.line).to.equal(12);
+
+        // Fifth-Line
+        expect(statement.Arguments[4].Contents).to.equal("#100");
+        expect(statement.Arguments[4].FilePosition.character).to.equal(2);
+        expect(statement.Arguments[4].FilePosition.mcnp_character).to.equal(16);
+        expect(statement.Arguments[4].FilePosition.line).to.equal(14);      	
+    });	
+
+    it('Multiline_FullLineCommentBreak', () => 
+    {
+        const cell_card = `666 0
+		#1
+		#2
+c Aaron Rodgers is a baaaadddddd man!
+        #100 imp:n=0 $ Graveyard`;
+
+        const line_number = 10;
+        var line = StringToMCNPLines(cell_card, line_number);
+
+        var statement = new st.Statement(line,null);
+
+        expect(statement.Arguments.length).to.equal(7);
+        expect(statement.InlineComments.length).to.equal(2);
+        expect(statement.GetDiagnostics().length).equal(0);
+
+        // First-Line
+        expect(statement.Arguments[0].Contents).to.equal("666");
+        expect(statement.Arguments[0].FilePosition.character).to.equal(0);
+        expect(statement.Arguments[0].FilePosition.mcnp_character).to.equal(0);
+        expect(statement.Arguments[0].FilePosition.line).to.equal(10);
+
+        // Second-Line
+        expect(statement.Arguments[2].Contents).to.equal("#1");
+        expect(statement.Arguments[2].FilePosition.character).to.equal(2);
+        expect(statement.Arguments[2].FilePosition.mcnp_character).to.equal(16);
+        expect(statement.Arguments[2].FilePosition.line).to.equal(11);
+
+        // Third-Line
+        expect(statement.Arguments[3].Contents).to.equal("#2");
+        expect(statement.Arguments[3].FilePosition.character).to.equal(2);
+        expect(statement.Arguments[3].FilePosition.mcnp_character).to.equal(16);
+        expect(statement.Arguments[3].FilePosition.line).to.equal(12);
+
+        // Fifth-Line
+        expect(statement.Arguments[4].Contents).to.equal("#100");
+        expect(statement.Arguments[4].FilePosition.character).to.equal(2);
+        expect(statement.Arguments[4].FilePosition.mcnp_character).to.equal(16);
+        expect(statement.Arguments[4].FilePosition.line).to.equal(14);      	
     });	
 
     it('EqualSign_Replacement', () => 

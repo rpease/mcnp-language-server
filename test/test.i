@@ -12,6 +12,13 @@ c
 100 0  -666 100 imp:n=1 $ Void Enviornment
 c
 666 0 #1 #2 #100 imp:n=0 $Graveyard
+55 6 -4.0 8 -19 0
+        5 2 4 2 
+        4 9423 49 
+                $ random comment
+        -10 4:2
+c this is a full line comment  
+        -4 50 2 
 
 c --------------- Surface Cards -----------------------------------------------
 1 RPP 1 2  -10 10  -8 8 $ Box 1
@@ -25,9 +32,15 @@ C Graveyard
 	 -10 10 $    Z-bounds
 c
 c Doesn't Crash
-4 RPP 1 2  -10 							               8
+4 RPP 1 2  -10 	
+        9 3
+        $ random comment
+        -10 4 
+        4 234 02 234 						               8
 c Line too Long (over 80)
 5 RPP 1 2  -10 							               88 70 5R10 $ not in the error
+c
+10 8 0 34 234 -10 4
                    
 c --------------- Data Cards -----------------------------------------------
 NPS 10
