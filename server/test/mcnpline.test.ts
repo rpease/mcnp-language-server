@@ -108,6 +108,12 @@ function GetStatementExtensionSamples(): Array<string>
 	extensions.push("       u=1\tlat=1 erg=2.3 $ input parameters");
 	extensions.push("        u=1\tlat=1 erg=2.3 $ input parameters");
 
+	// Comment Only
+	extensions.push("     $ This is a comment");
+	extensions.push("      $ This is a comment");
+	extensions.push("       $ This is a comment");
+	extensions.push("        $ This is a comment");
+
 	return extensions;
 }
 

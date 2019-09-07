@@ -39,8 +39,13 @@ export class MCNPLine
 			return LineType.Comment;		
 		else if(tab_free_line.match(STATEMENT_EXTENSION_MATCH) != null)		
 			return LineType.StatementExtension;		
-		else if(tab_free_line.match(BLOCK_BREAK_MATCH) != null)		
-			return LineType.BlockBreak;		
+		else if(tab_free_line.match(BLOCK_BREAK_MATCH) != null)
+		{
+			// Case where a end of line comment is the only thing on a line
+			if(this.Comment != null)
+				return LineType.StatementExtension;		
+			return LineType.BlockBreak;	
+		}				
 		else		
 			return LineType.StatementStart;		
 	}
