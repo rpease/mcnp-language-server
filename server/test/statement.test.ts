@@ -113,7 +113,7 @@ describe('Statement', () =>
 		#1
 		#2
 		$ comment
-        #100 imp:n=0 $ Graveyard`;
+		#100 imp:n=0 $ Graveyard`;
 
         const line_number = 10;
         var line = StringToMCNPLines(cell_card, line_number);
@@ -155,7 +155,7 @@ describe('Statement', () =>
 		#1
 		#2
 c Aaron Rodgers is a baaaadddddd man!
-        #100 imp:n=0 $ Graveyard`;
+		#100 imp:n=0 $ Graveyard`;
 
         const line_number = 10;
         var line = StringToMCNPLines(cell_card, line_number);
@@ -163,7 +163,7 @@ c Aaron Rodgers is a baaaadddddd man!
         var statement = new st.Statement(line,null);
 
         expect(statement.Arguments.length).to.equal(7);
-        expect(statement.InlineComments.length).to.equal(2);
+        expect(statement.InlineComments.length).to.equal(1);
         expect(statement.GetDiagnostics().length).equal(0);
 
         // First-Line
@@ -413,7 +413,10 @@ c Aaron Rodgers is a baaaadddddd man!
 
             var line = StringToMCNPLines(c, line_number);
 
-            expect(() => new st.Statement(line,null), "Should have thrown and error.").to.throw(Error);
+            let statement = new st.Statement(line, null);
+
+            expect(statement.Arguments.length).to.be.equal(0);
+            expect(statement.GetDiagnostics().length).to.be.equal(0);
         }          
     });  
 });

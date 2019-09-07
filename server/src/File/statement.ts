@@ -36,8 +36,9 @@ export class Statement
 		{
 			this.RawText += line.RawContents;
 
+			// Allow full-line comments, but ignore them
 			if(line.Type == LineType.Comment)
-				throw Error("A Full-Line Comment can not be a part of an MCNP Statement.")
+				continue;
 				
 			contains_shorthand = this.ConvertLineToArguments(line) || contains_shorthand;
 		}
