@@ -281,7 +281,7 @@ describe('Utilities', () =>
 		let expected = [];
 
 		examples.push('2 like 1 but trcl = (2 0 0)');
-		expected.push(new Map([["trcl",["(2", "0", "0)"]]]));
+		expected.push(new Map([["trcl",["2", "0", "0"]]]));
 
 		for (let i = 0; i < examples.length; i++) 
 		{

@@ -367,6 +367,7 @@ export function ThrowPureIntegerError(bad_num: string)
 
 export function ExtractKeyValueParameters(card_arguments: Array<Argument>, starting_index = 0): Array<CardParameter>
 {
+	let ignore_string = [')', '(', ':']
 	let results = Array<CardParameter>();
 
 	var digit_re = new RegExp("\\d",'i');
@@ -374,20 +375,23 @@ export function ExtractKeyValueParameters(card_arguments: Array<Argument>, start
 	let current_parameter;	
 	for (let i = starting_index; i < card_arguments.length; i++) 
 	{
-		var digit_match = digit_re.exec(card_arguments[i].Contents);
+		let arg = card_arguments[i];
+		var digit_match = digit_re.exec(arg.Contents);
 
 		// Is this a key (string)
-		if(digit_match == null)		
+		if(digit_match == null
+			&& !ignore_string.includes(arg.Contents))		
 		{
 			if(!isUndefined(current_parameter))
 				results.push(current_parameter);
 
 			current_parameter = new CardParameter();
-			current_parameter.Keyword = card_arguments[i];
+			current_parameter.Keyword = arg;
 		}
 		else
-			if(!isUndefined(current_parameter))
-				current_parameter.Values.push(card_arguments[i]);		
+			if(!isUndefined(current_parameter)
+				&& !ignore_string.includes(arg.Contents))
+				current_parameter.Values.push(arg);		
 	}
 
 	if(!isUndefined(current_parameter))
