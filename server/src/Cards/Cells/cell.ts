@@ -39,6 +39,9 @@ export class Cell extends Card
 
 		// Get Material Density Information
 		this.SetDensity(this.Statement.Arguments, is_void);
+
+		// Extract Geometric Definition
+		let geo_end = this.ExtractSpatialIDs(this.Statement.Arguments, is_void);
 	}
 
 	/**
@@ -163,6 +166,47 @@ export class Cell extends Card
 
 			return;
 		}
+	}
+
+	private ExtractSpatialIDs(args: Array<Argument>, is_void: boolean): number
+	{
+		let ignore_string = [')', '(', ':'];
+
+		let start_index = 3;
+		if(is_void)
+			start_index = 2;
+
+		for (let i = start_index; i < args.length; i++) 
+		{
+			const arg = args[i];
+
+			if(!ignore_string.includes(arg.Contents))
+			{
+				// Cell ID
+				if(arg.Contents[0] == '#')				
+				{
+					this.UsedCells.push(Number(arg.Contents.substring(1)));	
+
+					// todo throw warning if number is not a pure integer
+				}
+								
+				// Surface ID
+				else
+				{
+					let surface_id = Number(arg.Contents);
+
+					// todo throw warning if number is scientific
+
+					// Precense of non-number signals the end of geometry definition
+					if(isNaN(surface_id))
+						return i;
+
+					this.UsedSurfaces.push(surface_id);
+				}				
+			}			
+		}
+
+		return args.length;
 	}
 
 	GetDiagnostics(): Diagnostic[]

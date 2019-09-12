@@ -367,7 +367,7 @@ export function ThrowPureIntegerError(bad_num: string)
 
 export function ExtractKeyValueParameters(card_arguments: Array<Argument>, starting_index = 0): Array<CardParameter>
 {
-	let ignore_string = [')', '(', ':']
+	let ignore_string = [')', '(', ':'];
 	let results = Array<CardParameter>();
 
 	var digit_re = new RegExp("\\d",'i');
