@@ -170,6 +170,9 @@ export class Cell extends Card
 
 	private ExtractSpatialIDs(args: Array<Argument>, is_void: boolean): number
 	{
+		this.UsedCells = new Array<number>();
+		this.UsedSurfaces = new Array<number>();
+
 		let ignore_string = [')', '(', ':'];
 
 		let start_index = 3;
@@ -185,22 +188,42 @@ export class Cell extends Card
 				// Cell ID
 				if(arg.Contents[0] == '#')				
 				{
-					this.UsedCells.push(Number(arg.Contents.substring(1)));	
+					const num_string = arg.Contents.substring(1);
 
-					// todo throw warning if number is not a pure integer
+					const num_parse = Number(num_string);
+					if(isNaN(num_parse))
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `Complement operator must be used with a number.`, DiagnosticSeverity.Error));
+						continue;
+					}
+
+					// MCNP thinks these are equivalent: '#6.5', '#6'
+					const int_parse = ParsePureInt(num_string, false);
+					if(isNaN(int_parse))
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `Avoid using non pure integers to define complementary cell.`, DiagnosticSeverity.Warning));
+					}
+
+					this.UsedCells.push(num_parse);	
 				}
 								
 				// Surface ID
 				else
 				{
-					let surface_id = Number(arg.Contents);
-
-					// todo throw warning if number is scientific
+					const surface_id = Number(arg.Contents);
 
 					// Precense of non-number signals the end of geometry definition
 					if(isNaN(surface_id))
 						return i;
 
+					if(arg.Contents.match('[eE]'))
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `Avoid using scientific notation for surface geometry definition.`, DiagnosticSeverity.Warning));
+					}
+					
 					this.UsedSurfaces.push(surface_id);
 				}				
 			}			
