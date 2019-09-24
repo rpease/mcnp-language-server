@@ -104,7 +104,7 @@ export function CaseInsensitiveCompare(a: string, b: string): boolean
 export function ParsePureInt(s: string, throw_error=true): number
 {
 	let int = Number(s);
-	if(s.match('[\.e\+]') || isNaN(int))
+	if(s.match('[\.eE\+]') || isNaN(int))
 	{
 		if(throw_error)
 			ThrowPureIntegerError(s);

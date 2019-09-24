@@ -200,19 +200,34 @@ describe('Utilities', () =>
 	
 	it('ParseOnlyInt_Scientific', () => 
 	{				
-		for (let i = -100; i < 100; i++)
+		const es = ['E','e'];
+		const pre_num = ['','+','-'];
+		const decimal = ['','.']
+
+		for (let i = -5; i < 5; i++)
 		{
 			let string_base = i.toString();
 			for (let j = 0; j < 10; j++)
 			{
-				for (let e = -2; e < 3; e++)
+				for (let e = 0; e < 3; e++)
 				{
-					let string_base = i.toString();
-					string_base += "." + j.toString();
-					string_base += "E" + e.toString();					
-					
-					expect(() => utilities.ParsePureInt(string_base, true)).to.throw(MCNPException);
-					expect(utilities.ParsePureInt(string_base, false)).to.be.NaN;
+					for (const p of pre_num) 
+					{
+						for (const sci of es) 
+						{
+							for (const d of decimal) 
+							{
+								let string_base = i.toString();
+								string_base += d + j.toString();
+								string_base += sci + p + e.toString();	
+								
+								console.log(string_base);
+								
+								expect(() => utilities.ParsePureInt(string_base, true)).to.throw(MCNPException);
+								expect(utilities.ParsePureInt(string_base, false)).to.be.NaN;
+							}							
+						}
+					}					
 				}				
 			} 	
 		}		
