@@ -83,10 +83,33 @@ describe('Cell', () =>
 		let surfaces = ['2 3 4 -10','3:4.2: -8','(-10:8):(5.3 3 -3 8) -666']
 
 		let expected_surfaces = [[2, 3, 4, -10],
-								[3, 4, 2, -8],
+								[3, 4.2, -8],
 								[-10, 8, 5.3, 3, -3, -666]];
 
-		expect(true).to.be.false;
+		for (const id of cell_ids) 
+		{
+			for (const mat of materials) 
+			{				
+				for(let s = 0; s < surfaces.length; s++) 
+				{
+					let cell_string = `${id} ${mat} ${surfaces[s]}`;
+					console.log(cell_string);
+					let cell = StringToCell(cell_string);
+
+					expect(cell.ID).to.be.equal(id);
+
+					expect(cell.MaterialID).to.be.equal(mat);
+					
+					expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+
+					expect(cell.Density).to.be.equal(0.0);
+
+					expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
+					for (let e = 0; e < cell.UsedSurfaces.size; e++)
+						expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;											
+				}				
+			}
+		}
 	});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
