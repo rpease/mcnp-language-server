@@ -39,7 +39,7 @@ describe('Cell', () =>
 		let surfaces = ['2 3 4 -10','3:4.2: -8','(-10:8):(5.3 3 -3 8) -666']
 
 		let expected_surfaces = [[2, 3, 4, -10],
-								[3, 4, 2, -8],
+								[3, 4.2, -8],
 								[-10, 8, 5.3, 3, -3, -666]];
 
 		for (const id of cell_ids) 
@@ -51,6 +51,7 @@ describe('Cell', () =>
 					for(let s = 0; s < surfaces.length; s++) 
 					{
 						let cell_string = `${id} ${mat} ${d} ${surfaces[s]}`;
+						console.log(cell_string);
 						let cell = StringToCell(cell_string);
 
 						expect(cell.ID).to.be.equal(id);
@@ -66,9 +67,9 @@ describe('Cell', () =>
 
 						expect(cell.Density).to.be.equal(d);
 
-						expect(cell.UsedSurfaces.length).to.be.equal(expected_surfaces[s].length);
-						for (let e = 0; e < cell.UsedSurfaces.length; e++) 													
-							expect(expected_surfaces[s].includes(cell.UsedSurfaces[e])).to.be.true;												
+						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
+						for (let e = 0; e < cell.UsedSurfaces.size; e++)
+							expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;											
 					}
 				}
 			}

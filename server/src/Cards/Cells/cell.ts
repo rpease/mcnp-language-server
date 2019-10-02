@@ -3,9 +3,10 @@ import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver';
 import { DensityType } from '../../enumerations';
 import { Statement } from '../../File/statement';
 import { Argument } from '../../File/argument';
-import { ParsePureInt, CreateErrorDiagnostic } from '../../utilities';
+import { ParsePureInt, CreateErrorDiagnostic, ExtractKeyValueParameters } from '../../utilities';
 import { MCNPException } from '../../mcnp_exception';
 import { setFlagsFromString } from 'v8';
+import { CardParameter } from '../card_parameter';
 
 export class Cell extends Card
 {
@@ -13,9 +14,9 @@ export class Cell extends Card
 	Density: number;
 	DensityUnits: DensityType;
 
-	UsedCells: Array<number>;
-	UsedSurfaces: Array<number>;
-	DataParameters: Map<string, string>;
+	UsedCells: Set<number>;
+	UsedSurfaces: Set<number>;
+	DataParameters: Array<CardParameter>;
 
 	protected Errors: Diagnostic[] = [];
 
@@ -42,6 +43,9 @@ export class Cell extends Card
 
 		// Extract Geometric Definition
 		let geo_end = this.ExtractSpatialIDs(this.Statement.Arguments, is_void);
+
+		// Extract key-value parameters at the end of a cell definition
+		this.SetKeyValueParameters(this.Statement.Arguments, geo_end);
 	}
 
 	/**
@@ -168,10 +172,16 @@ export class Cell extends Card
 		}
 	}
 
+	/**
+	 * Extracts the Cell and Surface IDs used to define the geometry of the current cell
+	 * 
+	 * @param args The arguments that define the cell
+	 * @param is_void True if the cell is void of material
+	 */
 	private ExtractSpatialIDs(args: Array<Argument>, is_void: boolean): number
 	{
-		this.UsedCells = new Array<number>();
-		this.UsedSurfaces = new Array<number>();
+		this.UsedCells = new Set<number>();
+		this.UsedSurfaces = new Set<number>();
 
 		let ignore_string = [')', '(', ':'];
 
@@ -206,7 +216,7 @@ export class Cell extends Card
 							CreateErrorDiagnostic(arg, `Avoid using non pure integers to define complementary cell.`, DiagnosticSeverity.Warning));
 					}
 
-					this.UsedCells.push(num_parse);	
+					this.UsedCells.add(num_parse);	
 				}
 								
 				// Surface ID
@@ -224,12 +234,17 @@ export class Cell extends Card
 							CreateErrorDiagnostic(arg, `Avoid using scientific notation for surface geometry definition.`, DiagnosticSeverity.Warning));
 					}
 					
-					this.UsedSurfaces.push(surface_id);
+					this.UsedSurfaces.add(surface_id);
 				}				
 			}			
 		}
 
 		return args.length;
+	}
+
+	private SetKeyValueParameters(args: Array<Argument>, start_index: number)
+	{
+		this.DataParameters = ExtractKeyValueParameters(args, start_index);
 	}
 
 	GetDiagnostics(): Diagnostic[]
