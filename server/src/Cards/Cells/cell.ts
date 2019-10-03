@@ -216,6 +216,20 @@ export class Cell extends Card
 							CreateErrorDiagnostic(arg, `Avoid using non pure integers to define complementary cell.`, DiagnosticSeverity.Warning));
 					}
 
+					if(num_string[0] == '+')
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `'+' character not valid for geometry definition.`, DiagnosticSeverity.Error));
+						continue;
+					}
+
+					if(num_parse == 0)
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `0 is an invalid cell ID.`, DiagnosticSeverity.Error));
+						continue;
+					}
+
 					this.UsedCells.add(num_parse);	
 				}
 								
@@ -232,6 +246,20 @@ export class Cell extends Card
 					{
 						this.Errors.push(
 							CreateErrorDiagnostic(arg, `Avoid using scientific notation for surface geometry definition.`, DiagnosticSeverity.Warning));
+					}
+
+					if(arg.Contents[0] == '+')
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `'+' character not valid for geometry definition.`, DiagnosticSeverity.Error));
+						continue;
+					}
+
+					if(surface_id == 0)
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `0 is an invalid surface ID.`, DiagnosticSeverity.Error));
+						continue;
 					}
 					
 					this.UsedSurfaces.add(surface_id);
