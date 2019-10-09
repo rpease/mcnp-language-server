@@ -58,18 +58,22 @@ describe('Cell', () =>
 
 						expect(cell.MaterialID).to.be.equal(mat);
 
+						// Density check
 						if(d < 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
 						else if(d > 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-
 						expect(cell.Density).to.be.equal(d);
 
+						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
 						for (let e = 0; e < cell.UsedSurfaces.size; e++)
 							expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;	
+
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(0);
 						
 						// throws no errors
 						expect(cell.GetDiagnostics().length).to.be.equal(0);
@@ -107,9 +111,13 @@ describe('Cell', () =>
 
 					expect(cell.Density).to.be.equal(0.0);
 
+					// Surface checking
 					expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
 					for (let e = 0; e < cell.UsedSurfaces.size; e++)
 						expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;	
+
+					// Cell checking
+					expect(cell.UsedCells.size).to.be.equal(0);
 						
 					// throws no errors
 					expect(cell.GetDiagnostics().length).to.be.equal(0);
@@ -148,18 +156,22 @@ describe('Cell', () =>
 
 						expect(cell.MaterialID).to.be.equal(mat);
 
+						// Density checking
 						if(d < 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
 						else if(d > 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-
 						expect(cell.Density).to.be.equal(d);
 
+						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
 						for (let e = 0; e < cell.UsedSurfaces.size; e++)
 							expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;	
+
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(0);
 							
 						// throws no errors
 						expect(cell.GetDiagnostics().length).to.be.equal(0);
@@ -192,16 +204,20 @@ describe('Cell', () =>
 
 						expect(cell.MaterialID).to.be.equal(mat);
 
+						// Density checking
 						if(d < 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
 						else if(d > 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-
 						expect(cell.Density).to.be.equal(d);
 
+						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(0);	
+
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(0);
 							
 						// Analyze Diagnostic Information
 
@@ -225,6 +241,11 @@ describe('Cell', () =>
 		let materials = [1,2,3,4,999];
 		let densities = [-1.0,-2.0,-3,1.0,2.0,3.0];
 		let bad = ['1e0','1E0','1e+0','1.5e0'];	
+
+		let expected_surfaces = [[1],
+								[1],
+								[1],
+								[1.5]];
 		
 		for (const id of cell_ids) 
 		{
@@ -242,6 +263,7 @@ describe('Cell', () =>
 
 						expect(cell.MaterialID).to.be.equal(mat);
 
+						// Density checking
 						if(d < 0.0)
 							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
 						else if(d > 0.0)
@@ -250,11 +272,16 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
 
 						expect(cell.Density).to.be.equal(d);
+					
+						// Surface checking
+						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
+						for (let e = 0; e < cell.UsedSurfaces.size; e++)
+							expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;
 
-						expect(cell.UsedSurfaces.size).to.be.equal(1);		
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(0);
 
 						// Analyze Diagnostic Information
-
 						let errors = cell.GetDiagnostics();
 						expect(errors.length).to.be.greaterThan(0);
 
@@ -274,29 +301,178 @@ describe('Cell', () =>
 
 	it('Cell_Compliment_Valid', () => 
 	{
-		let cell_ids = ['1','2','3','99999'];
-		let materials = ['1','2','3','4','999'];
-		let densities = ['-1.0','-2.0','-3','1.0','2.0','3.0'];
+		let cell_ids = [1,2,3,99999];
+		let materials = [1,2,3,4,999];
+		let densities = [-1.0,-2.0,-3,1.0,2.0,3.0];
 		let surfaces = ['-666 #4','3:4.2:#8','(-10:8):(5.3 #3 -3) -666','-10 8 #(5 6 -2) -666'];
-		expect(true).to.be.false;		
+
+		let expected_surfaces = [[-666],
+								[3, 4.2],
+								[-10, 8, 5.3, -3, -666],
+								[-10, 8, 5, 6, -2, -666]];
+
+		let expected_cells = [[4],
+							[8],
+							[3],
+							[]];
+	
+		for (const id of cell_ids) 
+		{
+			for (const mat of materials) 
+			{
+				for (const d of densities) 
+				{
+					for(let s = 0; s < surfaces.length; s++) 
+					{
+						let cell_string = `${id} ${mat} ${d} ${surfaces[s]}`;
+						console.log(cell_string);
+						let cell = StringToCell(cell_string);
+
+						expect(cell.ID).to.be.equal(id);
+
+						expect(cell.MaterialID).to.be.equal(mat);
+
+						// Density checking
+						if(d < 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
+						else if(d > 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
+						else
+							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+						expect(cell.Density).to.be.equal(d);
+
+						// Surface checking
+						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
+						for (let e = 0; e < cell.UsedSurfaces.size; e++)
+							expect(cell.UsedSurfaces.has(expected_surfaces[s][e])).to.be.true;	
+							
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(expected_cells[s].length);
+						for (let e = 0; e < cell.UsedCells.size; e++)
+							expect(cell.UsedCells.has(expected_cells[s][e])).to.be.true;
+
+						// throws no errors
+						expect(cell.GetDiagnostics().length).to.be.equal(0);
+					}
+				}
+			}
+		}
 	});
 
 	it('Cell_Compliment_Error', () => 
 	{
-		let cell_ids = ['1','2','3','99999'];
-		let materials = ['1','2','3','4','999'];
-		let densities = ['-1.0','-2.0','-3','1.0','2.0','3.0'];
+		let cell_ids = [1,2,3,99999];
+		let materials = [1,2,3,4,999];
+		let densities = [-1.0,-2.0,-3,1.0,2.0,3.0];
 		let bad = ['#0','#-2','-#2','#-2.0','-#2.0',];		
-		expect(true).to.be.false;
+	
+		for (const id of cell_ids) 
+		{
+			for (const mat of materials) 
+			{
+				for (const d of densities) 
+				{
+					for(let b = 0; b < bad.length; b++) 
+					{
+						let cell_string = `${id} ${mat} ${d} ${bad[b]}`;
+						console.log(cell_string);
+						let cell = StringToCell(cell_string);
+
+						expect(cell.ID).to.be.equal(id);
+
+						expect(cell.MaterialID).to.be.equal(mat);
+
+						// Density checking
+						if(d < 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
+						else if(d > 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
+						else
+							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+						expect(cell.Density).to.be.equal(d);
+
+						// Surface checking
+						expect(cell.UsedSurfaces.size).to.be.equal(0);
+							
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(0);
+
+						// Analyze Diagnostic Information
+						let errors = cell.GetDiagnostics();
+						expect(errors.length).to.be.greaterThan(0);
+
+						let diagnostic_counts = Array<number>(4).fill(0);
+						for (const e of errors) 						
+							diagnostic_counts[e.severity] += 1;	
+
+						expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.greaterThan(0);
+					}
+				}
+			}
+		}
 	});
 
 	it('Cell_Compliment_Warning', () => 
 	{
-		let cell_ids = ['1','2','3','99999'];
-		let materials = ['1','2','3','4','999'];
-		let densities = ['-1.0','-2.0','-3','1.0','2.0','3.0'];
+		let cell_ids = [1,2,3,99999];
+		let materials = [1,2,3,4,999];
+		let densities = [-1.0,-2.0,-3,1.0,2.0,3.0];
 		let bad = ['#4.1','#2.0','#1e0','#1E0','#1e+0','#1.5e0'];		
-		expect(true).to.be.false;
+		
+		let expected_cells = [[4],
+							[2],
+							[1],
+							[1],
+							[1],
+							[1]];
+	
+		for (const id of cell_ids) 
+		{
+			for (const mat of materials) 
+			{
+				for (const d of densities) 
+				{
+					for(let b = 0; b < bad.length; b++) 
+					{
+						let cell_string = `${id} ${mat} ${d} ${bad[b]}`;
+						console.log(cell_string);
+						let cell = StringToCell(cell_string);
+
+						expect(cell.ID).to.be.equal(id);
+
+						expect(cell.MaterialID).to.be.equal(mat);
+
+						// Density checking
+						if(d < 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
+						else if(d > 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
+						else
+							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+						expect(cell.Density).to.be.equal(d);
+
+						// Surface checking
+						expect(cell.UsedSurfaces.size).to.be.equal(0);
+							
+						// Cell checking
+						expect(cell.UsedCells.size).to.be.equal(expected_cells[b].length);
+						for (let e = 0; e < cell.UsedCells.size; e++)
+							expect(cell.UsedCells.has(expected_cells[b][e])).to.be.true;
+
+						// Analyze Diagnostic Information
+						let errors = cell.GetDiagnostics();
+						expect(errors.length).to.be.greaterThan(0);
+
+						let diagnostic_counts = Array<number>(4).fill(0);
+						for (const e of errors) 						
+							diagnostic_counts[e.severity] += 1;	
+
+						expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.equal(0);
+						expect(diagnostic_counts[DiagnosticSeverity.Warning]).to.be.greaterThan(0);
+					}
+				}
+			}
+		}
 	});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
