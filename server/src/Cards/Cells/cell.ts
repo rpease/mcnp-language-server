@@ -194,13 +194,21 @@ export class Cell extends Card
 			const arg = args[i];
 
 			if(!ignore_string.includes(arg.Contents))
-			{
+			{				
 				// Cell ID
-				if(arg.Contents[0] == '#')				
+				if(arg.Contents.includes('#'))				
 				{
 					const num_string = arg.Contents.substring(1);
 
-					const num_parse = Number(num_string);
+					// Nothing before the '#' is accepted by MCNP
+					if(arg.Contents[0] != '#')
+					{
+						this.Errors.push(
+							CreateErrorDiagnostic(arg, `${arg.Contents[0]} or any modifier are not allowed when defining complementary cell.`, DiagnosticSeverity.Error));
+						continue;
+					}
+
+					let num_parse = Number(num_string);
 					if(isNaN(num_parse))
 					{
 						this.Errors.push(
@@ -212,14 +220,16 @@ export class Cell extends Card
 					const int_parse = ParsePureInt(num_string, false);
 					if(isNaN(int_parse))
 					{
+						// MCNP ignores decimals in the cell numbers
+						num_parse = parseInt(num_string);
 						this.Errors.push(
 							CreateErrorDiagnostic(arg, `Avoid using non pure integers to define complementary cell.`, DiagnosticSeverity.Warning));
 					}
 
-					if(num_string[0] == '+')
+					if(num_string[0] == '-')
 					{
 						this.Errors.push(
-							CreateErrorDiagnostic(arg, `'+' character not valid for geometry definition.`, DiagnosticSeverity.Error));
+							CreateErrorDiagnostic(arg, `'-' character not valid for geometry definition.`, DiagnosticSeverity.Error));
 						continue;
 					}
 
