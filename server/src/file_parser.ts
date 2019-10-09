@@ -11,6 +11,11 @@ import { DataBlock } from './Block/DataBlock';
 import { LineType, MCNPLine } from './File/MCNPLines';
 import { FileBlock } from './enumerations';
 
+/**
+ * Parses the MCNP Input File into a workable object and determines the errors and warnings that will
+ * cause the MCNP application problems.
+ * @param file The MCNP Input File
+ */
 export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 {
 	let mcnp_data = new MCNPFile();
@@ -57,6 +62,10 @@ export function ParseFile(file: TextDocument): [MCNPFile, Diagnostic[]]
 	return [mcnp_data,diagnostics];
 }
 
+/**
+ * Converts the MCNP Input File into workable Statements by the Block in which they appear.
+ * @param input_file The raw input file text
+ */
 export function GetStatementsFromInput(input_file: string): Array<Array<Statement>>
 {
 	let input_statements = new Array<Array<Statement>>();

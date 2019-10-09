@@ -203,16 +203,16 @@ describe('Cell', () =>
 
 						expect(cell.UsedSurfaces.size).to.be.equal(0);	
 							
+						// Analyze Diagnostic Information
+
 						let errors = cell.GetDiagnostics();
 						expect(errors.length).to.be.greaterThan(0);
 
-						let num_errors = 0;
-						for (const e of errors) 
-						{
-							if(e.severity == DiagnosticSeverity.Error)
-								num_errors += 1;
-						}
-						expect(num_errors).to.be.greaterThan(0);
+						let diagnostic_counts = Array<number>(4).fill(0);
+						for (const e of errors) 						
+							diagnostic_counts[e.severity] += 1;	
+
+						expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.greaterThan(0);
 					}
 				}
 			}
@@ -221,11 +221,53 @@ describe('Cell', () =>
 
 	it('SurfaceID_Warning', () => 
 	{
-		let cell_ids = ['1','2','3','99999'];
-		let materials = ['1','2','3','4','999'];
-		let densities = ['-1.0','-2.0','-3','1.0','2.0','3.0'];
+		let cell_ids = [1,2,3,99999];
+		let materials = [1,2,3,4,999];
+		let densities = [-1.0,-2.0,-3,1.0,2.0,3.0];
 		let bad = ['1e0','1E0','1e+0','1.5e0'];	
-		expect(true).to.be.false;
+		
+		for (const id of cell_ids) 
+		{
+			for (const mat of materials) 
+			{
+				for (const d of densities) 
+				{
+					for(let s = 0; s < bad.length; s++) 
+					{
+						let cell_string = `${id} ${mat} ${d} ${bad[s]}`;
+						console.log(cell_string);
+						let cell = StringToCell(cell_string);
+
+						expect(cell.ID).to.be.equal(id);
+
+						expect(cell.MaterialID).to.be.equal(mat);
+
+						if(d < 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
+						else if(d > 0.0)
+							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
+						else
+							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+
+						expect(cell.Density).to.be.equal(d);
+
+						expect(cell.UsedSurfaces.size).to.be.equal(1);		
+
+						// Analyze Diagnostic Information
+
+						let errors = cell.GetDiagnostics();
+						expect(errors.length).to.be.greaterThan(0);
+
+						let diagnostic_counts = Array<number>(4).fill(0);
+						for (const e of errors) 						
+							diagnostic_counts[e.severity] += 1;	
+
+						expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.equal(0);
+						expect(diagnostic_counts[DiagnosticSeverity.Warning]).to.be.greaterThan(0);					
+					}
+				}
+			}
+		}
 	});
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
