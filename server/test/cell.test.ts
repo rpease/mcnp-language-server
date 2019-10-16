@@ -493,7 +493,31 @@ describe('Cell', () =>
 c This is a comment
 		#100) imp:n=1 $ Graveyard`);
 
-		expect(true).to.be.false;
+		const expected = [1, 2, 100]
+
+		for (const ex of examples) 
+		{
+			let cell = StringToCell(ex);
+
+			expect(cell.ID).to.be.equal(666);
+
+			expect(cell.MaterialID).to.be.equal(0);
+
+			// Density checking			
+			expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+
+			// Surface checking
+			expect(cell.UsedSurfaces.size).to.be.equal(0);
+				
+			// Cell checking
+			expect(cell.UsedCells.size).to.be.equal(expected.length);
+			for (let e = 0; e < cell.UsedCells.size; e++)
+				expect(cell.UsedCells.has(expected[e])).to.be.true;
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.equal(0);			
+		}
 	});	
 
 	it('Incomplete_Parentheses', () => 
