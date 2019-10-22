@@ -544,7 +544,21 @@ c This is a comment
 c This is a comment
 		#100 imp:n=1 $ Graveyard`);
 
-		expect(true).to.be.false;
+		for (const ex of examples) 
+		{
+			let cell = StringToCell(ex);
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.greaterThan(0);
+
+			let diagnostic_counts = Array<number>(4).fill(0);
+			for (const e of errors) 						
+				diagnostic_counts[e.severity] += 1;	
+
+			expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.greaterThan(0);
+			expect(diagnostic_counts[DiagnosticSeverity.Warning]).to.be.equal(0);		
+		}
 	});	
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,18 +568,43 @@ c This is a comment
 		// These are valid examples
 		let examples = [];
 		examples.push(`666 0
-		#1
+		1
 		#2 :
 		$ This is a comment
 		#100 imp:n=1 $ Graveyard`);
 
 		examples.push(`666 0
-		(#1
+		(1
 		#2 :
 c This is a comment
 		#100) imp:n=1 $ Graveyard`);
 
-		expect(true).to.be.false;
+		const expected = [2, 100]
+
+		for (const ex of examples) 
+		{
+			let cell = StringToCell(ex);
+
+			expect(cell.ID).to.be.equal(666);
+
+			expect(cell.MaterialID).to.be.equal(0);
+
+			// Density checking			
+			expect(cell.DensityUnits).to.be.equal(DensityType.Void);
+
+			// Surface checking
+			expect(cell.UsedSurfaces.size).to.be.equal(1);
+			expect(cell.UsedSurfaces.has(1)).to.be.true;
+				
+			// Cell checking
+			expect(cell.UsedCells.size).to.be.equal(expected.length);
+			for (let e = 0; e < cell.UsedCells.size; e++)
+				expect(cell.UsedCells.has(expected[e])).to.be.true;
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.equal(0);			
+		}
 	});	
 
 	it('Valid_Colon', () => 
@@ -573,12 +612,40 @@ c This is a comment
 		let examples = [];
 
 		// No numbers near by
-		examples.push('1 1 -10.0  (3 -4):(1 4) imp:n=0');
+		examples.push('1 20 10.0  (3 -4):(1 4) imp:n=0');
 
 		// behind number
-		examples.push('1 1 -10.0  ((3 -4):1) imp:n=0');
+		examples.push('1 20 10.0  ((3 -4):1) imp:n=0');
 
-		expect(true).to.be.false;
+		const expected_surfaces = [[3, -4, 1, 4],
+								   [3, -4, 1]]
+
+		for (let e = 0; e < examples.length; e++) 
+		{
+			const ex = examples[e];
+
+			let cell = StringToCell(ex);
+
+			expect(cell.ID).to.be.equal(1);
+
+			expect(cell.MaterialID).to.be.equal(20);
+
+			// Density checking			
+			expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
+			expect(cell.Density).to.be.equal(10.0);
+
+			// Surface checking
+			expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[e].length);
+			for (let s = 0; s < cell.UsedSurfaces.size; s++)
+				expect(cell.UsedSurfaces.has(expected_surfaces[e][s])).to.be.true;
+				
+			// Cell checking
+			expect(cell.UsedCells.size).to.be.equal(0);
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.equal(0);			
+		}
 	});	
 
 	it('Incomplete_Colon', () => 
