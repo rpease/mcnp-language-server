@@ -145,10 +145,10 @@ export class Cell extends Card
 		
 		if(density_value < 0)
 		{
-			this.Density = density_value;
+			this.Density = -density_value;
 			this.DensityUnits = DensityType.Mass;
 
-			if(density_value <= -23.0)
+			if(density_value >= 23.0)
 				this.Errors.push(
 					CreateErrorDiagnostic(args[2], `Material density higher than that of Osmium (22.59 g/cm3), the densest material on Earth`, DiagnosticSeverity.Warning));
 

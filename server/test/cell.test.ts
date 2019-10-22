@@ -65,7 +65,7 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
@@ -163,7 +163,7 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
@@ -211,7 +211,7 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(0);	
@@ -271,7 +271,7 @@ describe('Cell', () =>
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
 
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 					
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
@@ -339,7 +339,7 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces[s].length);
@@ -389,7 +389,7 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(0);
@@ -449,7 +449,7 @@ describe('Cell', () =>
 							expect(cell.DensityUnits).to.be.equal(DensityType.Atomic);
 						else
 							expect(cell.DensityUnits).to.be.equal(DensityType.Void);
-						expect(cell.Density).to.be.equal(d);
+						expect(cell.Density).to.be.equal(Math.abs(d));
 
 						// Surface checking
 						expect(cell.UsedSurfaces.size).to.be.equal(0);
@@ -653,32 +653,52 @@ c This is a comment
 		let examples = [];
 
 		// No numbers near by
-		examples.push('1 1 -10.0  (-1 100( 8 9:10):) imp:n=0');
+		examples.push('1 20 -10.0  (-1 100( 8 9:10):) imp:n=0');
 
 		// behind number
-		examples.push('1 1 -10.0  (-1 100( 8 9:10:)) imp:n=0');
+		examples.push('1 20 -10.0  (-1 100( 8 9:10:)) imp:n=0');
 
 		// before any surface/cell
-		examples.push('1 1 -10.0  : -1 100 8 9 10 imp:n=0');
+		examples.push('1 20 -10.0  : -1 100 8 9 10 imp:n=0');
 
 		// after all surface/cell
-		examples.push('1 1 -10.0  : -1 100 8 9 10 imp:n=0');
+		examples.push('1 20 -10.0  : -1 100 8 9 10 imp:n=0');
 
-		// In-line comment break
-		examples.push(`666 0
-		(#1
-		#2
-		$ This is a comment
-		#100 imp:n=1 $ Graveyard`);
+		const expected_surfaces = [-1, 100, 8, 9, 10]
 
-		// full-line comment break
-		examples.push(`666 0
-		(#1
-		#2
-c This is a comment
-		#100 imp:n=1 $ Graveyard`);
+		for (let e = 0; e < examples.length; e++) 
+		{
+			const ex = examples[e];
 
-		expect(true).to.be.false;
+			let cell = StringToCell(ex);
+
+			expect(cell.ID).to.be.equal(1);
+
+			expect(cell.MaterialID).to.be.equal(20);
+
+			// Density checking			
+			expect(cell.DensityUnits).to.be.equal(DensityType.Mass);
+			expect(cell.Density).to.be.equal(10.0);
+
+			// Surface checking
+			expect(cell.UsedSurfaces.size).to.be.equal(expected_surfaces.length);
+			for (let s = 0; s < cell.UsedSurfaces.size; s++)
+				expect(cell.UsedSurfaces.has(expected_surfaces[s])).to.be.true;
+				
+			// Cell checking
+			expect(cell.UsedCells.size).to.be.equal(0);
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.greaterThan(0);
+
+			let diagnostic_counts = Array<number>(4).fill(0);
+			for (const e of errors) 						
+				diagnostic_counts[e.severity] += 1;	
+
+			expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.greaterThan(0);
+			expect(diagnostic_counts[DiagnosticSeverity.Warning]).to.be.equal(0);			
+		}
 	});	
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
