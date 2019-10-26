@@ -10,6 +10,8 @@ import { CardParameter } from '../card_parameter';
 
 export class Cell extends Card
 {
+	static MAX_ID = 99999999;
+
 	MaterialID: number;
 	Density: number;
 	DensityUnits: DensityType;
@@ -74,7 +76,7 @@ export class Cell extends Card
 				throw e;				
 		}		
 		
-		var max_num = 99999999;
+		var max_num = Cell.MAX_ID;
 		if(transform)
 			max_num = 999;
 

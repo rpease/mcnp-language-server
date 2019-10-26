@@ -275,7 +275,7 @@ describe('Surface', () =>
 		// surface ID must be: 1 <= n <= 99999
 		let surface_codes = ['rpp', 'px', 'taco', 'doesntmatter'];
 		let parameters = '-4 5.4 3.7e2 1 10';
-		let ids = [-1,0,1,99999999,100000000]
+		let ids = [-1, 0, 1, Surface.MAX_ID, Surface.MAX_ID+1, Surface.MAX_ID+2]
 
 		let parameter_split = parameters.split(' ');
 		for (const id of ids) 
@@ -288,7 +288,7 @@ describe('Surface', () =>
 				let d = surf.GetDiagnostics();
 			
 				// Invalid Number
-				if(id <= 0 || id >99999999)
+				if(id <= 0 || id >Surface.MAX_ID)
 				{
 					expect(d.length).to.be.greaterThan(0);
 					expect(d[0].severity).to.be.equal(DiagnosticSeverity.Error);

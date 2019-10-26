@@ -809,7 +809,7 @@ c This is a comment
 	it('SimpleCell_BadID', () => 
 	{
 		// id must be 1 <= j <= 99999?
-		let cell_ids = [-5, -4, -3, -2, -1, 100000, 100001, 100002, 100003, 100004];
+		let cell_ids = [-5, -4, -3, -2, -1, Cell.MAX_ID+1, Cell.MAX_ID+2, Cell.MAX_ID+3, Cell.MAX_ID+4, Cell.MAX_ID+5];
 		let materials = [1, 2];
 		let densities = [ -3, 1.0];
 		let surfaces = ['2 3 4 -10']
@@ -839,7 +839,7 @@ c This is a comment
 						
 						// Analyze Diagnostic Information
 						let errors = cell.GetDiagnostics();
-						expect(errors.length).to.be.equal(2);
+						expect(errors.length).to.be.equal(1);
 
 						let diagnostic_counts = Array<number>(4).fill(0);
 						for (const e of errors) 						

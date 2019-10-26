@@ -8,6 +8,7 @@ import { Diagnostic, DiagnosticSeverity } from 'vscode-languageserver';
 
 export class Surface extends Card
 {
+	static MAX_ID = 99999999;
 	Type: SurfaceType;
 	Transform = null;
 	Parameters: Array<Argument>;
@@ -128,7 +129,7 @@ export class Surface extends Card
 				throw e;				
 		}		
 		
-		var max_num = 99999999;
+		var max_num = Surface.MAX_ID;
 		if(transform)
 			max_num = 999;
 
