@@ -46,6 +46,9 @@ export class Cell extends Card
 		// Extract Geometric Definition
 		let geo_end = this.ExtractSpatialIDs(this.Statement.Arguments, is_void);
 
+		// Check parentheses and colon useage
+		this.CheckSpatialLogic(this.Statement.Arguments, is_void, geo_end);
+
 		// Extract key-value parameters at the end of a cell definition
 		this.SetKeyValueParameters(this.Statement.Arguments, geo_end);
 	}
@@ -282,6 +285,42 @@ export class Cell extends Card
 		return args.length;
 	}
 
+	/**
+	 * 
+	 * @param args 
+	 * @param is_void 
+	 * @param geo_end 
+	 */
+	private CheckSpatialLogic(args: Array<Argument>, is_void: boolean, geo_end: number)
+	{
+		let start_index = 3;
+		if(is_void)
+			start_index = 2;
+
+		let unclosed_parenthese = Array<Argument>();
+
+		for (let i = start_index; i < geo_end; i++)
+		{
+			const arg = args[i];
+
+			if (arg.Contents == '(')
+				unclosed_parenthese.push(arg);
+			else if (arg.Contents == ')')
+				unclosed_parenthese.pop();
+		}
+
+		for (const invalid of unclosed_parenthese) 
+		{
+			this.Errors.push(
+				CreateErrorDiagnostic(invalid, `Missing closing parentheses.`, DiagnosticSeverity.Error));			
+		}
+	}
+
+	/**
+	 * 
+	 * @param args 
+	 * @param start_index 
+	 */
 	private SetKeyValueParameters(args: Array<Argument>, start_index: number)
 	{
 		this.DataParameters = ExtractKeyValueParameters(args, start_index);
