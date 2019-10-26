@@ -133,7 +133,7 @@ describe('Cell', () =>
 		let cell_ids = [1,2,3,99999];
 		let materials = [1,2,3,4,999];
 		let densities = [-1.0,-2.0,-3,1.0,2.0,3.0];
-		let surfaces = ['-666 4','3:4.2:8','(-10:8):(5.3 3.4 -3) -666','-10 8.2 (5 6 -2) -666'];
+		let surfaces = ['-666 4','3:4.2:8','(-10:8):(5.3 3.4 -3) -666','-10 8.2 (5 6 -2) -666','1 (2 (3 4)) 5','1 (2 (3 4) ) 5'];
 		
 		let expected_surfaces = [[-666, 4],
 								[3, 4.2, 8],
@@ -543,6 +543,76 @@ c This is a comment
 		#2
 c This is a comment
 		#100 imp:n=1 $ Graveyard`);
+
+		for (const ex of examples) 
+		{
+			let cell = StringToCell(ex);
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.greaterThan(0);
+
+			let diagnostic_counts = Array<number>(4).fill(0);
+			for (const e of errors) 						
+				diagnostic_counts[e.severity] += 1;	
+
+			expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.greaterThan(0);
+			expect(diagnostic_counts[DiagnosticSeverity.Warning]).to.be.equal(0);		
+		}
+	});	
+
+	it('Too_Many_Parentheses', () => 
+	{
+		let examples = [];
+
+		// no start parentheses
+		examples.push('1 1 -10.0  -1 100 8 9 10) imp:n=0');
+
+		// example with trailing parameters
+		examples.push('1 1 -10.0  (-1 100 8 ) 9 ) 10 imp:n=0');
+
+		// no trailing parameters
+		examples.push('1 1 -10.0  (-1 100) 8 9:10) imp:n=0');
+
+		// In-line comment break
+		examples.push(`666 0
+		(#1
+		#2
+		$ This is a comment
+		#100) 4 ) imp:n=1 $ Graveyard`);
+
+		// full-line comment break
+		examples.push(`666 0
+		(#1
+		#2
+c This is a comment
+		#100) 2 ) 1 imp:n=1 $ Graveyard`);
+
+		for (const ex of examples) 
+		{
+			let cell = StringToCell(ex);
+
+			// Analyze Diagnostic Information
+			let errors = cell.GetDiagnostics();
+			expect(errors.length).to.be.greaterThan(0);
+
+			let diagnostic_counts = Array<number>(4).fill(0);
+			for (const e of errors) 						
+				diagnostic_counts[e.severity] += 1;	
+
+			expect(diagnostic_counts[DiagnosticSeverity.Error]).to.be.greaterThan(0);
+			expect(diagnostic_counts[DiagnosticSeverity.Warning]).to.be.equal(0);		
+		}
+	});	
+
+	it('Bad_Order_Parentheses', () => 
+	{
+		let examples = [];
+
+		examples.push('1 1 -10.0  ) -1 100  8 ( 9 10 imp:n=0');
+		examples.push('1 1 -10.0  ) -1 100  8   9 10 imp:n=0');
+		examples.push('1 1 -10.0  ) -1 100 (8 ( 9 10) imp:n=0');
+		examples.push('1 1 -10.0  1:(2 3) 4) (5  imp:n=0');	
 
 		for (const ex of examples) 
 		{
