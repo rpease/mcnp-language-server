@@ -8,7 +8,7 @@ The project currently has client support for [Visual Studio Code](https://code.v
 
 ## Features
 
-- Synatx highlighting
+- Syntax highlighting
 - General Surface Card error highlighting
 - Shorthand error highlighting
 
